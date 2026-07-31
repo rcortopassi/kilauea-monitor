@@ -2,20 +2,22 @@
 """
 Monitor do Kilauea (Big Island, Havai).
 
-Roda no GitHub Actions a cada 30 minutos:
+Roda no GitHub Actions a cada 5 minutos:
   1. Consulta a API publica do USGS/HANS (getElevatedVolcanoes).
   2. Compara color_code / alert_level com o estado anterior (state/state.json).
-  3. Se o vulcao subiu para ORANGE ou RED -> push URGENTE via ntfy.sh
-     (episodio de fonte de lava comecando: "va para o parque agora").
-     Rebaixamento ou outras mudancas -> push informativo.
+  3. Se o vulcao subiu para ORANGE ou RED -> alerta URGENTE via ntfy.sh e
+     Telegram (episodio de fonte de lava: "va para o parque agora").
+     Rebaixamento ou outras mudancas -> aviso informativo.
   4. Busca as fotos oficiais mais recentes do episodio (USGS, dominio publico)
      e verifica quais livestreams do YouTube estao no ar.
   5. Gera a pagina de status (abas Status / Ao vivo / Fotos, PT/EN)
      e sobe para o PythonAnywhere em /kilauea/.
 
 Somente stdlib. Variaveis de ambiente:
-  NTFY_TOPIC  - topico do ntfy.sh (secreto; quem souber o nome pode ler/postar)
-  PA_TOKEN    - token da API do PythonAnywhere (o mesmo de painel/.env)
+  NTFY_TOPIC     - topico do ntfy.sh (secreto; quem souber o nome pode ler/postar)
+  TELEGRAM_TOKEN - token do bot do Telegram (opcional; redundancia ao ntfy)
+  TELEGRAM_CHAT  - chat_id de destino no Telegram (opcional)
+  PA_TOKEN       - token da API do PythonAnywhere (o mesmo de painel/.env)
   PA_USER     - usuario do PythonAnywhere (default: rafaelcortopassi)
 """
 import html as html_mod
@@ -50,6 +52,8 @@ BUSCA_LIVES = ("https://www.youtube.com/results"
                "?search_query=kilauea+volcano+live+eruption&sp=EgJAAQ%3D%3D")
 
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
+TG_TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
+TG_CHAT = os.environ.get("TELEGRAM_CHAT", "")
 PA_TOKEN = os.environ.get("PA_TOKEN", "")
 PA_USER = os.environ.get("PA_USER", "rafaelcortopassi")
 PA_API = "https://www.pythonanywhere.com"
@@ -80,6 +84,7 @@ LINK_UPDATES = "https://www.usgs.gov/volcanoes/kilauea/volcano-updates"
 LINK_WEBCAMS = "https://www.usgs.gov/volcanoes/kilauea/webcams"
 LINK_YOUTUBE = "https://www.youtube.com/@usgs/live"
 LINK_PARQUE = "https://www.nps.gov/havo/planyourvisit/conditions.htm"
+LINK_SITE = "https://rafaelcortopassi.pythonanywhere.com/kilauea/"
 
 # Inicio da sequencia eruptiva episodica atual no Halemaumau
 INICIO_ERUPCAO = datetime(2024, 12, 23, tzinfo=timezone.utc)
@@ -404,6 +409,37 @@ def push_ntfy(titulo, corpo, prioridade="default", tags="", click=""):
             print(f"push enviado ({r.getcode()}): {titulo}")
     except Exception as e:  # noqa: BLE001
         print(f"ERRO no push: {e}")
+
+
+def push_telegram(titulo, corpo, urgente=False):
+    """Redundancia ao ntfy: manda o mesmo alerta por um bot do Telegram.
+    Inerte se TELEGRAM_TOKEN/TELEGRAM_CHAT nao estiverem definidos."""
+    if not (TG_TOKEN and TG_CHAT):
+        return
+    sino = "\U0001f6a8 " if urgente else ""
+    texto = (f"{sino}<b>{html_mod.escape(titulo)}</b>\n\n{html_mod.escape(corpo)}\n\n"
+             f"{LINK_SITE}")
+    dados = json.dumps({
+        "chat_id": TG_CHAT,
+        "text": texto[:4000],
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+        "disable_notification": not urgente,
+    }).encode("utf-8")
+    req = Request(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
+                  data=dados, method="POST",
+                  headers={"Content-Type": "application/json"})
+    try:
+        with urlopen(req, timeout=30) as r:
+            print(f"telegram enviado ({r.getcode()}): {titulo}")
+    except Exception as e:  # noqa: BLE001 - telegram e redundancia, nao pode derrubar o monitor
+        print(f"ERRO no telegram: {e}")
+
+
+def notifica(titulo, corpo, prioridade="default", tags="", click=""):
+    """Dispara o alerta por todos os canais configurados."""
+    push_ntfy(titulo, corpo, prioridade, tags, click)
+    push_telegram(titulo, corpo, urgente=(prioridade in ("urgent", "high")))
 
 
 def fmt_hora(dt_utc, lang="pt"):
@@ -1035,7 +1071,7 @@ def main():
 
     primeira_vez = not prev
     if primeira_vez:
-        push_ntfy(
+        notifica(
             "Monitor do Kilauea ativado",
             f"Estado atual: {atual['color_code']}/{atual['alert_level']}.\n\n"
             f"{sinopse}"[:800],
@@ -1045,7 +1081,7 @@ def main():
         decisao = decide_push(prev, atual, sinopse)
         if decisao:
             titulo, corpo, prio, tags = decisao
-            push_ntfy(titulo, corpo[:1500], prio, tags, click=LINK_WEBCAMS)
+            notifica(titulo, corpo[:1500], prio, tags, click=LINK_WEBCAMS)
             historico.append({
                 "quando_unix": int(agora_utc.timestamp()),
                 "de": prev.get("color_code", ""),
