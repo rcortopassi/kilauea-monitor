@@ -133,11 +133,13 @@ def push_ntfy(titulo, corpo, prioridade="default", tags="", click=""):
         print(f"ERRO no push: {e}")
 
 
-def fmt_hora(dt_utc):
+def fmt_hora(dt_utc, lang="pt"):
     if not dt_utc:
         return "-"
     hst = dt_utc.astimezone(HST).strftime("%d/%m %H:%M")
     brt = dt_utc.astimezone(BRT).strftime("%d/%m %H:%M")
+    if lang == "en":
+        return f"{hst} in Hawaii ({brt} in Brasilia)"
     return f"{hst} no Havai ({brt} em Brasilia)"
 
 
@@ -178,22 +180,112 @@ def decide_push(prev, atual, sinopse):
     )
 
 
+NIVEL_EN = {
+    "GREEN": "Normal",
+    "YELLOW": "Elevated activity (paused)",
+    "ORANGE": "ERUPTION IN PROGRESS",
+    "RED": "MAJOR ERUPTION IN PROGRESS",
+}
+
+# Bandeiras pequenas (SVG inline): Havai = ingles, Brasil = portugues
+FLAG_HI = """<svg viewBox="0 0 24 16" width="24" height="16">
+<rect width="24" height="16" fill="#fff"/>
+<rect y="2" width="24" height="2" fill="#c8102e"/><rect y="4" width="24" height="2" fill="#012169"/>
+<rect y="8" width="24" height="2" fill="#c8102e"/><rect y="10" width="24" height="2" fill="#012169"/>
+<rect y="14" width="24" height="2" fill="#c8102e"/>
+<rect width="12" height="8" fill="#012169"/>
+<path d="M0 0 12 8 M12 0 0 8" stroke="#fff" stroke-width="1.8"/>
+<path d="M0 0 12 8 M12 0 0 8" stroke="#c8102e" stroke-width=".8"/>
+<path d="M6 0 V8 M0 4 H12" stroke="#fff" stroke-width="2.6"/>
+<path d="M6 0 V8 M0 4 H12" stroke="#c8102e" stroke-width="1.4"/>
+</svg>"""
+FLAG_BR = """<svg viewBox="0 0 24 16" width="24" height="16">
+<rect width="24" height="16" fill="#009c3b"/>
+<polygon points="12,1.5 22.5,8 12,14.5 1.5,8" fill="#ffdf00"/>
+<circle cx="12" cy="8" r="3.6" fill="#002776"/>
+<path d="M8.9 7.1 A5.4 5.4 0 0 1 15.1 8.9" stroke="#fff" stroke-width=".7" fill="none"/>
+</svg>"""
+
+
 def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
     cor = atual["color_code"]
     cores = {"GREEN": "#1e7e34", "YELLOW": "#b8860b", "ORANGE": "#d2691e", "RED": "#b22222"}
     fundo = cores.get(cor, "#555")
-    titulo_status = NIVEL_PT.get(cor, cor or "?")
     quando = parse_sent(atual["sent_unixtime"])
+    nivel = atual["alert_level"] or "?"
     linhas_hist = ""
     for h in reversed(historico[-15:]):
         dt = datetime.fromtimestamp(h["quando_unix"], tz=timezone.utc)
         linhas_hist += (
             f"<tr><td>{dt.astimezone(HST).strftime('%d/%m/%Y %H:%M')}</td>"
-            f"<td>{html_mod.escape(h['de'] or '?')} para {html_mod.escape(h['para'])}</td></tr>"
+            f"<td>{html_mod.escape(h['de'] or '?')} &rarr; {html_mod.escape(h['para'])}</td></tr>"
         )
-    if not linhas_hist:
-        linhas_hist = "<tr><td colspan=2>Nenhuma mudanca registrada ainda</td></tr>"
+    hist_vazio = not linhas_hist
+    if hist_vazio:
+        linhas_hist = '<tr><td colspan=2 data-i18n="hist_empty">Nenhuma mudanca registrada ainda</td></tr>'
     aviso_bloco = resumo_html or f"<p>{html_mod.escape(sinopse)}</p>" if (resumo_html or sinopse) else "<p>-</p>"
+
+    live_pt = (f'<a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>'
+               f'<a href="{LINK_YOUTUBE}">Transmissao do USGS no YouTube</a>')
+    live_en = (f'<a href="{LINK_WEBCAMS}">USGS crater webcams</a><br>'
+               f'<a href="{LINK_YOUTUBE}">USGS live stream on YouTube</a>')
+    fonte_pt = f'Fonte: <a href="{LINK_UPDATES}">USGS - Kilauea updates</a>'
+    fonte_en = f'Source: <a href="{LINK_UPDATES}">USGS - Kilauea updates</a>'
+
+    i18n = {
+        "pt": {
+            "title": "Kilauea agora",
+            "text": {
+                "status": NIVEL_PT.get(cor, cor or "?"),
+                "linha_codigo": f"Codigo de aviacao {cor} - nivel {nivel}",
+                "linha_aviso": f"Aviso do USGS de {fmt_hora(quando, 'pt') if quando else '-'}",
+                "h_aviso": "Ultimo aviso do HVO (original em ingles)",
+                "h_live": "Ver ao vivo",
+                "h_hist": "Mudancas de nivel registradas por este monitor",
+                "hist_empty": "Nenhuma mudanca registrada ainda",
+                "hist_nota": "Horarios do historico em hora do Havai (HST)",
+                "rodape": (f"Verificado a cada 30 minutos. Ultima checagem: {fmt_hora(agora_utc, 'pt')}. "
+                           "Dados: USGS Hawaiian Volcano Observatory (dominio publico). Este site nao e oficial."),
+            },
+            "html": {"live": live_pt, "fonte": fonte_pt},
+        },
+        "en": {
+            "title": "Kilauea now",
+            "text": {
+                "status": NIVEL_EN.get(cor, cor or "?"),
+                "linha_codigo": f"Aviation color code {cor} - alert level {nivel}",
+                "linha_aviso": f"USGS notice from {fmt_hora(quando, 'en') if quando else '-'}",
+                "h_aviso": "Latest HVO notice",
+                "h_live": "Watch live",
+                "h_hist": "Alert changes recorded by this monitor",
+                "hist_empty": "No changes recorded yet",
+                "hist_nota": "History times are Hawaii time (HST)",
+                "rodape": (f"Checked every 30 minutes. Last check: {fmt_hora(agora_utc, 'en')}. "
+                           "Data: USGS Hawaiian Volcano Observatory (public domain). This site is not official."),
+            },
+            "html": {"live": live_en, "fonte": fonte_en},
+        },
+    }
+
+    js = """
+const I18N = __I18N__;
+function setLang(l) {
+  try { localStorage.setItem('kilauea_lang', l); } catch (e) {}
+  document.documentElement.lang = (l === 'pt') ? 'pt-BR' : 'en';
+  document.title = I18N[l].title;
+  for (const [k, v] of Object.entries(I18N[l].text)) {
+    document.querySelectorAll('[data-i18n="' + k + '"]').forEach(el => { el.textContent = v; });
+  }
+  for (const [k, v] of Object.entries(I18N[l].html)) {
+    document.querySelectorAll('[data-i18n-html="' + k + '"]').forEach(el => { el.innerHTML = v; });
+  }
+  document.querySelectorAll('.flag').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+}
+let lang = 'pt';
+try { lang = localStorage.getItem('kilauea_lang') || 'pt'; } catch (e) {}
+setLang(lang);
+""".replace("__I18N__", json.dumps(i18n, ensure_ascii=False))
+
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -203,9 +295,14 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
 <title>Kilauea agora</title>
 <style>
 body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #f4f4f4; color: #222; }}
-.banner {{ background: {fundo}; color: #fff; padding: 28px 16px; text-align: center; }}
+.banner {{ background: {fundo}; color: #fff; padding: 28px 16px; text-align: center; position: relative; }}
 .banner h1 {{ margin: 0 0 6px; font-size: 1.9em; }}
 .banner p {{ margin: 4px 0; opacity: .95; }}
+.langs {{ position: absolute; top: 8px; right: 10px; }}
+.flag {{ background: none; border: 1px solid rgba(255,255,255,.7); border-radius: 3px; padding: 2px 3px;
+         margin-left: 6px; cursor: pointer; line-height: 0; opacity: .55; }}
+.flag.active {{ opacity: 1; border-color: #fff; }}
+.flag svg {{ display: block; }}
 .wrap {{ max-width: 760px; margin: 0 auto; padding: 16px; }}
 .card {{ background: #fff; border-radius: 10px; padding: 16px 18px; margin: 14px 0; box-shadow: 0 1px 3px rgba(0,0,0,.12); }}
 .card h2 {{ margin: 0 0 10px; font-size: 1.05em; color: #444; }}
@@ -217,22 +314,25 @@ a {{ color: #0a58ca; }}
 </head>
 <body>
 <div class="banner">
-<h1>{titulo_status}</h1>
-<p>Codigo de aviacao {cor} - nivel {atual['alert_level'] or '?'}</p>
-<p>Aviso do USGS de {fmt_hora(quando) if quando else '-'}</p>
+<div class="langs">
+<button class="flag" data-lang="en" title="English" aria-label="English" onclick="setLang('en')">{FLAG_HI}</button>
+<button class="flag active" data-lang="pt" title="Portugues" aria-label="Portugues" onclick="setLang('pt')">{FLAG_BR}</button>
+</div>
+<h1 data-i18n="status"></h1>
+<p data-i18n="linha_codigo"></p>
+<p data-i18n="linha_aviso"></p>
 </div>
 <div class="wrap">
-<div class="card"><h2>Ultimo aviso do HVO (original em ingles)</h2>{aviso_bloco}
-<p class="mono">Fonte: <a href="{LINK_UPDATES}">USGS - Kilauea updates</a></p></div>
-<div class="card"><h2>Ver ao vivo</h2>
-<p><a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>
-<a href="{LINK_YOUTUBE}">Transmissao do USGS no YouTube</a></p></div>
-<div class="card"><h2>Mudancas de nivel registradas por este monitor</h2>
+<div class="card"><h2 data-i18n="h_aviso"></h2>{aviso_bloco}
+<p class="mono" data-i18n-html="fonte"></p></div>
+<div class="card"><h2 data-i18n="h_live"></h2>
+<p data-i18n-html="live"></p></div>
+<div class="card"><h2 data-i18n="h_hist"></h2>
 <table>{linhas_hist}</table>
-<p class="mono">Horarios do historico em hora do Havai (HST)</p></div>
-<p class="mono">Verificado a cada 30 minutos. Ultima checagem: {fmt_hora(agora_utc)}.
-Dados: USGS Hawaiian Volcano Observatory (dominio publico). Este site nao e oficial.</p>
+<p class="mono" data-i18n="hist_nota"></p></div>
+<p class="mono" data-i18n="rodape"></p>
 </div>
+<script>{js}</script>
 </body>
 </html>
 """
