@@ -60,5 +60,10 @@
         "cap_pt": "Fotografia colorida de fonte de lava"
       }
     ]
+  },
+  "ultimo_ep": {
+    "ep": 52,
+    "inicio": "2026-07-28",
+    "fim": "2026-07-29"
   }
 }

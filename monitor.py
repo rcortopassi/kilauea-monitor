@@ -233,6 +233,38 @@ def traduz_aviso(ident, resumo_html, sinopse):
     return pt_html
 
 
+MES_NUM = {m: i + 1 for i, m in enumerate(
+    ["january", "february", "march", "april", "may", "june", "july",
+     "august", "september", "october", "november", "december"])}
+_MESES_RE = "|".join(MES_NUM)
+
+
+def extrai_ultimo_ep(texto, ano_padrao):
+    """Numero, inicio e fim do episodio mais recente citado no aviso do HVO.
+    Cobre "episode 52 on July 28-29, 2026", "on June 30-July 1" e frases
+    separadas de began/ended. Retorna dict {ep, inicio, fim} ou None."""
+    t = re.sub(r"\b([apAP])\.[mM]\.", r"\1m", texto or "")
+
+    def iso(mes, dia, ano):
+        return f"{int(ano):04d}-{MES_NUM[mes.lower()]:02d}-{int(dia):02d}"
+
+    m = re.search(rf"[Ee]pisode\s+(\d+)[^.]*?\bon\s+({_MESES_RE})\s+(\d+)\s*[-–]\s*"
+                  rf"(?:({_MESES_RE})\s+)?(\d+)(?:,\s*(\d{{4}}))?", t, re.I)
+    if m:
+        ano = m.group(6) or ano_padrao
+        return {"ep": int(m.group(1)),
+                "inicio": iso(m.group(2), m.group(3), ano),
+                "fim": iso(m.group(4) or m.group(2), m.group(5), ano)}
+    res = {}
+    for chave, verbo in (("inicio", "began|started"), ("fim", "ended")):
+        mm = re.search(rf"[Ee]pisode\s+(\d+)\s+(?:{verbo})[^.]*?\bon\s+"
+                       rf"({_MESES_RE})\s+(\d+)(?:,\s*(\d{{4}}))?", t, re.I)
+        if mm:
+            res.setdefault("ep", int(mm.group(1)))
+            res[chave] = iso(mm.group(2), mm.group(3), mm.group(4) or ano_padrao)
+    return res or None
+
+
 def frases_chave(sinopse):
     """Extrai do aviso do HVO a frase do ultimo/atual episodio e a de previsao."""
     # "2:36 a.m." viraria fim de frase; normaliza para "2:36 am" antes de extrair
@@ -514,8 +546,6 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
              f'<a href="{LINK_PARQUE}">Check current conditions before you go</a>')
     f3_pt = f"Sequência de episódios desde 23/12/2024, há {meses} meses"
     f3_en = f"Episodic sequence since Dec 23, 2024, {meses} months and counting"
-    f4_pt = html_mod.escape(frases.get("ep_pt") or "Sem dados no aviso atual")
-    f4_en = html_mod.escape(frases.get("ep_en") or "No data in the current notice")
     f5_pt = html_mod.escape(frases.get("prev_pt") or "Sem previsão divulgada no aviso atual")
     f5_en = html_mod.escape(frases.get("prev_en") or "No forecast in the current notice")
 
@@ -529,6 +559,27 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             return f"{d}/{m}/{y}"
         except Exception:  # noqa: BLE001
             return ""
+
+    # --- ultimo episodio: numero + inicio e fim, do dado estruturado persistido
+    ult = frases.get("ult") or {}
+    if ult.get("ep"):
+        n = ult["ep"]
+        i_pt, f_pt = fmt_data(ult.get("inicio", ""), "pt"), fmt_data(ult.get("fim", ""), "pt")
+        i_en, f_en = fmt_data(ult.get("inicio", ""), "en"), fmt_data(ult.get("fim", ""), "en")
+        if i_pt and f_pt:
+            f4_pt = f"Episódio {n}: começou em {i_pt} e terminou em {f_pt}"
+            f4_en = f"Episode {n}: started {i_en} and ended {f_en}"
+        elif f_pt:
+            f4_pt = f"Episódio {n}: terminou em {f_pt}"
+            f4_en = f"Episode {n}: ended {f_en}"
+        elif i_pt:
+            f4_pt = f"Episódio {n}: começou em {i_pt}"
+            f4_en = f"Episode {n}: started {i_en}"
+        else:
+            f4_pt, f4_en = f"Episódio {n}", f"Episode {n}"
+    else:
+        f4_pt = html_mod.escape(frases.get("ep_pt") or "Sem dados no aviso atual")
+        f4_en = html_mod.escape(frases.get("ep_en") or "No data in the current notice")
 
     # --- galeria dos episodios anteriores
     galeria_html, gcaps = "", {}
@@ -832,6 +883,19 @@ def main():
 
     sinopse, resumo_html = detalhe_notice(atual["notice_identifier"])
 
+    # ultimo episodio: procura no aviso INTEIRO (sinopse + resumo) e persiste,
+    # porque avisos mais velhos deixam de citar as datas
+    texto_aviso = sinopse + " " + re.sub(r"<[^>]+>", " ", resumo_html or "")
+    ano_aviso = (atual.get("sent_utc") or "2026")[:4]
+    info_ep = extrai_ultimo_ep(texto_aviso, ano_aviso)
+    if info_ep and info_ep.get("ep"):
+        antigo = midia.get("ultimo_ep") or {}
+        if info_ep["ep"] > antigo.get("ep", 0):
+            midia["ultimo_ep"] = info_ep
+        elif info_ep["ep"] == antigo.get("ep"):
+            midia["ultimo_ep"] = {**antigo, **info_ep}
+    print(f"ultimo episodio: {midia.get('ultimo_ep') or 'desconhecido'}")
+
     primeira_vez = not prev
     if primeira_vez:
         push_ntfy(
@@ -880,7 +944,8 @@ def main():
     STATE_FILE.write_text(json.dumps(atual, indent=2), encoding="utf-8")
     HISTORY_FILE.write_text(json.dumps(historico, indent=2), encoding="utf-8")
     MIDIA_CACHE.write_text(
-        json.dumps({"lives": lives, "lives_link": lives_link, "fotos": fotos},
+        json.dumps({"lives": lives, "lives_link": lives_link, "fotos": fotos,
+                    "ultimo_ep": midia.get("ultimo_ep")},
                    ensure_ascii=False, indent=2), encoding="utf-8")
 
     aviso_pt = traduz_aviso(atual["notice_identifier"], resumo_html, sinopse)
@@ -895,7 +960,8 @@ def main():
             return s
 
     frases = {"ep_en": ep_en, "ep_pt": _t(ep_en),
-              "prev_en": prev_en, "prev_pt": _t(prev_en)}
+              "prev_en": prev_en, "prev_pt": _t(prev_en),
+              "ult": midia.get("ultimo_ep") or {}}
     pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                          aviso_pt, lives, lives_link, fotos, frases, galeria)
     upload_pa(pagina)
