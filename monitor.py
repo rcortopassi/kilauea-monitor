@@ -483,26 +483,32 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
     if em_erupcao:
         f1_pt = '<span class="dot dot-live"></span>Sim, fontes de lava ativas agora'
         f1_en = '<span class="dot dot-live"></span>Yes, lava fountains active right now'
-        f3_pt = "Sim. Va agora: as fontes sao visiveis dos mirantes do parque"
-        f3_en = "Yes. Go now: the fountains are visible from the park overlooks"
+        visita_pt = "As fontes sao visiveis dos mirantes e atraem multidoes. "
+        visita_en = "The fountains are visible from the overlooks and draw crowds. "
     elif cor == "YELLOW":
         f1_pt = '<span class="dot dot-pause"></span>Em pausa, sem lava visivel no momento'
         f1_en = '<span class="dot dot-pause"></span>Paused, no lava visible right now'
-        f3_pt = "Sim, o parque recebe visitantes normalmente; so nao ha fontes de lava agora"
-        f3_en = "Yes, the park is receiving visitors as usual; just no lava fountains right now"
+        visita_pt = ""
+        visita_en = ""
     else:
         f1_pt = '<span class="dot dot-off"></span>Nao, sem erupcao'
         f1_en = '<span class="dot dot-off"></span>No, not erupting'
-        f3_pt = "Sim, o parque recebe visitantes normalmente"
-        f3_en = "Yes, the park is receiving visitors as usual"
-    f2_pt = f'Aberto 24 h, todos os dias <a href="{LINK_PARQUE}">(condicoes atuais)</a>'
-    f2_en = f'Open 24/7, every day <a href="{LINK_PARQUE}">(current conditions)</a>'
-    f4_pt = f"Sequencia de episodios desde 23/12/2024, ha {meses} meses"
-    f4_en = f"Episodic sequence since Dec 23, 2024, {meses} months and counting"
-    f5_pt = html_mod.escape(frases.get("ep_pt") or "Sem dados no aviso atual")
-    f5_en = html_mod.escape(frases.get("ep_en") or "No data in the current notice")
-    f6_pt = html_mod.escape(frases.get("prev_pt") or "Sem previsao divulgada no aviso atual")
-    f6_en = html_mod.escape(frases.get("prev_en") or "No forecast in the current notice")
+        visita_pt = ""
+        visita_en = ""
+    f2_pt = (f"Costuma abrir 24 h, mas nao e garantido: gases vulcanicos toxicos (SO2/vog), "
+             f"cinzas ou fios de vidro (cabelo de Pele) fecham areas ou o parque inteiro "
+             f"quando o vento muda. {visita_pt}"
+             f'<a href="{LINK_PARQUE}">Confira as condicoes atuais antes de ir</a>')
+    f2_en = (f"Usually open 24/7, but not guaranteed: toxic volcanic gases (SO2/vog), ash "
+             f"or glass strands (Pele's hair) close areas or the whole park when the wind "
+             f"shifts. {visita_en}"
+             f'<a href="{LINK_PARQUE}">Check current conditions before you go</a>')
+    f3_pt = f"Sequencia de episodios desde 23/12/2024, ha {meses} meses"
+    f3_en = f"Episodic sequence since Dec 23, 2024, {meses} months and counting"
+    f4_pt = html_mod.escape(frases.get("ep_pt") or "Sem dados no aviso atual")
+    f4_en = html_mod.escape(frases.get("ep_en") or "No data in the current notice")
+    f5_pt = html_mod.escape(frases.get("prev_pt") or "Sem previsao divulgada no aviso atual")
+    f5_en = html_mod.escape(frases.get("prev_en") or "No forecast in the current notice")
 
     live_pt = (f'<a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>'
                f'<a href="{LINK_YOUTUBE}">Canal oficial do USGS no YouTube</a><br>' + extras)
@@ -535,17 +541,16 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "hist_empty": "Nenhuma mudanca registrada ainda",
                 "hist_nota": "Horarios do historico em hora do Havai (HST)",
                 "fl1": "Em erupcao agora?",
-                "fl2": "Parque nacional",
-                "fl3": "Da para visitar?",
-                "fl4": "Erupcao atual",
-                "fl5": "Ultimo episodio",
-                "fl6": "Proximo episodio (previsao do HVO)",
+                "fl2": "Parque nacional: da para visitar?",
+                "fl3": "Erupcao atual",
+                "fl4": "Ultimo episodio",
+                "fl5": "Proximo episodio (previsao do HVO)",
                 "rodape": (f"Verificado a cada 30 minutos. Ultima checagem: {fmt_hora(agora_utc, 'pt')}. "
                            "Dados: USGS Hawaiian Volcano Observatory (dominio publico). Este site nao e oficial."),
             },
             "html": {"live": live_pt, "fonte": fonte_pt, "aviso": aviso_pt_html,
                      "fv1": f1_pt, "fv2": f2_pt, "fv3": f3_pt,
-                     "fv4": f4_pt, "fv5": f5_pt, "fv6": f6_pt},
+                     "fv4": f4_pt, "fv5": f5_pt},
         },
         "en": {
             "title": "Kilauea now",
@@ -569,17 +574,16 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "hist_empty": "No changes recorded yet",
                 "hist_nota": "History times are Hawaii time (HST)",
                 "fl1": "Erupting right now?",
-                "fl2": "National park",
-                "fl3": "Can I visit?",
-                "fl4": "Current eruption",
-                "fl5": "Latest episode",
-                "fl6": "Next episode (HVO forecast)",
+                "fl2": "National park: can I visit?",
+                "fl3": "Current eruption",
+                "fl4": "Latest episode",
+                "fl5": "Next episode (HVO forecast)",
                 "rodape": (f"Checked every 30 minutes. Last check: {fmt_hora(agora_utc, 'en')}. "
                            "Data: USGS Hawaiian Volcano Observatory (public domain). This site is not official."),
             },
             "html": {"live": live_en, "fonte": fonte_en, "aviso": aviso_en,
                      "fv1": f1_en, "fv2": f2_en, "fv3": f3_en,
-                     "fv4": f4_en, "fv5": f5_en, "fv6": f6_en},
+                     "fv4": f4_en, "fv5": f5_en},
         },
     }
     for k, v in caps.items():
@@ -647,6 +651,9 @@ body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; bac
 .facts {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 4px 0 18px; }}
 .fact {{ background: #fffdfa; border-radius: 14px; padding: 13px 15px;
          box-shadow: 0 2px 8px rgba(60,40,20,.08); border-left: 4px solid {fundo}; }}
+.fact-wide {{ grid-column: 1 / -1; }}
+.fact-wide .f-val {{ font-weight: 400; }}
+.fact-wide .f-val a {{ font-weight: 600; }}
 .f-label {{ font-size: .74em; text-transform: uppercase; letter-spacing: .6px; color: #98897a; }}
 .f-val {{ margin-top: 3px; font-size: .98em; font-weight: 600; line-height: 1.35; }}
 .f-val a {{ font-weight: 400; }}
@@ -692,11 +699,10 @@ figcaption {{ margin-top: 5px; }}
 <div class="pane on" data-pane="status">
 <div class="facts">
 <div class="fact"><div class="f-label" data-i18n="fl1"></div><div class="f-val" data-i18n-html="fv1"></div></div>
-<div class="fact"><div class="f-label" data-i18n="fl2"></div><div class="f-val" data-i18n-html="fv2"></div></div>
+<div class="fact fact-wide"><div class="f-label" data-i18n="fl2"></div><div class="f-val" data-i18n-html="fv2"></div></div>
 <div class="fact"><div class="f-label" data-i18n="fl3"></div><div class="f-val" data-i18n-html="fv3"></div></div>
 <div class="fact"><div class="f-label" data-i18n="fl4"></div><div class="f-val" data-i18n-html="fv4"></div></div>
 <div class="fact"><div class="f-label" data-i18n="fl5"></div><div class="f-val" data-i18n-html="fv5"></div></div>
-<div class="fact"><div class="f-label" data-i18n="fl6"></div><div class="f-val" data-i18n-html="fv6"></div></div>
 </div>
 <div class="card"><h2 data-i18n="h_aviso"></h2><div data-i18n-html="aviso"></div>
 <p class="mono" data-i18n-html="fonte"></p></div>
