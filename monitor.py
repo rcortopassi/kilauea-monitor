@@ -714,6 +714,43 @@ setLang(lang);
 let aba = 'status';
 try { aba = sessionStorage.getItem('kilauea_tab') || 'status'; } catch (e) {}
 setTab(aba);
+
+// --- lightbox: clique na foto abre em tamanho grande (variante full_width do S3)
+const LB = document.getElementById('lightbox');
+const lbImg = LB.querySelector('img');
+const lbCap = LB.querySelector('.lb-cap');
+let lbLista = [], lbIdx = 0;
+function lbAbre(i) {
+  lbLista = [...document.querySelectorAll('.grid figure img')];
+  if (!lbLista.length) return;
+  lbIdx = (i + lbLista.length) % lbLista.length;
+  const el = lbLista[lbIdx];
+  lbImg.onerror = () => { lbImg.onerror = null; lbImg.src = el.src; };
+  lbImg.src = el.src.replace('half_width', 'full_width');
+  lbImg.alt = el.alt;
+  const fc = el.closest('figure').querySelector('figcaption');
+  lbCap.textContent = fc ? fc.textContent : '';
+  LB.classList.add('on');
+}
+function lbFecha() { LB.classList.remove('on'); lbImg.removeAttribute('src'); }
+document.addEventListener('click', e => {
+  const img = e.target.closest('.grid figure img');
+  if (img) {
+    lbLista = [...document.querySelectorAll('.grid figure img')];
+    lbAbre(lbLista.indexOf(img));
+  }
+});
+LB.addEventListener('click', e => {
+  if (e.target.classList.contains('lb-prev')) { lbAbre(lbIdx - 1); return; }
+  if (e.target.classList.contains('lb-next')) { lbAbre(lbIdx + 1); return; }
+  if (e.target !== lbImg) lbFecha();
+});
+document.addEventListener('keydown', e => {
+  if (!LB.classList.contains('on')) return;
+  if (e.key === 'Escape') lbFecha();
+  else if (e.key === 'ArrowLeft') lbAbre(lbIdx - 1);
+  else if (e.key === 'ArrowRight') lbAbre(lbIdx + 1);
+});
 """.replace("__I18N__", json.dumps(i18n, ensure_ascii=False).replace("</", "<\\/"))
 
     return f"""<!DOCTYPE html>
@@ -770,8 +807,24 @@ a {{ color: #b3541e; }}
                  box-shadow: 0 2px 10px rgba(60,40,20,.15); }}
 .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }}
 figure {{ margin: 0; }}
-figure img {{ width: 100%; border-radius: 10px; display: block; box-shadow: 0 2px 8px rgba(60,40,20,.12); }}
+figure img {{ width: 100%; border-radius: 10px; display: block; box-shadow: 0 2px 8px rgba(60,40,20,.12);
+              cursor: zoom-in; }}
 figcaption {{ margin-top: 5px; }}
+.lightbox {{ position: fixed; inset: 0; background: rgba(12,9,6,.94); display: none;
+             flex-direction: column; align-items: center; justify-content: center; z-index: 50; }}
+.lightbox.on {{ display: flex; }}
+.lightbox img {{ max-width: 94vw; max-height: 84vh; border-radius: 8px;
+                 box-shadow: 0 6px 40px rgba(0,0,0,.6); cursor: zoom-out; }}
+.lb-cap {{ color: #eadfd3; margin-top: 12px; font-size: .95em; text-align: center;
+           padding: 0 20px; max-width: 90vw; }}
+.lb-btn {{ position: absolute; top: 50%; transform: translateY(-50%); border: 0; cursor: pointer;
+           background: rgba(255,255,255,.14); color: #fff; font-size: 1.7em; line-height: 1;
+           width: 48px; height: 48px; border-radius: 50%; }}
+.lb-btn:hover {{ background: rgba(255,255,255,.28); }}
+.lb-prev {{ left: 14px; }}
+.lb-next {{ right: 14px; }}
+.lb-x {{ position: absolute; top: 10px; right: 16px; background: none; border: 0; color: #fff;
+         font-size: 2em; cursor: pointer; opacity: .8; }}
 </style>
 </head>
 <body>
@@ -825,6 +878,13 @@ figcaption {{ margin-top: 5px; }}
 </div>
 
 <p class="mono" data-i18n="rodape"></p>
+</div>
+<div class="lightbox" id="lightbox">
+<button class="lb-x" aria-label="Fechar">&times;</button>
+<button class="lb-btn lb-prev" aria-label="Anterior">&#8249;</button>
+<img alt="">
+<div class="lb-cap"></div>
+<button class="lb-btn lb-next" aria-label="Proxima">&#8250;</button>
 </div>
 <script>{js}</script>
 </body>
