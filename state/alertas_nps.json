@@ -1,0 +1,88 @@
+{
+  "alertas": [
+    {
+      "id": "C5BB7508-D601-479A-AB9E-AC3DF3E74549",
+      "titulo": "Partial Closure at Sulfur Banks Trail",
+      "titulo_pt": "Fechamento parcial na trilha Sulphur Banks",
+      "desc": "About 700 feet (213 m) of Sulfur Banks Trail, between the hula platform and the steam vent side of the old bridge, is temporarily closed due to structural damage to the bridge. For visitor safety, this section will remain closed while repairs are planned and completed. The trail is still accessible as an out‑and‑back hike from the Kūkamāhuākea (Steam Vents) parking area, approximately 1.1 miles (1.8 km) round trip. Visitors can park there and use the crosswalk to reach the open portion of the trail.",
+      "desc_pt": "Cerca de 700 pés (213 m) da trilha Sulphur Banks, entre a plataforma hula e o lado da saída de vapor da ponte antiga, estão temporariamente fechados devido a danos estruturais na ponte. Para segurança dos visitantes, esta seção permanecerá fechada enquanto os reparos são planejados e concluídos. A trilha ainda é acessível como uma caminhada de ida e volta a partir da área de estacionamento Kūkamāhuākea (Steam Vents), aproximadamente 1,1 milhas (1,8 km) de ida e volta. Os visitantes podem estacionar ali e usar a faixa de pedestres para chegar à parte aberta da trilha.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-07-29",
+      "local_pt": "Trilha Sulphur Banks (Haʻakulamanu)",
+      "local_en": "Sulfur Banks Trail (Haʻakulamanu)",
+      "lat": 19.4322,
+      "lng": -155.2644
+    },
+    {
+      "id": "A9DA14A9-B096-4366-B2AE-27D5943C7AAC",
+      "titulo": "Lava Tube Bridge Replacement",
+      "titulo_pt": "Substituição da ponte do tubo de lava",
+      "desc": "Most of Nāhuku lava tube trail is open during bridge replacement but is only accessible one way in and out from the east “exit” end. The rainforest trail to the front of the lava tube, the lava tube bridge and 50 feet into the cave are temporarily closed during the replacement. The project should be complete by mid-August. The restrooms are open.",
+      "desc_pt": "A maior parte da trilha do tubo de lava de Nāhuku está aberta durante a substituição da ponte, mas só é acessível por uma entrada e saída a partir da extremidade leste da “saída”. A trilha da floresta tropical até a frente do tubo de lava, a ponte do tubo de lava e 15 metros de profundidade na caverna estão temporariamente fechadas durante a substituição. O projeto deve ser concluído em meados de agosto. Os banheiros estão abertos.",
+      "cat": "closure",
+      "url": "https://www.nps.gov/havo/learn/news/20260417-nr-nahuku-bridge-repairs.htm",
+      "data": "2026-07-22",
+      "local_pt": "Nāhuku (Thurston Lava Tube)",
+      "local_en": "Nāhuku (Thurston Lava Tube)",
+      "lat": 19.4134,
+      "lng": -155.2381
+    },
+    {
+      "id": "18D11A41-1B55-41E4-8EF6-0AD7DB4CF8D8",
+      "titulo": "Kīpukapuaulu Trail Temporary Closed Due to Hazardous Trees",
+      "titulo_pt": "Trilha Kīpukapuaulu temporariamente fechada devido a árvores perigosas",
+      "desc": "Kīpukapuaulu Trail is temporarily closed due to hazardous trees that require further assessment and potential removal for safety. The park is working on a hazard tree safety plan. The closure could last several more weeks.",
+      "desc_pt": "A trilha Kīpukapuaulu está temporariamente fechada devido a árvores perigosas que requerem avaliação adicional e possível remoção por segurança. O parque está trabalhando em um plano de segurança para árvores perigosas. O fechamento pode durar mais algumas semanas.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-07-22",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
+    },
+    {
+      "id": "1D1A9303-6689-499A-9648-3030A6A13BA3",
+      "titulo": "Kahuku Unit Roads",
+      "titulo_pt": "Estradas da Unidade Kahuku",
+      "desc": "Kahuku Road beyond the cross fence (mile marker 4) is closed to vehicles; pedestrian use is permitted. Four-wheel drive is strongly recommended past the Upper Palm Trailhead (mile marker 3).",
+      "desc_pt": "A estrada Kahuku além da cerca cruzada (marcador de milha 4) está fechada para veículos; o uso de pedestres é permitido. A tração nas quatro rodas é fortemente recomendada após o Upper Palm Trailhead (marcador de milha 3).",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-06-05",
+      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
+      "local_en": "Kahuku Unit (entrance, Hwy 11)",
+      "lat": 19.069,
+      "lng": -155.6778
+    },
+    {
+      "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
+      "titulo": "Protect Yourself from Volcanic Tephra",
+      "titulo_pt": "Proteja-se da Tefra Vulcânica",
+      "desc": "Volcanic ash, rock and glassy strands (tephra) is present at Kīlauea summit and can irritate your skin, eyes and respiratory system. For your safety, do not handle it. Eye protection, long sleeves, long pants, a hat, closed-toe shoes and a dust mask are recommended.",
+      "desc_pt": "Cinzas vulcânicas, rochas e fios vítreos (tefra) estão presentes no cume do Kilauea e podem irritar a pele, os olhos e o sistema respiratório. Para sua segurança, não manuseie. Recomenda-se proteção para os olhos, mangas compridas, calças compridas, chapéu, sapatos fechados e máscara contra poeira.",
+      "cat": "caution",
+      "url": "",
+      "data": "2026-04-08",
+      "local_pt": "Cume do Kīlauea, área a favor do vento",
+      "local_en": "Kīlauea summit, downwind area",
+      "lat": 19.404,
+      "lng": -155.292
+    },
+    {
+      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
+      "titulo": "Kīlauea eruption",
+      "titulo_pt": "Erupção Kilauea",
+      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
+      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
+      "cat": "danger",
+      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
+      "data": "2026-04-08",
+      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
+      "local_en": "Halemaʻumaʻu (erupting crater)",
+      "lat": 19.4067,
+      "lng": -155.28
+    }
+  ]
+}

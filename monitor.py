@@ -84,7 +84,60 @@ LINK_UPDATES = "https://www.usgs.gov/volcanoes/kilauea/volcano-updates"
 LINK_WEBCAMS = "https://www.usgs.gov/volcanoes/kilauea/webcams"
 LINK_YOUTUBE = "https://www.youtube.com/@usgs/live"
 LINK_PARQUE = "https://www.nps.gov/havo/planyourvisit/conditions.htm"
+LINK_PARKING = "https://www.nps.gov/havo/planyourvisit/parking.htm"
 LINK_SITE = "https://rafaelcortopassi.pythonanywhere.com/kilauea/"
+
+# Avisos ativos do parque nacional (API oficial do NPS; DEMO_KEY funciona,
+# mas aceita chave propria via env NPS_KEY se um dia limitar)
+NPS_KEY = os.environ.get("NPS_KEY", "DEMO_KEY")
+NPS_ALERTS_URL = ("https://developer.nps.gov/api/v1/alerts"
+                  "?parkCode=havo&limit=50&api_key={key}")
+ALERTAS_CACHE = BASE / "state" / "alertas_nps.json"
+
+# Onde fica cada ponto citado nos avisos do parque: palavra-chave no texto ->
+# (nome PT, nome EN, lat, lng). O primeiro que casar vence.
+LOCAIS_ALERTA = [
+    ("sulfur banks", "Trilha Sulphur Banks (Haʻakulamanu)",
+     "Sulfur Banks Trail (Haʻakulamanu)", 19.4322, -155.2644),
+    ("nāhuku", "Nāhuku (Thurston Lava Tube)",
+     "Nāhuku (Thurston Lava Tube)", 19.4134, -155.2381),
+    ("lava tube", "Nāhuku (Thurston Lava Tube)",
+     "Nāhuku (Thurston Lava Tube)", 19.4134, -155.2381),
+    ("kīpukapuaulu", "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+     "Kīpukapuaulu (Bird Park), Mauna Loa Road", 19.4386, -155.3034),
+    ("kahuku", "Unidade Kahuku (entrada, Hwy 11)",
+     "Kahuku Unit (entrance, Hwy 11)", 19.0690, -155.6778),
+    ("tephra", "Cume do Kīlauea, área a favor do vento",
+     "Kīlauea summit, downwind area", 19.4040, -155.2920),
+    ("eruption", "Halemaʻumaʻu (cratera em erupção)",
+     "Halemaʻumaʻu (erupting crater)", 19.4067, -155.2800),
+]
+
+# Estacionamentos oficiais (pagina Parking do NPS, coordenadas de la):
+# (nome, vagas, vagas grandes, lat, lng, obs PT, obs EN, fora da vista inicial)
+ESTACIONAMENTOS = [
+    ("Welcome Center Parking Lot", 100, 3, 19.432721, -155.275361,
+     "Dentro do Kilauea Military Camp; o Welcome Center fica a 270 m do bolsão",
+     "Inside Kilauea Military Camp; the Welcome Center is 900 ft from the lot", False),
+    ("Kīlauea Visitor Center Parking", 38, 2, 19.429496, -155.257103,
+     "Centro de visitantes em reforma; acesso ao Volcano House, galeria de arte e trilhas",
+     "Visitor center closed for renovations; access to Volcano House, art gallery and trails", False),
+    ("Uēkahuna Parking", 70, 7, 19.420228, -155.288968,
+     "Mirante mais alto da borda da caldeira", "Highest overlook on the caldera rim", False),
+    ("Kīlauea Overlook Parking", 36, 2, 19.423602, -155.284341,
+     "Na Crater Rim Drive; vista clássica das fontes de lava",
+     "On Crater Rim Drive; classic view of the lava fountains", False),
+    ("Kīlauea Iki Overlook Parking Lot", 64, 0, 19.416584, -155.242891, "", "", False),
+    ("Nāhuku (Lava Tube)", 14, 2, 19.413590, -155.238811,
+     "Poucas vagas; lota cedo", "Few stalls; fills early", False),
+    ("Puʻupuaʻi Parking Lot", 28, 0, 19.411314, -155.249661, "", "", False),
+    ("Devastation Trail Parking Lot", 30, 0, 19.406470, -155.252939, "", "", False),
+    ("End of Chain of Craters Road Parking", 37, 0, 19.295039, -155.098597,
+     "Fim da estrada, junto ao arco Hōlei", "Road's end, near Hōlei Sea Arch", True),
+    ("Kūkamāhuākea (Steam Vents)", None, None, 19.4306, -155.2660,
+     "Acesso ao trecho aberto da trilha Sulphur Banks",
+     "Access to the open section of Sulfur Banks Trail", False),
+]
 
 # Inicio da sequencia eruptiva episodica atual no Halemaumau
 INICIO_ERUPCAO = datetime(2024, 12, 23, tzinfo=timezone.utc)
@@ -279,6 +332,70 @@ def frases_chave(sinopse):
     prev = re.search(r"([^.]*(?:another episode|next episode|forecast|precursory)[^.]*\.)", s)
     return (ep.group(1).strip() if ep else "",
             prev.group(1).strip() if prev else "")
+
+
+# ---------------------------------------------------------------- parque (NPS)
+
+def _cat_alerta(cat):
+    """Categoria do NPS -> chave curta usada em cores e rotulos."""
+    c = (cat or "").lower()
+    if "danger" in c:
+        return "danger"
+    if "caution" in c:
+        return "caution"
+    if "closure" in c:
+        return "closure"
+    return "info"
+
+
+def alertas_nps(cache):
+    """Avisos ativos do parque nacional (Park Closures, Danger, Caution...)
+    pela API oficial do NPS. Traducao PT via gtx, reaproveitada do cache
+    (state/alertas_nps.json) enquanto o texto nao mudar; coordenadas do
+    ponto real do parque via palavra-chave (LOCAIS_ALERTA). Em falha de
+    rede, devolve o cache como esta."""
+    antigos = {a.get("id"): a for a in cache.get("alertas", [])}
+    try:
+        d = fetch_json(NPS_ALERTS_URL.format(key=quote(NPS_KEY, safe="")))
+        brutos = d.get("data") or []
+    except Exception as e:  # noqa: BLE001 - alertas sao opcionais
+        print(f"aviso: alertas do NPS indisponiveis ({e}); usando cache")
+        return cache.get("alertas", [])
+    saida = []
+    for b in brutos:
+        titulo = (b.get("title") or "").strip()
+        desc = (b.get("description") or "").strip()
+        if not (titulo or desc):
+            continue
+        aid = b.get("id") or titulo
+        ant = antigos.get(aid) or {}
+        if ant.get("titulo") == titulo and ant.get("desc") == desc and ant.get("titulo_pt"):
+            titulo_pt, desc_pt = ant["titulo_pt"], ant["desc_pt"]
+        else:
+            try:
+                titulo_pt = _traduz_bloco(titulo) if titulo else ""
+                desc_pt = _traduz_bloco(desc) if desc else ""
+            except Exception as e:  # noqa: BLE001 - sem traducao, fica o original
+                print(f"aviso: traducao de alerta do NPS falhou ({e})")
+                titulo_pt, desc_pt = titulo, desc
+        chave = f"{titulo} {desc}".lower()
+        local_pt = local_en = ""
+        lat = lng = None
+        for kw, npt, nen, la, ln in LOCAIS_ALERTA:
+            if kw in chave:
+                local_pt, local_en, lat, lng = npt, nen, la, ln
+                break
+        saida.append({
+            "id": aid,
+            "titulo": titulo, "titulo_pt": titulo_pt,
+            "desc": desc, "desc_pt": desc_pt,
+            "cat": _cat_alerta(b.get("category")),
+            "url": (b.get("url") or "").strip(),
+            "data": (b.get("lastIndexedDate") or "")[:10],
+            "local_pt": local_pt, "local_en": local_en,
+            "lat": lat, "lng": lng,
+        })
+    return saida
 
 
 # ---------------------------------------------------------------- midia
@@ -491,14 +608,50 @@ def decide_push(prev, atual, sinopse):
 
 # ---------------------------------------------------------------- pagina
 
+CAT_ROTULO = {
+    "danger": ("Perigo", "Danger"),
+    "caution": ("Atenção", "Caution"),
+    "closure": ("Fechamento", "Closure"),
+    "info": ("Informação", "Info"),
+}
+
+
+def _bloco_alertas(alertas, lang):
+    """HTML da lista de avisos ativos do parque, num idioma."""
+    pt = lang == "pt"
+    if not alertas:
+        return ("<p>Nenhum aviso ativo do parque no momento.</p>" if pt
+                else "<p>No active park alerts right now.</p>")
+    partes = []
+    for a in alertas:
+        rot = CAT_ROTULO.get(a["cat"], CAT_ROTULO["info"])[0 if pt else 1]
+        tit = a["titulo_pt"] if pt else a["titulo"]
+        desc = a["desc_pt"] if pt else a["desc"]
+        rodape = []
+        local = a["local_pt"] if pt else a["local_en"]
+        if local:
+            rodape.append(html_mod.escape(local))
+        if a.get("url"):
+            u = html_mod.escape(a["url"], quote=True)
+            rodape.append(f'<a href="{u}">{"Detalhes" if pt else "Details"}</a>')
+        rod = f'<p class="mono">{" &middot; ".join(rodape)}</p>' if rodape else ""
+        partes.append(
+            f'<div class="alerta"><p><span class="cat cat-{a["cat"]}">{rot}</span> '
+            f'<strong>{html_mod.escape(tit)}</strong></p>'
+            f'<p>{html_mod.escape(desc)}</p>{rod}</div>'
+        )
+    return "".join(partes)
+
+
 def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 aviso_pt="", lives=None, lives_link=None, fotos=None, frases=None,
-                galeria=None):
+                galeria=None, alertas=None):
     lives = lives or []
     lives_link = lives_link or []
     fotos = fotos or {}
     frases = frases or {}
     galeria = galeria or []
+    alertas = alertas or []
     cor = atual["color_code"]
     cores = {"GREEN": "#1e7e34", "YELLOW": "#b8860b", "ORANGE": "#d2691e", "RED": "#b22222"}
     escuras = {"GREEN": "#12481d", "YELLOW": "#7c5a06", "ORANGE": "#8c3d0e", "RED": "#6e1414"}
@@ -631,6 +784,34 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             f'<figcaption class="mono" data-i18n="gcap_{i}"></figcaption></figure>'
         )
 
+    # --- avisos do parque nacional + dados do mapa
+    alertas_html_pt = _bloco_alertas(alertas, "pt")
+    alertas_html_en = _bloco_alertas(alertas, "en")
+    mapa_dados = {
+        "alertas": [
+            {"t": a["titulo"], "t_pt": a["titulo_pt"],
+             "d": a["desc"], "d_pt": a["desc_pt"],
+             "cat": a["cat"], "url": a["url"],
+             "l": a["local_en"], "l_pt": a["local_pt"],
+             "lat": a["lat"], "lng": a["lng"],
+             "longe": a["lat"] < 19.2}
+            for a in alertas if a.get("lat") is not None
+        ],
+        "estac": [
+            {"n": n, "v": v, "o": o, "lat": la, "lng": ln,
+             "obs": oen, "obs_pt": opt, "longe": longe}
+            for (n, v, o, la, ln, opt, oen, longe) in ESTACIONAMENTOS
+        ],
+    }
+    alertas_fonte_pt = f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>'
+    alertas_fonte_en = f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>'
+    mapa_fonte_pt = (f'Dados: <a href="{LINK_PARQUE}">NPS – condições</a> e '
+                     f'<a href="{LINK_PARKING}">estacionamentos</a>. '
+                     f'Toque num ponto para ver o aviso ou as vagas e abrir no Google Maps.')
+    mapa_fonte_en = (f'Data: <a href="{LINK_PARQUE}">NPS – conditions</a> and '
+                     f'<a href="{LINK_PARKING}">parking</a>. '
+                     f'Tap a point to see the alert or stall count and open it in Google Maps.')
+
     live_pt = (f'<a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>'
                f'<a href="{LINK_YOUTUBE}">Canal oficial do USGS no YouTube</a><br>' + extras)
     live_en = (f'<a href="{LINK_WEBCAMS}">USGS crater webcams</a><br>'
@@ -651,6 +832,17 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "rel_hi": "Havaí (HST)",
                 "rel_br": "Brasília",
                 "tab_fotos": "Fotos",
+                "tab_mapa": "Mapa",
+                "h_alertas": f"Avisos ativos do parque nacional ({len(alertas)})",
+                "h_mapa": "Mapa dos avisos e estacionamentos",
+                "mp_cume": "Cume do Kīlauea",
+                "mp_coc": "Fim da Chain of Craters",
+                "mp_kahuku": "Kahuku",
+                "mp_gmaps": "Abrir no Google Maps",
+                "leg_danger": "Perigo",
+                "leg_caution": "Atenção",
+                "leg_closure": "Fechamento",
+                "leg_estac": "Estacionamento",
                 "h_aviso": ("Último aviso do HVO (tradução automática do inglês)"
                             if aviso_pt else "Último aviso do HVO (original em inglês)"),
                 "h_live": "Transmissões ao vivo",
@@ -677,7 +869,9 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             },
             "html": {"live": live_pt, "fonte": fonte_pt, "aviso": aviso_pt_html,
                      "fv1": f1_pt, "fv2": f2_pt, "fv3": f3_pt,
-                     "fv4": f4_pt, "fv5": f5_pt},
+                     "fv4": f4_pt, "fv5": f5_pt,
+                     "alertas": alertas_html_pt, "alertas_fonte": alertas_fonte_pt,
+                     "mapa_fonte": mapa_fonte_pt},
         },
         "en": {
             "title": "Live Kilauea",
@@ -691,6 +885,17 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "rel_hi": "Hawaii (HST)",
                 "rel_br": "Brasilia",
                 "tab_fotos": "Photos",
+                "tab_mapa": "Map",
+                "h_alertas": f"Active national park alerts ({len(alertas)})",
+                "h_mapa": "Map of alerts and parking",
+                "mp_cume": "Kīlauea summit",
+                "mp_coc": "End of Chain of Craters",
+                "mp_kahuku": "Kahuku",
+                "mp_gmaps": "Open in Google Maps",
+                "leg_danger": "Danger",
+                "leg_caution": "Caution",
+                "leg_closure": "Closure",
+                "leg_estac": "Parking",
                 "h_aviso": "Latest HVO notice",
                 "h_live": "Live streams",
                 "live_nota": ("Players are checked every 5 minutes. If one goes offline, "
@@ -716,7 +921,9 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             },
             "html": {"live": live_en, "fonte": fonte_en, "aviso": aviso_en,
                      "fv1": f1_en, "fv2": f2_en, "fv3": f3_en,
-                     "fv4": f4_en, "fv5": f5_en},
+                     "fv4": f4_en, "fv5": f5_en,
+                     "alertas": alertas_html_en, "alertas_fonte": alertas_fonte_en,
+                     "mapa_fonte": mapa_fonte_en},
         },
     }
     for k, v in caps.items():
@@ -750,6 +957,10 @@ function setTab(t) {
     document.querySelectorAll('iframe[data-src]').forEach(f => {
       f.src = f.dataset.src; f.removeAttribute('data-src');
     });
+  }
+  if (t === 'mapa') {
+    initMapa();
+    if (mapa) setTimeout(() => mapa.invalidateSize(), 60);
   }
   try { sessionStorage.setItem('kilauea_tab', t); } catch (e) {}
 }
@@ -825,7 +1036,77 @@ function alternaTema() {
 let tema = 'dark';
 try { tema = localStorage.getItem('kilauea_tema') || 'dark'; } catch (e) {}
 aplicaTema(tema);
-""".replace("__I18N__", json.dumps(i18n, ensure_ascii=False).replace("</", "<\\/"))
+
+// --- mapa dos avisos do parque e estacionamentos (Leaflet, criado ao abrir a aba)
+const MAPA_DADOS = __MAPA__;
+const CORES_CAT = { danger: '#ff4a2e', caution: '#e0a400', closure: '#8f9bb0', info: '#4aa3ff' };
+const CAT_NOME = {
+  pt: { danger: 'Perigo', caution: 'Atenção', closure: 'Fechamento', info: 'Informação' },
+  en: { danger: 'Danger', caution: 'Caution', closure: 'Closure', info: 'Info' }
+};
+let mapa = null;
+function escT(s) { const e = document.createElement('span'); e.textContent = s || ''; return e.innerHTML; }
+function popAlerta(a) {
+  const pt = curLang === 'pt';
+  const g = 'https://www.google.com/maps/search/?api=1&query=' + a.lat + ',' + a.lng;
+  let h = '<div class="pop"><p><span class="cat cat-' + a.cat + '">' + CAT_NOME[curLang][a.cat] +
+          '</span> <strong>' + escT(pt ? a.t_pt : a.t) + '</strong></p>' +
+          '<p>' + escT(pt ? a.d_pt : a.d) + '</p>';
+  const loc = pt ? a.l_pt : a.l;
+  if (loc) h += '<p class="pop-loc">' + escT(loc) + '</p>';
+  h += '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a>';
+  if (a.url) h += ' &middot; <a href="' + a.url + '" target="_blank" rel="noopener">' +
+                  (pt ? 'Detalhes' : 'Details') + '</a>';
+  return h + '</p></div>';
+}
+function popEstac(p) {
+  const pt = curLang === 'pt';
+  const g = 'https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lng;
+  let h = '<div class="pop"><p><span class="cat cat-estac">P</span> <strong>' + escT(p.n) + '</strong></p>';
+  if (p.v) {
+    h += '<p>' + p.v + (pt ? ' vagas' : ' stalls');
+    if (p.o) h += pt ? (', ' + p.o + ' para veículos grandes') : (', ' + p.o + ' oversized');
+    h += '</p>';
+  }
+  const obs = pt ? p.obs_pt : p.obs;
+  if (obs) h += '<p class="pop-loc">' + escT(obs) + '</p>';
+  return h + '<p><a href="' + g + '" target="_blank" rel="noopener">' +
+         (pt ? 'Como chegar (Google Maps)' : 'Directions (Google Maps)') + '</a></p></div>';
+}
+function initMapa() {
+  if (mapa || typeof L === 'undefined') return;
+  const el = document.getElementById('mapa');
+  if (!el) return;
+  mapa = L.map('mapa', { scrollWheelZoom: false });
+  const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: 'Esri, Maxar, Earthstar Geographics', maxZoom: 18 });
+  const ruas = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution: '&copy; OpenStreetMap', maxZoom: 19 });
+  sat.addTo(mapa);
+  L.control.layers({ 'Satélite': sat, 'Mapa': ruas }).addTo(mapa);
+  const bounds = [];
+  for (const p of MAPA_DADOS.estac) {
+    L.marker([p.lat, p.lng], { icon: L.divIcon({ className: 'pk-ico', html: 'P', iconSize: [22, 22], iconAnchor: [11, 11] }) })
+      .addTo(mapa).bindPopup(() => popEstac(p));
+    if (!p.longe) bounds.push([p.lat, p.lng]);
+  }
+  for (const a of MAPA_DADOS.alertas) {
+    L.circleMarker([a.lat, a.lng], { radius: 9, color: '#fff', weight: 2,
+      fillColor: CORES_CAT[a.cat] || CORES_CAT.info, fillOpacity: .95 })
+      .addTo(mapa).bindPopup(() => popAlerta(a));
+    if (!a.longe) bounds.push([a.lat, a.lng]);
+  }
+  if (bounds.length) mapa.fitBounds(bounds, { padding: [30, 30] });
+  else mapa.setView([19.4157, -155.2753], 12);
+}
+function vaiMapa(o) {
+  if (!mapa) return;
+  if (o === 'cume') mapa.flyTo([19.4140, -155.2700], 14);
+  else if (o === 'coc') mapa.flyTo([19.2950, -155.0986], 14);
+  else if (o === 'kahuku') mapa.flyTo([19.0690, -155.6778], 12);
+}
+""".replace("__I18N__", json.dumps(i18n, ensure_ascii=False).replace("</", "<\\/")) \
+   .replace("__MAPA__", json.dumps(mapa_dados, ensure_ascii=False).replace("</", "<\\/"))
 
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
@@ -835,6 +1116,8 @@ aplicaTema(tema);
 <meta http-equiv="refresh" content="300">
 <title>Live Kilauea</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8B%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root {{
   --bg: #14110d; --texto: #e9e2d9; --card: #201b15; --borda: #2c251d;
@@ -929,6 +1212,34 @@ figcaption {{ margin-top: 5px; }}
 .lb-next {{ right: 14px; }}
 .lb-x {{ position: absolute; top: 10px; right: 16px; background: none; border: 0; color: #fff;
          font-size: 2em; cursor: pointer; opacity: .8; }}
+.cat {{ display: inline-block; color: #fff; border-radius: 5px; font-size: .72em; font-weight: 700;
+        padding: 2px 8px; text-transform: uppercase; letter-spacing: .5px; margin-right: 6px;
+        vertical-align: 1px; }}
+.cat-danger {{ background: #c0392b; }}
+.cat-caution {{ background: #b8860b; }}
+.cat-closure {{ background: #6b7686; }}
+.cat-info {{ background: #3a7bbf; }}
+.cat-estac {{ background: #2e6fdb; border-radius: 50%; padding: 2px 7px; }}
+.alerta {{ border-bottom: 1px solid var(--borda); padding: 4px 0 10px; }}
+.alerta:last-child {{ border-bottom: 0; padding-bottom: 0; }}
+.alerta p {{ margin: 6px 0; line-height: 1.5; }}
+#mapa {{ height: 62vh; min-height: 380px; border-radius: 12px; z-index: 1;
+         box-shadow: 0 3px 12px var(--sombra-img); }}
+.map-atalhos {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }}
+.map-atalhos button, .map-atalhos a {{ background: var(--caixa-rel); border: 1px solid var(--caixa-rel-borda);
+         color: var(--texto); border-radius: 999px; padding: 6px 14px; font-size: .85em;
+         cursor: pointer; text-decoration: none; }}
+.map-atalhos a {{ color: var(--link); border-color: var(--link); }}
+.legenda {{ display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: .85em; color: var(--mudo); }}
+.legenda span {{ display: inline-flex; align-items: center; gap: 6px; }}
+.ldot {{ width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff;
+         box-shadow: 0 0 3px rgba(0,0,0,.4); display: inline-block; }}
+.pk-ico {{ background: #2e6fdb; color: #fff; border-radius: 50%; border: 2px solid #fff;
+           font: 700 12px/18px -apple-system, Segoe UI, sans-serif; text-align: center;
+           box-shadow: 0 1px 4px rgba(0,0,0,.5); }}
+.pop p {{ margin: 5px 0; }}
+.pop-loc {{ color: #666; font-size: .85em; }}
+.leaflet-popup-content {{ font-size: .95em; line-height: 1.45; }}
 </style>
 </head>
 <body>
@@ -954,6 +1265,7 @@ figcaption {{ margin-top: 5px; }}
 <button class="tab-btn on" data-tab="status" data-i18n="tab_status" onclick="setTab('status')"></button>
 <button class="tab-btn" data-tab="live" data-i18n="tab_live" onclick="setTab('live')"></button>
 <button class="tab-btn" data-tab="fotos" data-i18n="tab_fotos" onclick="setTab('fotos')"></button>
+<button class="tab-btn" data-tab="mapa" data-i18n="tab_mapa" onclick="setTab('mapa')"></button>
 </div>
 <div class="wrap">
 
@@ -967,6 +1279,8 @@ figcaption {{ margin-top: 5px; }}
 </div>
 <div class="card"><h2 data-i18n="h_aviso"></h2><div data-i18n-html="aviso"></div>
 <p class="mono" data-i18n-html="fonte"></p></div>
+<div class="card"><h2 data-i18n="h_alertas"></h2><div data-i18n-html="alertas"></div>
+<p class="mono" data-i18n-html="alertas_fonte"></p></div>
 <div class="card"><h2 data-i18n="h_hist"></h2>
 <table>{linhas_hist}</table>
 <p class="mono" data-i18n="hist_nota"></p></div>
@@ -988,6 +1302,24 @@ figcaption {{ margin-top: 5px; }}
 <div class="card"><h2 data-i18n="h_galeria"></h2>
 <div class="grid">{galeria_html}</div>
 <p class="mono" data-i18n="galeria_nota"></p></div>
+</div>
+
+<div class="pane" data-pane="mapa">
+<div class="card"><h2 data-i18n="h_mapa"></h2>
+<div class="map-atalhos">
+<button onclick="vaiMapa('cume')" data-i18n="mp_cume"></button>
+<button onclick="vaiMapa('coc')" data-i18n="mp_coc"></button>
+<button onclick="vaiMapa('kahuku')" data-i18n="mp_kahuku"></button>
+<a href="https://www.google.com/maps/search/?api=1&amp;query=Hawai%CA%BBi+Volcanoes+National+Park" target="_blank" rel="noopener" data-i18n="mp_gmaps"></a>
+</div>
+<div id="mapa"></div>
+<div class="legenda">
+<span><i class="ldot" style="background:#ff4a2e"></i><span data-i18n="leg_danger"></span></span>
+<span><i class="ldot" style="background:#e0a400"></i><span data-i18n="leg_caution"></span></span>
+<span><i class="ldot" style="background:#8f9bb0"></i><span data-i18n="leg_closure"></span></span>
+<span><i class="ldot" style="background:#2e6fdb"></i><span data-i18n="leg_estac"></span></span>
+</div>
+<p class="mono" data-i18n-html="mapa_fonte"></p></div>
 </div>
 
 <p class="mono" data-i18n="rodape"></p>
@@ -1095,6 +1427,19 @@ def main():
     print(f"lives no ar (embed): {[s['id'] for s in lives]}; so link: {[s['id'] for s in lives_link]}")
     print(f"fotos: {len(fotos.get('itens') or [])} de {fotos.get('slug', '-')}")
 
+    # avisos ativos do parque nacional (fechamentos, perigos, atencao)
+    cache_alertas = {}
+    if ALERTAS_CACHE.exists():
+        try:
+            cache_alertas = json.loads(ALERTAS_CACHE.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            cache_alertas = {}
+    alertas = alertas_nps(cache_alertas)
+    ALERTAS_CACHE.write_text(
+        json.dumps({"alertas": alertas}, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"alertas do parque: {len(alertas)} "
+          f"({[a['cat'] for a in alertas]})")
+
     # galeria dos episodios anteriores (backfill + episodios novos conforme saem)
     galeria = []
     if GALERIA_FILE.exists():
@@ -1136,7 +1481,7 @@ def main():
               "prev_en": prev_en, "prev_pt": _t(prev_en),
               "ult": midia.get("ultimo_ep") or {}}
     pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
-                         aviso_pt, lives, lives_link, fotos, frases, galeria)
+                         aviso_pt, lives, lives_link, fotos, frases, galeria, alertas)
     upload_pa(pagina)
     print("ok")
     return 0
