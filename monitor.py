@@ -612,6 +612,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "linha_atualizacao": f"Página atualizada em {fmt_hora(agora_utc, 'pt')}",
                 "tab_status": "Status",
                 "tab_live": "Ao vivo",
+                "rel_hi": "Havaí (HST)",
+                "rel_br": "Brasília",
                 "tab_fotos": "Fotos",
                 "h_aviso": ("Último aviso do HVO (tradução automática do inglês)"
                             if aviso_pt else "Último aviso do HVO (original em inglês)"),
@@ -650,6 +652,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "linha_atualizacao": f"Page updated {fmt_hora(agora_utc, 'en')}",
                 "tab_status": "Status",
                 "tab_live": "Live",
+                "rel_hi": "Hawaii (HST)",
+                "rel_br": "Brasilia",
                 "tab_fotos": "Photos",
                 "h_aviso": "Latest HVO notice",
                 "h_live": "Live streams",
@@ -687,11 +691,14 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         i18n["en"]["text"][k] = v["en"]
 
     js = """
+let curLang = 'pt';
 const I18N = __I18N__;
 function setLang(l) {
   try { localStorage.setItem('kilauea_lang', l); } catch (e) {}
   document.documentElement.lang = (l === 'pt') ? 'pt-BR' : 'en';
   document.title = I18N[l].title;
+  curLang = l;
+  try { tick(); } catch (e) {}
   for (const [k, v] of Object.entries(I18N[l].text)) {
     document.querySelectorAll('[data-i18n="' + k + '"]').forEach(el => { el.textContent = v; });
   }
@@ -753,6 +760,35 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowLeft') lbAbre(lbIdx - 1);
   else if (e.key === 'ArrowRight') lbAbre(lbIdx + 1);
 });
+
+// --- relogios ao vivo (HST e Brasilia) com dia da semana
+function tick() {
+  const agora = new Date();
+  const loc = curLang === 'pt' ? 'pt-BR' : 'en-US';
+  for (const [tz, id] of [['Pacific/Honolulu', 'hst'], ['America/Sao_Paulo', 'brt']]) {
+    const h = new Intl.DateTimeFormat(loc, { timeZone: tz, hour: '2-digit', minute: '2-digit',
+                                             second: '2-digit', hour12: false }).format(agora);
+    const d = new Intl.DateTimeFormat(loc, { timeZone: tz, weekday: 'long', day: 'numeric',
+                                             month: 'long', year: 'numeric' }).format(agora);
+    document.getElementById('rh-' + id).textContent = h;
+    document.getElementById('rd-' + id).textContent = d;
+  }
+}
+setInterval(tick, 1000);
+tick();
+
+// --- modo claro / escuro (escuro e o padrao; escolha fica no navegador)
+function aplicaTema(tm) {
+  if (tm === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  else document.documentElement.removeAttribute('data-theme');
+  try { localStorage.setItem('kilauea_tema', tm); } catch (e) {}
+}
+function alternaTema() {
+  aplicaTema(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+}
+let tema = 'dark';
+try { tema = localStorage.getItem('kilauea_tema') || 'dark'; } catch (e) {}
+aplicaTema(tema);
 """.replace("__I18N__", json.dumps(i18n, ensure_ascii=False).replace("</", "<\\/"))
 
     return f"""<!DOCTYPE html>
@@ -764,60 +800,89 @@ document.addEventListener('keydown', e => {
 <title>Live Kilauea</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8B%3C/text%3E%3C/svg%3E">
 <style>
-body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #f7f3ee; color: #2b2622; }}
-.banner {{ background: linear-gradient(160deg, {fundo}, {sombra}); color: #fff;
-           padding: 36px 16px 30px; text-align: center; position: relative; }}
-.banner h1 {{ margin: 0 0 8px; font-size: 2.1em; letter-spacing: .3px; text-shadow: 0 1px 3px rgba(0,0,0,.25); }}
-.banner p {{ margin: 4px 0; opacity: .92; }}
-.banner .atualizacao {{ font-size: .82em; opacity: .75; margin-top: 8px; }}
-.langs {{ position: absolute; top: 10px; right: 12px; }}
-.flag {{ background: none; border: 1px solid rgba(255,255,255,.7); border-radius: 4px; padding: 2px 3px;
-         margin-left: 6px; cursor: pointer; line-height: 0; opacity: .55; }}
-.flag.active {{ opacity: 1; border-color: #fff; }}
-.flag svg {{ display: block; }}
-.tabs {{ display: flex; justify-content: center; gap: 8px; background: #fffdfa;
-         box-shadow: 0 2px 8px rgba(60,40,20,.08); padding: 10px; position: sticky; top: 0; z-index: 5; }}
+:root {{
+  --bg: #14110d; --texto: #e9e2d9; --card: #201b15; --borda: #2c251d;
+  --mudo: #8d8073; --rotulo: #a39482; --sub: #bdafa0; --link: #ffab72; --marca: #ffb27d;
+  --topo-a: #211a13; --topo-b: #14110d; --vidro: rgba(20,17,13,.92);
+  --caixa-rel: rgba(255,255,255,.05); --caixa-rel-borda: rgba(255,255,255,.12);
+  --r-data: #c9bba9; --sombra-img: rgba(0,0,0,.45);
+}}
+[data-theme="light"] {{
+  --bg: #f7f3ee; --texto: #2b2622; --card: #fffdfa; --borda: #e7ded2;
+  --mudo: #98897a; --rotulo: #8a7b6c; --sub: #6b6157; --link: #b3541e; --marca: #b3541e;
+  --topo-a: #fbf7f1; --topo-b: #f3ede4; --vidro: rgba(251,247,241,.92);
+  --caixa-rel: rgba(0,0,0,.04); --caixa-rel-borda: rgba(0,0,0,.14);
+  --r-data: #6b6157; --sombra-img: rgba(60,40,20,.18);
+}}
+body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0;
+        background: var(--bg); color: var(--texto); transition: background .3s, color .3s; }}
+.topo {{ background: linear-gradient(180deg, var(--topo-a), var(--topo-b)); border-top: 4px solid {fundo};
+         padding: 14px 16px 20px; text-align: center; }}
+.topo-linha {{ display: flex; justify-content: space-between; align-items: center;
+               max-width: 820px; margin: 0 auto; }}
+.brand {{ font-weight: 800; letter-spacing: 4px; font-size: .92em; color: var(--marca); }}
+.langs {{ line-height: 0; display: flex; align-items: center; }}
+.flag, .tema-btn {{ background: none; border: 1px solid var(--caixa-rel-borda); border-radius: 4px;
+         padding: 2px 3px; margin-left: 6px; cursor: pointer; line-height: 0; opacity: .55; }}
+.flag.active {{ opacity: 1; border-color: var(--marca); }}
+.tema-btn {{ opacity: .8; color: var(--marca); }}
+.flag svg, .tema-btn svg {{ display: block; }}
+html[data-theme="light"] .ic-sol {{ display: none; }}
+html:not([data-theme="light"]) .ic-lua {{ display: none; }}
+.relogios {{ display: flex; gap: 12px; justify-content: center; margin: 18px auto 6px; max-width: 540px; }}
+.relogio {{ flex: 1; background: var(--caixa-rel); border: 1px solid var(--caixa-rel-borda);
+            border-radius: 12px; padding: 10px 8px 12px; }}
+.r-label {{ font-size: .7em; text-transform: uppercase; letter-spacing: 1.6px; color: var(--rotulo); }}
+.r-hora {{ font-size: 1.6em; font-weight: 700; font-variant-numeric: tabular-nums; margin: 3px 0 1px; }}
+.r-data {{ font-size: .8em; color: var(--r-data); }}
+.badge {{ display: inline-block; background: {fundo}; color: #fff; margin: 18px 0 8px; padding: 10px 30px;
+          border-radius: 999px; font-size: 1.4em; letter-spacing: .3px; box-shadow: 0 0 28px {fundo}55; }}
+.sub {{ margin: 3px 0; color: var(--sub); font-size: .92em; }}
+.atualizacao {{ font-size: .8em; color: var(--mudo); margin-top: 7px; }}
+.tabs {{ display: flex; justify-content: center; gap: 8px; padding: 10px; position: sticky; top: 0; z-index: 5;
+         background: var(--vidro); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+         border-bottom: 1px solid var(--borda); }}
 .tab-btn {{ background: none; border: 0; border-radius: 999px; font-size: 1em;
-            padding: 8px 20px; cursor: pointer; color: #6b6157; }}
+            padding: 8px 20px; cursor: pointer; color: var(--rotulo); }}
 .tab-btn.on {{ background: {fundo}; color: #fff; font-weight: 600; }}
 .wrap {{ max-width: 780px; margin: 0 auto; padding: 18px 16px 26px; }}
 .pane {{ display: none; }}
 .pane.on {{ display: block; }}
 .facts {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin: 4px 0 18px; }}
-.fact {{ background: #fffdfa; border-radius: 14px; padding: 13px 15px;
-         box-shadow: 0 2px 8px rgba(60,40,20,.08); border-left: 4px solid {fundo}; }}
+.fact {{ background: var(--card); border: 1px solid var(--borda); border-left: 4px solid {fundo};
+         border-radius: 14px; padding: 13px 15px; }}
 .fact-wide {{ grid-column: 1 / -1; }}
 .fact-wide .f-val {{ font-weight: 400; }}
 .fact-wide .f-val a {{ font-weight: 600; }}
-.f-label {{ font-size: .74em; text-transform: uppercase; letter-spacing: .6px; color: #98897a; }}
-.f-val {{ margin-top: 3px; font-size: .98em; font-weight: 600; line-height: 1.35; }}
+.f-label {{ font-size: .74em; text-transform: uppercase; letter-spacing: .6px; color: var(--mudo); }}
+.f-val {{ margin-top: 3px; font-size: .98em; font-weight: 600; line-height: 1.4; }}
 .f-val a {{ font-weight: 400; }}
 .dot {{ display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; }}
-.dot-live {{ background: #d2331f; box-shadow: 0 0 0 3px rgba(210,51,31,.22); }}
-.dot-pause {{ background: #e0a400; box-shadow: 0 0 0 3px rgba(224,164,0,.2); }}
-.dot-off {{ background: #1e7e34; box-shadow: 0 0 0 3px rgba(30,126,52,.2); }}
-.card {{ background: #fffdfa; border-radius: 14px; padding: 18px 20px; margin: 14px 0;
-         box-shadow: 0 2px 8px rgba(60,40,20,.08); }}
-.card h2 {{ margin: 0 0 10px; font-size: 1.02em; color: #6b6157; text-transform: uppercase;
-            letter-spacing: .5px; font-weight: 600; }}
-.card p {{ line-height: 1.55; }}
+.dot-live {{ background: #ff4a2e; box-shadow: 0 0 0 3px rgba(255,74,46,.25); }}
+.dot-pause {{ background: #e0a400; box-shadow: 0 0 0 3px rgba(224,164,0,.22); }}
+.dot-off {{ background: #37b45c; box-shadow: 0 0 0 3px rgba(55,180,92,.22); }}
+.card {{ background: var(--card); border: 1px solid var(--borda); border-radius: 14px;
+         padding: 18px 20px; margin: 14px 0; }}
+.card h2 {{ margin: 0 0 10px; font-size: 1em; color: var(--rotulo); text-transform: uppercase;
+            letter-spacing: .6px; font-weight: 600; }}
+.card p {{ line-height: 1.6; }}
 table {{ border-collapse: collapse; width: 100%; }}
-td {{ padding: 7px 8px; border-bottom: 1px solid #f0e9e0; font-size: .95em; }}
-a {{ color: #b3541e; }}
-.mono {{ font-size: .85em; color: #98897a; }}
+td {{ padding: 7px 8px; border-bottom: 1px solid var(--borda); font-size: .95em; }}
+a {{ color: var(--link); }}
+.mono {{ font-size: .85em; color: var(--mudo); }}
 .video {{ position: relative; padding-top: 56.25%; margin: 6px 0 20px; }}
 .video iframe {{ position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 12px;
-                 box-shadow: 0 2px 10px rgba(60,40,20,.15); }}
+                 box-shadow: 0 4px 16px var(--sombra-img); }}
 .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }}
 figure {{ margin: 0; }}
-figure img {{ width: 100%; border-radius: 10px; display: block; box-shadow: 0 2px 8px rgba(60,40,20,.12);
+figure img {{ width: 100%; border-radius: 10px; display: block; box-shadow: 0 3px 12px var(--sombra-img);
               cursor: zoom-in; }}
 figcaption {{ margin-top: 5px; }}
-.lightbox {{ position: fixed; inset: 0; background: rgba(12,9,6,.94); display: none;
+.lightbox {{ position: fixed; inset: 0; background: rgba(8,6,4,.95); display: none;
              flex-direction: column; align-items: center; justify-content: center; z-index: 50; }}
 .lightbox.on {{ display: flex; }}
 .lightbox img {{ max-width: 94vw; max-height: 84vh; border-radius: 8px;
-                 box-shadow: 0 6px 40px rgba(0,0,0,.6); cursor: zoom-out; }}
+                 box-shadow: 0 6px 40px rgba(0,0,0,.7); cursor: zoom-out; }}
 .lb-cap {{ color: #eadfd3; margin-top: 12px; font-size: .95em; text-align: center;
            padding: 0 20px; max-width: 90vw; }}
 .lb-btn {{ position: absolute; top: 50%; transform: translateY(-50%); border: 0; cursor: pointer;
@@ -831,16 +896,24 @@ figcaption {{ margin-top: 5px; }}
 </style>
 </head>
 <body>
-<div class="banner">
+<header class="topo">
+<div class="topo-linha">
+<div class="brand">LIVE KILAUEA</div>
 <div class="langs">
+<button class="tema-btn" aria-label="Tema claro ou escuro" onclick="alternaTema()"><svg class="ic-sol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg><svg class="ic-lua" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
 <button class="flag" data-lang="en" title="English" aria-label="English" onclick="setLang('en')">{FLAG_HI}</button>
 <button class="flag active" data-lang="pt" title="Portugues" aria-label="Portugues" onclick="setLang('pt')">{FLAG_BR}</button>
 </div>
-<h1 data-i18n="status"></h1>
-<p data-i18n="linha_codigo"></p>
-<p data-i18n="linha_aviso"></p>
-<p class="atualizacao" data-i18n="linha_atualizacao"></p>
 </div>
+<div class="relogios">
+<div class="relogio"><div class="r-label" data-i18n="rel_hi"></div><div class="r-hora" id="rh-hst">--:--</div><div class="r-data" id="rd-hst"></div></div>
+<div class="relogio"><div class="r-label" data-i18n="rel_br"></div><div class="r-hora" id="rh-brt">--:--</div><div class="r-data" id="rd-brt"></div></div>
+</div>
+<h1 class="badge" data-i18n="status"></h1>
+<p class="sub" data-i18n="linha_codigo"></p>
+<p class="sub" data-i18n="linha_aviso"></p>
+<p class="sub atualizacao" data-i18n="linha_atualizacao"></p>
+</header>
 <div class="tabs">
 <button class="tab-btn on" data-tab="status" data-i18n="tab_status" onclick="setTab('status')"></button>
 <button class="tab-btn" data-tab="live" data-i18n="tab_live" onclick="setTab('live')"></button>
