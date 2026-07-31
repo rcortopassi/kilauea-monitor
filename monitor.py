@@ -111,6 +111,61 @@ def detalhe_notice(ident):
         return "", ""
 
 
+TRAD_CACHE = BASE / "state" / "traducao.json"
+
+
+def _traduz_bloco(texto):
+    """Traduz um bloco de texto en->pt pelo endpoint gtx do Google Translate.
+    Nao oficial, mas estavel ha anos; em falha, retorna vazio (usamos o original)."""
+    url = ("https://translate.googleapis.com/translate_a/single"
+           "?client=gtx&sl=en&tl=pt&dt=t&q=" + quote(texto))
+    data = fetch_json(url, tries=2, timeout=30)
+    return "".join(seg[0] for seg in data[0] if seg and seg[0])
+
+
+def traduz_aviso(ident, resumo_html, sinopse):
+    """Versao em portugues do aviso, como HTML em paragrafos.
+    Cacheada por notice_identifier em state/traducao.json."""
+    if not (resumo_html or sinopse):
+        return ""
+    if TRAD_CACHE.exists():
+        try:
+            cache = json.loads(TRAD_CACHE.read_text(encoding="utf-8"))
+            if cache.get("notice") == ident and cache.get("pt_html"):
+                return cache["pt_html"]
+        except Exception:  # noqa: BLE001 - cache corrompido: retraduz
+            pass
+    # HTML -> texto em paragrafos
+    txt = resumo_html or sinopse
+    txt = re.sub(r"(?i)</p\s*>|<br\s*/?>", "\n", txt)
+    txt = re.sub(r"<[^>]+>", "", txt)
+    txt = html_mod.unescape(txt)
+    paragrafos = [p.strip() for p in txt.split("\n") if p.strip()]
+    traduzidos = []
+    try:
+        # blocos de ate ~1500 chars para nao estourar a URL
+        bloco, blocos = "", []
+        for p in paragrafos:
+            if bloco and len(bloco) + len(p) > 1500:
+                blocos.append(bloco)
+                bloco = p
+            else:
+                bloco = f"{bloco}\n{p}" if bloco else p
+        if bloco:
+            blocos.append(bloco)
+        for b in blocos:
+            traduzidos.append(_traduz_bloco(b))
+    except Exception as e:  # noqa: BLE001 - traducao e opcional
+        print(f"aviso: traducao falhou ({e}); pagina usa o original")
+        return ""
+    linhas = [ln.strip() for t in traduzidos for ln in t.split("\n") if ln.strip()]
+    pt_html = "".join(f"<p>{html_mod.escape(ln)}</p>" for ln in linhas)
+    TRAD_CACHE.write_text(
+        json.dumps({"notice": ident, "pt_html": pt_html}, ensure_ascii=False, indent=2),
+        encoding="utf-8")
+    return pt_html
+
+
 def push_ntfy(titulo, corpo, prioridade="default", tags="", click=""):
     """Manda push pelo ntfy.sh. Headers precisam ser ASCII; o corpo vai em UTF-8."""
     if not NTFY_TOPIC:
@@ -207,7 +262,7 @@ FLAG_BR = """<svg viewBox="0 0 24 16" width="24" height="16">
 </svg>"""
 
 
-def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
+def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc, aviso_pt=""):
     cor = atual["color_code"]
     cores = {"GREEN": "#1e7e34", "YELLOW": "#b8860b", "ORANGE": "#d2691e", "RED": "#b22222"}
     fundo = cores.get(cor, "#555")
@@ -223,7 +278,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
     hist_vazio = not linhas_hist
     if hist_vazio:
         linhas_hist = '<tr><td colspan=2 data-i18n="hist_empty">Nenhuma mudanca registrada ainda</td></tr>'
-    aviso_bloco = resumo_html or f"<p>{html_mod.escape(sinopse)}</p>" if (resumo_html or sinopse) else "<p>-</p>"
+    aviso_en = resumo_html or f"<p>{html_mod.escape(sinopse)}</p>" if (resumo_html or sinopse) else "<p>-</p>"
+    aviso_pt_html = aviso_pt or aviso_en  # sem traducao, cai no original
 
     live_pt = (f'<a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>'
                f'<a href="{LINK_YOUTUBE}">Transmissao do USGS no YouTube</a>')
@@ -239,7 +295,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
                 "status": NIVEL_PT.get(cor, cor or "?"),
                 "linha_codigo": f"Codigo de aviacao {cor} - nivel {nivel}",
                 "linha_aviso": f"Aviso do USGS de {fmt_hora(quando, 'pt') if quando else '-'}",
-                "h_aviso": "Ultimo aviso do HVO (original em ingles)",
+                "h_aviso": ("Ultimo aviso do HVO (traducao automatica do ingles)"
+                            if aviso_pt else "Ultimo aviso do HVO (original em ingles)"),
                 "h_live": "Ver ao vivo",
                 "h_hist": "Mudancas de nivel registradas por este monitor",
                 "hist_empty": "Nenhuma mudanca registrada ainda",
@@ -247,7 +304,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
                 "rodape": (f"Verificado a cada 30 minutos. Ultima checagem: {fmt_hora(agora_utc, 'pt')}. "
                            "Dados: USGS Hawaiian Volcano Observatory (dominio publico). Este site nao e oficial."),
             },
-            "html": {"live": live_pt, "fonte": fonte_pt},
+            "html": {"live": live_pt, "fonte": fonte_pt, "aviso": aviso_pt_html},
         },
         "en": {
             "title": "Kilauea now",
@@ -263,7 +320,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc):
                 "rodape": (f"Checked every 30 minutes. Last check: {fmt_hora(agora_utc, 'en')}. "
                            "Data: USGS Hawaiian Volcano Observatory (public domain). This site is not official."),
             },
-            "html": {"live": live_en, "fonte": fonte_en},
+            "html": {"live": live_en, "fonte": fonte_en, "aviso": aviso_en},
         },
     }
 
@@ -284,7 +341,7 @@ function setLang(l) {
 let lang = 'pt';
 try { lang = localStorage.getItem('kilauea_lang') || 'pt'; } catch (e) {}
 setLang(lang);
-""".replace("__I18N__", json.dumps(i18n, ensure_ascii=False))
+""".replace("__I18N__", json.dumps(i18n, ensure_ascii=False).replace("</", "<\\/"))
 
     return f"""<!DOCTYPE html>
 <html lang="pt-BR">
@@ -323,7 +380,7 @@ a {{ color: #0a58ca; }}
 <p data-i18n="linha_aviso"></p>
 </div>
 <div class="wrap">
-<div class="card"><h2 data-i18n="h_aviso"></h2>{aviso_bloco}
+<div class="card"><h2 data-i18n="h_aviso"></h2><div data-i18n-html="aviso"></div>
 <p class="mono" data-i18n-html="fonte"></p></div>
 <div class="card"><h2 data-i18n="h_live"></h2>
 <p data-i18n-html="live"></p></div>
@@ -407,7 +464,8 @@ def main():
     STATE_FILE.write_text(json.dumps(atual, indent=2), encoding="utf-8")
     HISTORY_FILE.write_text(json.dumps(historico, indent=2), encoding="utf-8")
 
-    pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc)
+    aviso_pt = traduz_aviso(atual["notice_identifier"], resumo_html, sinopse)
+    pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc, aviso_pt)
     upload_pa(pagina)
     print("ok")
     return 0
