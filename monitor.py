@@ -114,30 +114,44 @@ LOCAIS_ALERTA = [
 ]
 
 # Estacionamentos oficiais (pagina Parking do NPS, coordenadas de la):
-# (nome, vagas, vagas grandes, lat, lng, obs PT, obs EN, fora da vista inicial)
+# (nome, vagas, vagas grandes, lat, lng, obs PT, obs EN, fora da vista inicial,
+#  minutos de carro alem da ENTRADA do parque)
+# Tempo ate a entrada do parque pela Hwy 11, sem transito: Hilo ~45 min,
+# Kailua-Kona ~2h15 (via Kaʻū). O popup soma o trecho interno de cada bolsao.
+MIN_HILO_ENTRADA = 45
+MIN_KONA_ENTRADA = 135
 ESTACIONAMENTOS = [
     ("Welcome Center Parking Lot", 100, 3, 19.432721, -155.275361,
      "Dentro do Kilauea Military Camp; o Welcome Center fica a 270 m do bolsão",
-     "Inside Kilauea Military Camp; the Welcome Center is 900 ft from the lot", False),
+     "Inside Kilauea Military Camp; the Welcome Center is 900 ft from the lot", False, 5),
     ("Kīlauea Visitor Center Parking", 38, 2, 19.429496, -155.257103,
      "Centro de visitantes em reforma; acesso ao Volcano House, galeria de arte e trilhas",
-     "Visitor center closed for renovations; access to Volcano House, art gallery and trails", False),
+     "Visitor center closed for renovations; access to Volcano House, art gallery and trails", False, 2),
     ("Uēkahuna Parking", 70, 7, 19.420228, -155.288968,
-     "Mirante mais alto da borda da caldeira", "Highest overlook on the caldera rim", False),
+     "Mirante mais alto da borda da caldeira", "Highest overlook on the caldera rim", False, 10),
     ("Kīlauea Overlook Parking", 36, 2, 19.423602, -155.284341,
      "Na Crater Rim Drive; vista clássica das fontes de lava",
-     "On Crater Rim Drive; classic view of the lava fountains", False),
-    ("Kīlauea Iki Overlook Parking Lot", 64, 0, 19.416584, -155.242891, "", "", False),
+     "On Crater Rim Drive; classic view of the lava fountains", False, 8),
+    ("Kīlauea Iki Overlook Parking Lot", 64, 0, 19.416584, -155.242891, "", "", False, 8),
     ("Nāhuku (Lava Tube)", 14, 2, 19.413590, -155.238811,
-     "Poucas vagas; lota cedo", "Few stalls; fills early", False),
-    ("Puʻupuaʻi Parking Lot", 28, 0, 19.411314, -155.249661, "", "", False),
-    ("Devastation Trail Parking Lot", 30, 0, 19.406470, -155.252939, "", "", False),
+     "Poucas vagas; lota cedo", "Few stalls; fills early", False, 10),
+    ("Puʻupuaʻi Parking Lot", 28, 0, 19.411314, -155.249661, "", "", False, 10),
+    ("Devastation Trail Parking Lot", 30, 0, 19.406470, -155.252939, "", "", False, 10),
     ("End of Chain of Craters Road Parking", 37, 0, 19.295039, -155.098597,
-     "Fim da estrada, junto ao arco Hōlei", "Road's end, near Hōlei Sea Arch", True),
+     "Fim da estrada, junto ao arco Hōlei", "Road's end, near Hōlei Sea Arch", True, 45),
     ("Kūkamāhuākea (Steam Vents)", None, None, 19.4306, -155.2660,
      "Acesso ao trecho aberto da trilha Sulphur Banks",
-     "Access to the open section of Sulfur Banks Trail", False),
+     "Access to the open section of Sulfur Banks Trail", False, 4),
 ]
+
+
+def _fmt_min(m):
+    """75 -> '1h15'; 50 -> '50 min' (arredondando a 5 min)."""
+    m = 5 * round(m / 5)
+    if m < 60:
+        return f"{m} min"
+    h, r = divmod(m, 60)
+    return f"{h}h{r:02d}" if r else f"{h}h"
 
 # Inicio da sequencia eruptiva episodica atual no Halemaumau
 INICIO_ERUPCAO = datetime(2024, 12, 23, tzinfo=timezone.utc)
@@ -799,18 +813,24 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         ],
         "estac": [
             {"n": n, "v": v, "o": o, "lat": la, "lng": ln,
-             "obs": oen, "obs_pt": opt, "longe": longe}
-            for (n, v, o, la, ln, opt, oen, longe) in ESTACIONAMENTOS
+             "obs": oen, "obs_pt": opt, "longe": longe,
+             "hilo": _fmt_min(MIN_HILO_ENTRADA + extra),
+             "kona": _fmt_min(MIN_KONA_ENTRADA + extra)}
+            for (n, v, o, la, ln, opt, oen, longe, extra) in ESTACIONAMENTOS
         ],
     }
     alertas_fonte_pt = f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>'
     alertas_fonte_en = f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>'
     mapa_fonte_pt = (f'Dados: <a href="{LINK_PARQUE}">NPS – condições</a> e '
                      f'<a href="{LINK_PARKING}">estacionamentos</a>. '
-                     f'Toque num ponto para ver o aviso ou as vagas e abrir no Google Maps.')
+                     f'Toque num ponto para ver o aviso ou as vagas e abrir no Google Maps. '
+                     f'Tempos de carro a partir de Hilo e Kona são estimativas sem trânsito, '
+                     f'pela Hwy 11; confirme a rota no Google Maps.')
     mapa_fonte_en = (f'Data: <a href="{LINK_PARQUE}">NPS – conditions</a> and '
                      f'<a href="{LINK_PARKING}">parking</a>. '
-                     f'Tap a point to see the alert or stall count and open it in Google Maps.')
+                     f'Tap a point to see the alert or stall count and open it in Google Maps. '
+                     f'Driving times from Hilo and Kona are no-traffic estimates via Hwy 11; '
+                     f'confirm the route in Google Maps.')
 
     live_pt = (f'<a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>'
                f'<a href="{LINK_YOUTUBE}">Canal oficial do USGS no YouTube</a><br>' + extras)
@@ -999,6 +1019,9 @@ function popEstac(p) {
   }
   const obs = pt ? p.obs_pt : p.obs;
   if (obs) h += '<p class="pop-loc">' + escT(obs) + '</p>';
+  if (p.hilo) h += '<p class="pop-loc">' + (pt
+    ? 'De carro: Hilo ~' + p.hilo + ', Kona ~' + p.kona
+    : 'By car: Hilo ~' + p.hilo + ', Kona ~' + p.kona) + '</p>';
   return h + '<p><a href="' + g + '" target="_blank" rel="noopener">' +
          (pt ? 'Como chegar (Google Maps)' : 'Directions (Google Maps)') + '</a></p></div>';
 }
