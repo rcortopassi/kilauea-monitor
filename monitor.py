@@ -37,6 +37,7 @@ STATE_FILE = BASE / "state" / "state.json"
 HISTORY_FILE = BASE / "state" / "history.json"
 TRAD_CACHE = BASE / "state" / "traducao.json"
 MIDIA_CACHE = BASE / "state" / "midia.json"
+GALERIA_FILE = BASE / "state" / "galeria.json"
 
 VNUM = "332010"  # Kilauea
 ELEVATED_URL = "https://volcanoes.usgs.gov/hans-public/api/volcano/getElevatedVolcanoes"
@@ -64,8 +65,8 @@ RANK = {"GREEN": 0, "YELLOW": 1, "ORANGE": 2, "RED": 3}
 NIVEL_PT = {
     "GREEN": "Normal",
     "YELLOW": "Atividade elevada (em pausa)",
-    "ORANGE": "ERUPCAO EM CURSO",
-    "RED": "ERUPCAO MAIOR EM CURSO",
+    "ORANGE": "ERUPÇÃO EM CURSO",
+    "RED": "ERUPÇÃO MAIOR EM CURSO",
 }
 NIVEL_EN = {
     "GREEN": "Normal",
@@ -236,7 +237,8 @@ def frases_chave(sinopse):
     """Extrai do aviso do HVO a frase do ultimo/atual episodio e a de previsao."""
     # "2:36 a.m." viraria fim de frase; normaliza para "2:36 am" antes de extrair
     s = re.sub(r"\b([apAP])\.[mM]\.", r"\1m", sinopse or "")
-    ep = re.search(r"(Episode\s+\d+\s+(?:began|ended|started)[^.]*\.)", s)
+    ep = (re.search(r"([^.]*[Ee]pisode\s+\d+\s+(?:began|ended|started)[^.]*\.)", s)
+          or re.search(r"([^.]*(?:end|start|beginning) of [Ee]pisode\s+\d+[^.]*\.)", s))
     prev = re.search(r"([^.]*(?:another episode|next episode|forecast|precursory)[^.]*\.)", s)
     return (ep.group(1).strip() if ep else "",
             prev.group(1).strip() if prev else "")
@@ -314,6 +316,11 @@ def fotos_episodio(cache):
         art = fetch_text("https://www.usgs.gov" + slug, ua=UA_NAV)
         tm = re.search(r"<title>(.*?)\s*\|", art)
         titulo = html_mod.unescape(tm.group(1)).strip() if tm else "Photo & Video Chronology"
+        em = re.search(r"[Ee]pisode\s+(\d+)", titulo) or re.search(r"episode-(\d+)", slug)
+        ep_num = int(em.group(1)) if em else 0
+        dm = (re.search(r'datetime="(\d{4}-\d{2}-\d{2})', art)
+              or re.search(r'"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})', art))
+        data = dm.group(1) if dm else ""
         itens, vistos = [], set()
         for im in re.finditer(r'<img[^>]+src="(https://d9-wret[^"]+?\.(?:jpe?g|png)[^"]*)"[^>]*>',
                               art, re.I):
@@ -336,7 +343,7 @@ def fotos_episodio(cache):
                     it["cap_pt"] = _traduz_bloco(it["cap_en"])
                 except Exception:  # noqa: BLE001
                     it["cap_pt"] = ""
-        return {"slug": slug, "titulo": titulo,
+        return {"slug": slug, "titulo": titulo, "ep": ep_num, "data": data,
                 "url": "https://www.usgs.gov" + slug, "itens": itens}
     except Exception as e:  # noqa: BLE001 - fotos sao opcionais
         print(f"aviso: fotos indisponiveis ({e})")
@@ -374,7 +381,7 @@ def fmt_hora(dt_utc, lang="pt"):
     brt = dt_utc.astimezone(BRT).strftime("%d/%m %H:%M")
     if lang == "en":
         return f"{hst} in Hawaii ({brt} in Brasilia)"
-    return f"{hst} no Havai ({brt} em Brasilia)"
+    return f"{hst} no Havaí ({brt} em Brasília)"
 
 
 def parse_sent(sent_unixtime):
@@ -417,11 +424,13 @@ def decide_push(prev, atual, sinopse):
 # ---------------------------------------------------------------- pagina
 
 def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
-                aviso_pt="", lives=None, lives_link=None, fotos=None, frases=None):
+                aviso_pt="", lives=None, lives_link=None, fotos=None, frases=None,
+                galeria=None):
     lives = lives or []
     lives_link = lives_link or []
     fotos = fotos or {}
     frases = frases or {}
+    galeria = galeria or []
     cor = atual["color_code"]
     cores = {"GREEN": "#1e7e34", "YELLOW": "#b8860b", "ORANGE": "#d2691e", "RED": "#b22222"}
     escuras = {"GREEN": "#12481d", "YELLOW": "#7c5a06", "ORANGE": "#8c3d0e", "RED": "#6e1414"}
@@ -483,32 +492,57 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
     if em_erupcao:
         f1_pt = '<span class="dot dot-live"></span>Sim, fontes de lava ativas agora'
         f1_en = '<span class="dot dot-live"></span>Yes, lava fountains active right now'
-        visita_pt = "As fontes sao visiveis dos mirantes e atraem multidoes. "
+        visita_pt = "As fontes são visíveis dos mirantes e atraem multidões. "
         visita_en = "The fountains are visible from the overlooks and draw crowds. "
     elif cor == "YELLOW":
-        f1_pt = '<span class="dot dot-pause"></span>Em pausa, sem lava visivel no momento'
+        f1_pt = '<span class="dot dot-pause"></span>Em pausa, sem lava visível no momento'
         f1_en = '<span class="dot dot-pause"></span>Paused, no lava visible right now'
         visita_pt = ""
         visita_en = ""
     else:
-        f1_pt = '<span class="dot dot-off"></span>Nao, sem erupcao'
+        f1_pt = '<span class="dot dot-off"></span>Não, sem erupção'
         f1_en = '<span class="dot dot-off"></span>No, not erupting'
         visita_pt = ""
         visita_en = ""
-    f2_pt = (f"Costuma abrir 24 h, mas nao e garantido: gases vulcanicos toxicos (SO2/vog), "
-             f"cinzas ou fios de vidro (cabelo de Pele) fecham areas ou o parque inteiro "
+    f2_pt = (f"Costuma abrir 24 h, mas não é garantido: gases vulcânicos tóxicos (SO2/vog), "
+             f"cinzas ou fios de vidro (cabelo de Pele) fecham áreas ou o parque inteiro "
              f"quando o vento muda. {visita_pt}"
-             f'<a href="{LINK_PARQUE}">Confira as condicoes atuais antes de ir</a>')
+             f'<a href="{LINK_PARQUE}">Confira as condições atuais antes de ir</a>')
     f2_en = (f"Usually open 24/7, but not guaranteed: toxic volcanic gases (SO2/vog), ash "
              f"or glass strands (Pele's hair) close areas or the whole park when the wind "
              f"shifts. {visita_en}"
              f'<a href="{LINK_PARQUE}">Check current conditions before you go</a>')
-    f3_pt = f"Sequencia de episodios desde 23/12/2024, ha {meses} meses"
+    f3_pt = f"Sequência de episódios desde 23/12/2024, há {meses} meses"
     f3_en = f"Episodic sequence since Dec 23, 2024, {meses} months and counting"
     f4_pt = html_mod.escape(frases.get("ep_pt") or "Sem dados no aviso atual")
     f4_en = html_mod.escape(frases.get("ep_en") or "No data in the current notice")
-    f5_pt = html_mod.escape(frases.get("prev_pt") or "Sem previsao divulgada no aviso atual")
+    f5_pt = html_mod.escape(frases.get("prev_pt") or "Sem previsão divulgada no aviso atual")
     f5_en = html_mod.escape(frases.get("prev_en") or "No forecast in the current notice")
+
+    def fmt_data(iso, lang):
+        try:
+            y, m, d = iso.split("-")
+            if lang == "en":
+                mes = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m) - 1]
+                return f"{mes} {int(d)}, {y}"
+            return f"{d}/{m}/{y}"
+        except Exception:  # noqa: BLE001
+            return ""
+
+    # --- galeria dos episodios anteriores
+    galeria_html, gcaps = "", {}
+    for i, g in enumerate(galeria):
+        d_pt, d_en = fmt_data(g.get("data", ""), "pt"), fmt_data(g.get("data", ""), "en")
+        gcaps[f"gcap_{i}"] = {
+            "pt": f"Episódio {g['ep']}" + (f", {d_pt}" if d_pt else ""),
+            "en": f"Episode {g['ep']}" + (f", {d_en}" if d_en else ""),
+        }
+        galeria_html += (
+            f'<figure><img src="{html_mod.escape(g["src"], quote=True)}" loading="lazy" '
+            f'alt="{html_mod.escape(g.get("cap_en") or "", quote=True)}">'
+            f'<figcaption class="mono" data-i18n="gcap_{i}"></figcaption></figure>'
+        )
 
     live_pt = (f'<a href="{LINK_WEBCAMS}">Webcams do USGS na cratera</a><br>'
                f'<a href="{LINK_YOUTUBE}">Canal oficial do USGS no YouTube</a><br>' + extras)
@@ -522,31 +556,34 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             "title": "Kilauea agora",
             "text": {
                 "status": NIVEL_PT.get(cor, cor or "?"),
-                "linha_codigo": f"Codigo de aviacao {cor} - nivel {nivel}",
+                "linha_codigo": f"Código de aviação {cor}, nível {nivel}",
                 "linha_aviso": f"Aviso do USGS de {fmt_hora(quando, 'pt') if quando else '-'}",
                 "tab_status": "Status",
                 "tab_live": "Ao vivo",
                 "tab_fotos": "Fotos",
-                "h_aviso": ("Ultimo aviso do HVO (traducao automatica do ingles)"
-                            if aviso_pt else "Ultimo aviso do HVO (original em ingles)"),
-                "h_live": "Transmissoes ao vivo",
+                "h_aviso": ("Último aviso do HVO (tradução automática do inglês)"
+                            if aviso_pt else "Último aviso do HVO (original em inglês)"),
+                "h_live": "Transmissões ao vivo",
                 "live_nota": ("Players verificados a cada 30 minutos. Se um deles parar, "
-                              "a proxima verificacao busca outra transmissao no ar."),
-                "live_vazio": "Nenhuma transmissao confirmada agora.",
+                              "a próxima verificação busca outra transmissão no ar."),
+                "live_vazio": "Nenhuma transmissão confirmada agora.",
                 "h_maislinks": "Mais links",
-                "h_fotos": "Fotos do episodio (USGS)",
-                "fotos_credito": "Fotos: USGS / Hawaiian Volcano Observatory, dominio publico.",
-                "fotos_vazio": "Sem fotos disponiveis no momento.",
-                "h_hist": "Mudancas de nivel registradas por este monitor",
-                "hist_empty": "Nenhuma mudanca registrada ainda",
-                "hist_nota": "Horarios do historico em hora do Havai (HST)",
-                "fl1": "Em erupcao agora?",
-                "fl2": "Parque nacional: da para visitar?",
-                "fl3": "Erupcao atual",
-                "fl4": "Ultimo episodio",
-                "fl5": "Proximo episodio (previsao do HVO)",
-                "rodape": (f"Verificado a cada 30 minutos. Ultima checagem: {fmt_hora(agora_utc, 'pt')}. "
-                           "Dados: USGS Hawaiian Volcano Observatory (dominio publico). Este site nao e oficial."),
+                "h_fotos": "Fotos do episódio atual (USGS)",
+                "h_galeria": "Episódios anteriores, uma foto de cada",
+                "galeria_nota": ("Episódios sem artigo de fotos na cronologia do USGS "
+                                 "não aparecem aqui."),
+                "fotos_credito": "Fotos: USGS / Hawaiian Volcano Observatory, domínio público.",
+                "fotos_vazio": "Sem fotos disponíveis no momento.",
+                "h_hist": "Mudanças de nível registradas por este monitor",
+                "hist_empty": "Nenhuma mudança registrada ainda",
+                "hist_nota": "Horários do histórico em hora do Havaí (HST)",
+                "fl1": "Em erupção agora?",
+                "fl2": "Parque nacional: dá para visitar?",
+                "fl3": "Erupção atual",
+                "fl4": "Último episódio",
+                "fl5": "Próximo episódio (previsão do HVO)",
+                "rodape": (f"Verificado a cada 30 minutos. Última checagem: {fmt_hora(agora_utc, 'pt')}. "
+                           "Dados: USGS Hawaiian Volcano Observatory (domínio público). Este site não é oficial."),
             },
             "html": {"live": live_pt, "fonte": fonte_pt, "aviso": aviso_pt_html,
                      "fv1": f1_pt, "fv2": f2_pt, "fv3": f3_pt,
@@ -567,7 +604,10 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                               "the next check looks for another stream on air."),
                 "live_vazio": "No stream confirmed right now.",
                 "h_maislinks": "More links",
-                "h_fotos": "Episode photos (USGS)",
+                "h_fotos": "Current episode photos (USGS)",
+                "h_galeria": "Previous episodes, one photo each",
+                "galeria_nota": ("Episodes without their own photo article in the USGS "
+                                 "chronology are not listed here."),
                 "fotos_credito": "Photos: USGS / Hawaiian Volcano Observatory, public domain.",
                 "fotos_vazio": "No photos available right now.",
                 "h_hist": "Alert changes recorded by this monitor",
@@ -587,6 +627,9 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         },
     }
     for k, v in caps.items():
+        i18n["pt"]["text"][k] = v["pt"]
+        i18n["en"]["text"][k] = v["en"]
+    for k, v in gcaps.items():
         i18n["pt"]["text"][k] = v["pt"]
         i18n["en"]["text"][k] = v["en"]
 
@@ -629,6 +672,7 @@ setTab(aba);
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="refresh" content="300">
 <title>Kilauea agora</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8B%3C/text%3E%3C/svg%3E">
 <style>
 body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #f7f3ee; color: #2b2622; }}
 .banner {{ background: linear-gradient(160deg, {fundo}, {sombra}); color: #fff;
@@ -648,7 +692,7 @@ body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; bac
 .wrap {{ max-width: 780px; margin: 0 auto; padding: 18px 16px 26px; }}
 .pane {{ display: none; }}
 .pane.on {{ display: block; }}
-.facts {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 4px 0 18px; }}
+.facts {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin: 4px 0 18px; }}
 .fact {{ background: #fffdfa; border-radius: 14px; padding: 13px 15px;
          box-shadow: 0 2px 8px rgba(60,40,20,.08); border-left: 4px solid {fundo}; }}
 .fact-wide {{ grid-column: 1 / -1; }}
@@ -699,8 +743,8 @@ figcaption {{ margin-top: 5px; }}
 <div class="pane on" data-pane="status">
 <div class="facts">
 <div class="fact"><div class="f-label" data-i18n="fl1"></div><div class="f-val" data-i18n-html="fv1"></div></div>
-<div class="fact fact-wide"><div class="f-label" data-i18n="fl2"></div><div class="f-val" data-i18n-html="fv2"></div></div>
 <div class="fact"><div class="f-label" data-i18n="fl3"></div><div class="f-val" data-i18n-html="fv3"></div></div>
+<div class="fact fact-wide"><div class="f-label" data-i18n="fl2"></div><div class="f-val" data-i18n-html="fv2"></div></div>
 <div class="fact"><div class="f-label" data-i18n="fl4"></div><div class="f-val" data-i18n-html="fv4"></div></div>
 <div class="fact"><div class="f-label" data-i18n="fl5"></div><div class="f-val" data-i18n-html="fv5"></div></div>
 </div>
@@ -724,6 +768,9 @@ figcaption {{ margin-top: 5px; }}
 {fotos_link}
 <div class="grid">{fotos_html}</div>
 <p class="mono" data-i18n="fotos_credito"></p></div>
+<div class="card"><h2 data-i18n="h_galeria"></h2>
+<div class="grid">{galeria_html}</div>
+<p class="mono" data-i18n="galeria_nota"></p></div>
 </div>
 
 <p class="mono" data-i18n="rodape"></p>
@@ -811,6 +858,25 @@ def main():
     print(f"lives no ar (embed): {[s['id'] for s in lives]}; so link: {[s['id'] for s in lives_link]}")
     print(f"fotos: {len(fotos.get('itens') or [])} de {fotos.get('slug', '-')}")
 
+    # galeria dos episodios anteriores (backfill + episodios novos conforme saem)
+    galeria = []
+    if GALERIA_FILE.exists():
+        try:
+            galeria = json.loads(GALERIA_FILE.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            galeria = []
+    if fotos.get("ep") and fotos.get("itens"):
+        conhecidos = {g["ep"] for g in galeria}
+        if fotos["ep"] not in conhecidos:
+            galeria.append({"ep": fotos["ep"], "data": fotos.get("data", ""),
+                            "src": fotos["itens"][0]["src"],
+                            "cap_en": fotos["itens"][0].get("cap_en", ""),
+                            "slug": fotos.get("slug", "")})
+            galeria.sort(key=lambda g: -g["ep"])
+            print(f"galeria: episodio {fotos['ep']} adicionado")
+    GALERIA_FILE.write_text(json.dumps(galeria, ensure_ascii=False, indent=2),
+                            encoding="utf-8")
+
     STATE_FILE.write_text(json.dumps(atual, indent=2), encoding="utf-8")
     HISTORY_FILE.write_text(json.dumps(historico, indent=2), encoding="utf-8")
     MIDIA_CACHE.write_text(
@@ -831,7 +897,7 @@ def main():
     frases = {"ep_en": ep_en, "ep_pt": _t(ep_en),
               "prev_en": prev_en, "prev_pt": _t(prev_en)}
     pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
-                         aviso_pt, lives, lives_link, fotos, frases)
+                         aviso_pt, lives, lives_link, fotos, frases, galeria)
     upload_pa(pagina)
     print("ok")
     return 0
