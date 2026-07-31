@@ -604,7 +604,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
 
     i18n = {
         "pt": {
-            "title": "Kilauea agora",
+            "title": "Live Kilauea",
             "text": {
                 "status": NIVEL_PT.get(cor, cor or "?"),
                 "linha_codigo": f"Código de aviação {cor}, nível {nivel}",
@@ -642,7 +642,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                      "fv4": f4_pt, "fv5": f5_pt},
         },
         "en": {
-            "title": "Kilauea now",
+            "title": "Live Kilauea",
             "text": {
                 "status": NIVEL_EN.get(cor, cor or "?"),
                 "linha_codigo": f"Aviation color code {cor}, alert level {nivel}",
@@ -761,7 +761,7 @@ document.addEventListener('keydown', e => {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="refresh" content="300">
-<title>Kilauea agora</title>
+<title>Live Kilauea</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%8B%3C/text%3E%3C/svg%3E">
 <style>
 body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #f7f3ee; color: #2b2622; }}
