@@ -964,6 +964,85 @@ function setTab(t) {
   }
   try { sessionStorage.setItem('kilauea_tab', t); } catch (e) {}
 }
+
+// --- mapa dos avisos do parque e estacionamentos (Leaflet, criado ao abrir a aba)
+// (declarado ANTES do setTab inicial: se a aba salva for 'mapa', initMapa ja roda aqui)
+const MAPA_DADOS = __MAPA__;
+const CORES_CAT = { danger: '#ff4a2e', caution: '#e0a400', closure: '#8f9bb0', info: '#4aa3ff' };
+const CAT_NOME = {
+  pt: { danger: 'Perigo', caution: 'Atenção', closure: 'Fechamento', info: 'Informação' },
+  en: { danger: 'Danger', caution: 'Caution', closure: 'Closure', info: 'Info' }
+};
+let mapa = null;
+function escT(s) { const e = document.createElement('span'); e.textContent = s || ''; return e.innerHTML; }
+function popAlerta(a) {
+  const pt = curLang === 'pt';
+  const g = 'https://www.google.com/maps/search/?api=1&query=' + a.lat + ',' + a.lng;
+  let h = '<div class="pop"><p><span class="cat cat-' + a.cat + '">' + CAT_NOME[curLang][a.cat] +
+          '</span> <strong>' + escT(pt ? a.t_pt : a.t) + '</strong></p>' +
+          '<p>' + escT(pt ? a.d_pt : a.d) + '</p>';
+  const loc = pt ? a.l_pt : a.l;
+  if (loc) h += '<p class="pop-loc">' + escT(loc) + '</p>';
+  h += '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a>';
+  if (a.url) h += ' &middot; <a href="' + a.url + '" target="_blank" rel="noopener">' +
+                  (pt ? 'Detalhes' : 'Details') + '</a>';
+  return h + '</p></div>';
+}
+function popEstac(p) {
+  const pt = curLang === 'pt';
+  const g = 'https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lng;
+  let h = '<div class="pop"><p><span class="cat cat-estac">P</span> <strong>' + escT(p.n) + '</strong></p>';
+  if (p.v) {
+    h += '<p>' + p.v + (pt ? ' vagas' : ' stalls');
+    if (p.o) h += pt ? (', ' + p.o + ' para veículos grandes') : (', ' + p.o + ' oversized');
+    h += '</p>';
+  }
+  const obs = pt ? p.obs_pt : p.obs;
+  if (obs) h += '<p class="pop-loc">' + escT(obs) + '</p>';
+  return h + '<p><a href="' + g + '" target="_blank" rel="noopener">' +
+         (pt ? 'Como chegar (Google Maps)' : 'Directions (Google Maps)') + '</a></p></div>';
+}
+function initMapa() {
+  if (mapa || typeof L === 'undefined') return;
+  const el = document.getElementById('mapa');
+  if (!el) return;
+  mapa = L.map('mapa', { scrollWheelZoom: false });
+  const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: 'Esri, Maxar, Earthstar Geographics', maxZoom: 18 });
+  const ruas = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { attribution: '&copy; OpenStreetMap', maxZoom: 19 });
+  sat.addTo(mapa);
+  L.control.layers({ 'Satélite': sat, 'Mapa': ruas }).addTo(mapa);
+  const bounds = [];
+  for (const p of MAPA_DADOS.estac) {
+    L.marker([p.lat, p.lng], { icon: L.divIcon({ className: 'pk-ico', html: 'P', iconSize: [22, 22], iconAnchor: [11, 11] }) })
+      .addTo(mapa).bindPopup(() => popEstac(p));
+    if (!p.longe) bounds.push([p.lat, p.lng]);
+  }
+  for (const a of MAPA_DADOS.alertas) {
+    L.circleMarker([a.lat, a.lng], { radius: 9, color: '#fff', weight: 2,
+      fillColor: CORES_CAT[a.cat] || CORES_CAT.info, fillOpacity: .95 })
+      .addTo(mapa).bindPopup(() => popAlerta(a));
+    if (!a.longe) bounds.push([a.lat, a.lng]);
+  }
+  // o container pode estar sem tamanho no primeiro load (aba salva = mapa,
+  // janela oculta...): espera ter largura real antes do fitBounds, senao
+  // o enquadramento trava no zoom maximo
+  const ajusta = () => {
+    mapa.invalidateSize();
+    if (!mapa.getSize().x) { setTimeout(ajusta, 300); return; }
+    if (bounds.length) mapa.fitBounds(bounds, { padding: [30, 30] });
+    else mapa.setView([19.4157, -155.2753], 12);
+  };
+  ajusta();
+}
+function vaiMapa(o) {
+  if (!mapa) return;
+  if (o === 'cume') mapa.flyTo([19.4140, -155.2700], 14);
+  else if (o === 'coc') mapa.flyTo([19.2950, -155.0986], 14);
+  else if (o === 'kahuku') mapa.flyTo([19.0690, -155.6778], 12);
+}
+
 let lang = 'pt';
 try { lang = localStorage.getItem('kilauea_lang') || 'pt'; } catch (e) {}
 setLang(lang);
@@ -1036,75 +1115,6 @@ function alternaTema() {
 let tema = 'dark';
 try { tema = localStorage.getItem('kilauea_tema') || 'dark'; } catch (e) {}
 aplicaTema(tema);
-
-// --- mapa dos avisos do parque e estacionamentos (Leaflet, criado ao abrir a aba)
-const MAPA_DADOS = __MAPA__;
-const CORES_CAT = { danger: '#ff4a2e', caution: '#e0a400', closure: '#8f9bb0', info: '#4aa3ff' };
-const CAT_NOME = {
-  pt: { danger: 'Perigo', caution: 'Atenção', closure: 'Fechamento', info: 'Informação' },
-  en: { danger: 'Danger', caution: 'Caution', closure: 'Closure', info: 'Info' }
-};
-let mapa = null;
-function escT(s) { const e = document.createElement('span'); e.textContent = s || ''; return e.innerHTML; }
-function popAlerta(a) {
-  const pt = curLang === 'pt';
-  const g = 'https://www.google.com/maps/search/?api=1&query=' + a.lat + ',' + a.lng;
-  let h = '<div class="pop"><p><span class="cat cat-' + a.cat + '">' + CAT_NOME[curLang][a.cat] +
-          '</span> <strong>' + escT(pt ? a.t_pt : a.t) + '</strong></p>' +
-          '<p>' + escT(pt ? a.d_pt : a.d) + '</p>';
-  const loc = pt ? a.l_pt : a.l;
-  if (loc) h += '<p class="pop-loc">' + escT(loc) + '</p>';
-  h += '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a>';
-  if (a.url) h += ' &middot; <a href="' + a.url + '" target="_blank" rel="noopener">' +
-                  (pt ? 'Detalhes' : 'Details') + '</a>';
-  return h + '</p></div>';
-}
-function popEstac(p) {
-  const pt = curLang === 'pt';
-  const g = 'https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lng;
-  let h = '<div class="pop"><p><span class="cat cat-estac">P</span> <strong>' + escT(p.n) + '</strong></p>';
-  if (p.v) {
-    h += '<p>' + p.v + (pt ? ' vagas' : ' stalls');
-    if (p.o) h += pt ? (', ' + p.o + ' para veículos grandes') : (', ' + p.o + ' oversized');
-    h += '</p>';
-  }
-  const obs = pt ? p.obs_pt : p.obs;
-  if (obs) h += '<p class="pop-loc">' + escT(obs) + '</p>';
-  return h + '<p><a href="' + g + '" target="_blank" rel="noopener">' +
-         (pt ? 'Como chegar (Google Maps)' : 'Directions (Google Maps)') + '</a></p></div>';
-}
-function initMapa() {
-  if (mapa || typeof L === 'undefined') return;
-  const el = document.getElementById('mapa');
-  if (!el) return;
-  mapa = L.map('mapa', { scrollWheelZoom: false });
-  const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    { attribution: 'Esri, Maxar, Earthstar Geographics', maxZoom: 18 });
-  const ruas = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    { attribution: '&copy; OpenStreetMap', maxZoom: 19 });
-  sat.addTo(mapa);
-  L.control.layers({ 'Satélite': sat, 'Mapa': ruas }).addTo(mapa);
-  const bounds = [];
-  for (const p of MAPA_DADOS.estac) {
-    L.marker([p.lat, p.lng], { icon: L.divIcon({ className: 'pk-ico', html: 'P', iconSize: [22, 22], iconAnchor: [11, 11] }) })
-      .addTo(mapa).bindPopup(() => popEstac(p));
-    if (!p.longe) bounds.push([p.lat, p.lng]);
-  }
-  for (const a of MAPA_DADOS.alertas) {
-    L.circleMarker([a.lat, a.lng], { radius: 9, color: '#fff', weight: 2,
-      fillColor: CORES_CAT[a.cat] || CORES_CAT.info, fillOpacity: .95 })
-      .addTo(mapa).bindPopup(() => popAlerta(a));
-    if (!a.longe) bounds.push([a.lat, a.lng]);
-  }
-  if (bounds.length) mapa.fitBounds(bounds, { padding: [30, 30] });
-  else mapa.setView([19.4157, -155.2753], 12);
-}
-function vaiMapa(o) {
-  if (!mapa) return;
-  if (o === 'cume') mapa.flyTo([19.4140, -155.2700], 14);
-  else if (o === 'coc') mapa.flyTo([19.2950, -155.0986], 14);
-  else if (o === 'kahuku') mapa.flyTo([19.0690, -155.6778], 12);
-}
 """.replace("__I18N__", json.dumps(i18n, ensure_ascii=False).replace("</", "<\\/")) \
    .replace("__MAPA__", json.dumps(mapa_dados, ensure_ascii=False).replace("</", "<\\/"))
 
