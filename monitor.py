@@ -113,6 +113,43 @@ LOCAIS_ALERTA = [
      "Halemaʻumaʻu (erupting crater)", 19.4067, -155.2800),
 ]
 
+# Avisos fixos ("Park Notices" e politicas da pagina de condicoes do NPS,
+# que NAO vem pela API de alertas). Textos ja escritos nas duas linguas.
+AVISOS_FIXOS = [
+    {"id": "fixo-obras", "cat": "closure",
+     "titulo": "Summit construction: closures and delays",
+     "titulo_pt": "Obras no cume: fechamentos e atrasos",
+     "desc": ("Expect closures and delays due to a two-year construction project "
+              "to repair or remove damaged buildings and infrastructure at the "
+              "summit. The visitor center is closed during renovations."),
+     "desc_pt": ("Espere fechamentos e atrasos por causa de uma obra de dois anos "
+                 "para reparar ou remover prédios e infraestrutura danificados no "
+                 "cume. O centro de visitantes está fechado durante a reforma."),
+     "url": LINK_PARQUE, "data": "",
+     "local_pt": "Área do cume, junto ao Kīlauea Visitor Center",
+     "local_en": "Summit area, by the Kīlauea Visitor Center",
+     "lat": 19.4293, "lng": -155.2575},
+    {"id": "fixo-ar", "cat": "caution",
+     "titulo": "Air quality: volcanic gases",
+     "titulo_pt": "Qualidade do ar: gases vulcânicos",
+     "desc": ("Hazardous volcanic gases (SO2/vog) can be dangerous to sensitive "
+              "groups. Check the air quality frequently during your visit."),
+     "desc_pt": ("Gases vulcânicos perigosos (SO2/vog) podem ser um risco para "
+                 "grupos sensíveis. Confira a qualidade do ar com frequência "
+                 "durante a visita."),
+     "url": "https://www.nps.gov/havo/air-quality-alert.htm", "data": "",
+     "local_pt": "", "local_en": "", "lat": None, "lng": None},
+    {"id": "fixo-drones", "cat": "info",
+     "titulo": "Drones are prohibited",
+     "titulo_pt": "Drones são proibidos",
+     "desc": ("Launching, landing or operating unmanned aircraft anywhere in the "
+              "park is prohibited unless approved in writing by the superintendent."),
+     "desc_pt": ("Decolar, pousar ou operar drones em qualquer ponto do parque é "
+                 "proibido, salvo autorização escrita do superintendente."),
+     "url": "https://www.nps.gov/havo/learn/management/2015_unmanned_aircraft.htm",
+     "data": "", "local_pt": "", "local_en": "", "lat": None, "lng": None},
+]
+
 # Estacionamentos oficiais (pagina Parking do NPS, coordenadas de la):
 # (nome, vagas, vagas grandes, lat, lng, obs PT, obs EN, fora da vista inicial,
 #  minutos de carro alem da ENTRADA do parque)
@@ -824,11 +861,13 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
     mapa_fonte_pt = (f'Dados: <a href="{LINK_PARQUE}">NPS – condições</a> e '
                      f'<a href="{LINK_PARKING}">estacionamentos</a>. '
                      f'Toque num ponto para ver o aviso ou as vagas e abrir no Google Maps. '
+                     f'Os bolsões costumam lotar por volta das 10h. '
                      f'Tempos de carro a partir de Hilo e Kona são estimativas sem trânsito, '
                      f'pela Hwy 11; confirme a rota no Google Maps.')
     mapa_fonte_en = (f'Data: <a href="{LINK_PARQUE}">NPS – conditions</a> and '
                      f'<a href="{LINK_PARKING}">parking</a>. '
                      f'Tap a point to see the alert or stall count and open it in Google Maps. '
+                     f'Lots are often full by 10 am. '
                      f'Driving times from Hilo and Kona are no-traffic estimates via Hwy 11; '
                      f'confirm the route in Google Maps.')
 
@@ -1467,10 +1506,11 @@ def main():
             cache_alertas = json.loads(ALERTAS_CACHE.read_text(encoding="utf-8"))
         except Exception:  # noqa: BLE001
             cache_alertas = {}
-    alertas = alertas_nps(cache_alertas)
+    alertas_api = alertas_nps(cache_alertas)
     ALERTAS_CACHE.write_text(
-        json.dumps({"alertas": alertas}, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"alertas do parque: {len(alertas)} "
+        json.dumps({"alertas": alertas_api}, ensure_ascii=False, indent=2), encoding="utf-8")
+    alertas = alertas_api + AVISOS_FIXOS
+    print(f"alertas do parque: {len(alertas_api)} da API + {len(AVISOS_FIXOS)} fixos "
           f"({[a['cat'] for a in alertas]})")
 
     # galeria dos episodios anteriores (backfill + episodios novos conforme saem)
