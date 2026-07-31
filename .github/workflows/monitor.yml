@@ -1,0 +1,50 @@
+name: Kilauea monitor
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kilauea-monitor
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar o vulcao
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          PA_TOKEN: ${{ secrets.PA_TOKEN }}
+          PA_USER: rafaelcortopassi
+        run: python3 monitor.py
+
+      - name: Salvar estado (se mudou)
+        run: |
+          git config user.name "kilauea-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add state/
+          if ! git diff --cached --quiet; then
+            git pull --rebase
+            git commit -m "estado: $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
+
+      # O GitHub desliga crons de repositorios sem atividade ha 60 dias.
+      # Entre episodios o estado pode ficar semanas sem mudar, entao um
+      # commit vazio mensal mantem o agendamento vivo.
+      - name: Keepalive (commit vazio se o repo esta parado ha 25+ dias)
+        run: |
+          ULTIMO=$(git log -1 --format=%ct)
+          AGORA=$(date +%s)
+          if [ $(( (AGORA - ULTIMO) / 86400 )) -ge 25 ]; then
+            git commit --allow-empty -m "keepalive"
+            git push
+          fi
