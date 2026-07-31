@@ -609,13 +609,14 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "status": NIVEL_PT.get(cor, cor or "?"),
                 "linha_codigo": f"Código de aviação {cor}, nível {nivel}",
                 "linha_aviso": f"Aviso do USGS de {fmt_hora(quando, 'pt') if quando else '-'}",
+                "linha_atualizacao": f"Página atualizada em {fmt_hora(agora_utc, 'pt')}",
                 "tab_status": "Status",
                 "tab_live": "Ao vivo",
                 "tab_fotos": "Fotos",
                 "h_aviso": ("Último aviso do HVO (tradução automática do inglês)"
                             if aviso_pt else "Último aviso do HVO (original em inglês)"),
                 "h_live": "Transmissões ao vivo",
-                "live_nota": ("Players verificados a cada 30 minutos. Se um deles parar, "
+                "live_nota": ("Players verificados a cada 5 minutos. Se um deles parar, "
                               "a próxima verificação busca outra transmissão no ar."),
                 "live_vazio": "Nenhuma transmissão confirmada agora.",
                 "h_maislinks": "Mais links",
@@ -633,7 +634,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "fl3": "Erupção atual",
                 "fl4": "Último episódio",
                 "fl5": "Próximo episódio (previsão do HVO)",
-                "rodape": (f"Verificado a cada 30 minutos. Última checagem: {fmt_hora(agora_utc, 'pt')}. "
+                "rodape": (f"Verificado a cada 5 minutos. Última checagem: {fmt_hora(agora_utc, 'pt')}. "
                            "Dados: USGS Hawaiian Volcano Observatory (domínio público). Este site não é oficial."),
             },
             "html": {"live": live_pt, "fonte": fonte_pt, "aviso": aviso_pt_html,
@@ -644,14 +645,15 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             "title": "Kilauea now",
             "text": {
                 "status": NIVEL_EN.get(cor, cor or "?"),
-                "linha_codigo": f"Aviation color code {cor} - alert level {nivel}",
+                "linha_codigo": f"Aviation color code {cor}, alert level {nivel}",
                 "linha_aviso": f"USGS notice from {fmt_hora(quando, 'en') if quando else '-'}",
+                "linha_atualizacao": f"Page updated {fmt_hora(agora_utc, 'en')}",
                 "tab_status": "Status",
                 "tab_live": "Live",
                 "tab_fotos": "Photos",
                 "h_aviso": "Latest HVO notice",
                 "h_live": "Live streams",
-                "live_nota": ("Players are checked every 30 minutes. If one goes offline, "
+                "live_nota": ("Players are checked every 5 minutes. If one goes offline, "
                               "the next check looks for another stream on air."),
                 "live_vazio": "No stream confirmed right now.",
                 "h_maislinks": "More links",
@@ -669,7 +671,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "fl3": "Current eruption",
                 "fl4": "Latest episode",
                 "fl5": "Next episode (HVO forecast)",
-                "rodape": (f"Checked every 30 minutes. Last check: {fmt_hora(agora_utc, 'en')}. "
+                "rodape": (f"Checked every 5 minutes. Last check: {fmt_hora(agora_utc, 'en')}. "
                            "Data: USGS Hawaiian Volcano Observatory (public domain). This site is not official."),
             },
             "html": {"live": live_en, "fonte": fonte_en, "aviso": aviso_en,
@@ -767,6 +769,7 @@ body {{ font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; bac
            padding: 36px 16px 30px; text-align: center; position: relative; }}
 .banner h1 {{ margin: 0 0 8px; font-size: 2.1em; letter-spacing: .3px; text-shadow: 0 1px 3px rgba(0,0,0,.25); }}
 .banner p {{ margin: 4px 0; opacity: .92; }}
+.banner .atualizacao {{ font-size: .82em; opacity: .75; margin-top: 8px; }}
 .langs {{ position: absolute; top: 10px; right: 12px; }}
 .flag {{ background: none; border: 1px solid rgba(255,255,255,.7); border-radius: 4px; padding: 2px 3px;
          margin-left: 6px; cursor: pointer; line-height: 0; opacity: .55; }}
@@ -836,6 +839,7 @@ figcaption {{ margin-top: 5px; }}
 <h1 data-i18n="status"></h1>
 <p data-i18n="linha_codigo"></p>
 <p data-i18n="linha_aviso"></p>
+<p class="atualizacao" data-i18n="linha_atualizacao"></p>
 </div>
 <div class="tabs">
 <button class="tab-btn on" data-tab="status" data-i18n="tab_status" onclick="setTab('status')"></button>

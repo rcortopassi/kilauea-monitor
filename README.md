@@ -1,6 +1,6 @@
 # Monitor do Kilauea
 
-Verifica o status do vulcao Kilauea (Big Island, Havai) a cada 30 minutos e:
+Verifica o status do vulcao Kilauea (Big Island, Havai) a cada 5 minutos e:
 
 - manda push urgente via ntfy.sh quando o alerta sobe para ORANGE/RED
   (episodio de fonte de lava comecando);
