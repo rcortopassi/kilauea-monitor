@@ -85,6 +85,7 @@ LINK_WEBCAMS = "https://www.usgs.gov/volcanoes/kilauea/webcams"
 LINK_YOUTUBE = "https://www.youtube.com/@usgs/live"
 LINK_PARQUE = "https://www.nps.gov/havo/planyourvisit/conditions.htm"
 LINK_PARKING = "https://www.nps.gov/havo/planyourvisit/parking.htm"
+LINK_VIEWING = "https://www.nps.gov/havo/planyourvisit/eruption-viewing.htm"
 LINK_SITE = "https://rafaelcortopassi.pythonanywhere.com/kilauea/"
 
 # Avisos ativos do parque nacional (API oficial do NPS; DEMO_KEY funciona,
@@ -148,6 +149,63 @@ AVISOS_FIXOS = [
                  "proibido, salvo autorização escrita do superintendente."),
      "url": "https://www.nps.gov/havo/learn/management/2015_unmanned_aircraft.htm",
      "data": "", "local_pt": "", "local_en": "", "lat": None, "lng": None},
+]
+
+# Mirantes oficiais de observacao da erupcao (pagina Eruption Viewing do NPS,
+# /havo/planyourvisit/eruption-viewing.htm; resumos condensados dos textos
+# oficiais): (nome, desc PT, desc EN, lat, lng, url da pagina do lugar)
+MIRANTES = [
+    ("Mirante perto do Welcome Center",
+     "Do Welcome Center, cruze o gramado e a Crater Rim Drive, entre na floresta "
+     "e vire à esquerda na Crater Rim Trail rumo aos Steam Vents; o primeiro "
+     "mirante à direita tem ótima vista da caldeira e da erupção.",
+     "From the Welcome Center, cross the lawn and Crater Rim Drive, enter the "
+     "forest and turn left on Crater Rim Trail toward Steam Vents; the first "
+     "overlook on the right has great views of the caldera and the eruption.",
+     19.4298, -155.2740,
+     "https://www.nps.gov/places/eruption-viewing-near-welcome-center.htm"),
+    ("Uēkahuna",
+     "Vista ampla da Halemaʻumaʻu no fim da Crater Rim Drive West, a 4,5 km da "
+     "entrada. Bom para famílias, guardas costumam estar no local e há mais "
+     "vagas que nos outros mirantes.",
+     "Great views into Halemaʻumaʻu at the end of Crater Rim Drive West, 2.8 mi "
+     "from the entrance. Family friendly, rangers often on site and more "
+     "parking than other overlooks.",
+     19.4203, -155.2882,
+     "https://www.nps.gov/places/eruption-viewing-from-uekahuna.htm"),
+    ("Kīlauea Overlook",
+     "Vista desimpedida do fundo da cratera durante a erupção, a 4 km da "
+     "entrada. Caminhada curta desde o estacionamento, ou 650 m a pé de "
+     "Uēkahuna.",
+     "Unobstructed views of the crater floor during an eruption, 2.5 mi from "
+     "the entrance. Short walk from the lot, or a 0.4 mi walk from Uēkahuna.",
+     19.4234, -155.2839,
+     "https://www.nps.gov/places/eruption-viewing-from-kapalikapuokamohoalii.htm"),
+    ("Perto de Keanakākoʻi",
+     "A vista mais de perto, mas exige planejamento: 3,2 km ida e volta a pé "
+     "(cerca de 1h) pela antiga Crater Rim Drive desde o estacionamento "
+     "Devastation; vagas extremamente limitadas durante erupções.",
+     "The closest views, but plan ahead: a 2 mi round-trip hike (about 1 h) on "
+     "old Crater Rim Drive from the Devastation parking area; parking is "
+     "extremely limited during eruptions.",
+     19.4060, -155.2610,
+     "https://www.nps.gov/places/eruption-viewing-at-keanakakoi.htm"),
+    ("Wahinekapu (Steaming Bluff)",
+     "Vista panorâmica do cone inteiro, com o calor dos steam vents ao lado. "
+     "Primeiro mirante depois da entrada (1,6 km), popular e congestionado.",
+     "Panoramic, unobstructed views of the whole cinder cone, with steam vents "
+     "nearby. First overlook after the entrance (1 mi), popular and congested.",
+     19.4312, -155.2668,
+     "https://www.nps.gov/places/eruption-viewing-from-wahinekapu.htm"),
+    ("Kūpinaʻi Pali (Waldron Ledge)",
+     "Para fugir das multidões: o mirante mais distante da erupção, com vista "
+     "aberta da caldeira. Estacione no visitor center (fechado) e caminhe 800 m "
+     "passando o Volcano House, pela Crater Rim Trail.",
+     "Escape the crowds: the furthest overlook from the eruption, with wide "
+     "views of the caldera. Park at the closed visitor center and walk 0.5 mi "
+     "past Volcano House on Crater Rim Trail.",
+     19.4277, -155.2549,
+     "https://www.nps.gov/places/eruption-viewing-from-kupinai-pali.htm"),
 ]
 
 # Estacionamentos oficiais (pagina Parking do NPS, coordenadas de la):
@@ -855,17 +913,23 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
              "kona": _fmt_min(MIN_KONA_ENTRADA + extra)}
             for (n, v, o, la, ln, opt, oen, longe, extra) in ESTACIONAMENTOS
         ],
+        "mirantes": [
+            {"n": n, "d_pt": dpt, "d": den, "lat": la, "lng": ln, "url": url}
+            for (n, dpt, den, la, ln, url) in MIRANTES
+        ],
     }
     alertas_fonte_pt = f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>'
     alertas_fonte_en = f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>'
-    mapa_fonte_pt = (f'Dados: <a href="{LINK_PARQUE}">NPS – condições</a> e '
-                     f'<a href="{LINK_PARKING}">estacionamentos</a>. '
+    mapa_fonte_pt = (f'Dados: <a href="{LINK_PARQUE}">NPS – condições</a>, '
+                     f'<a href="{LINK_PARKING}">estacionamentos</a> e '
+                     f'<a href="{LINK_VIEWING}">mirantes da erupção</a>. '
                      f'Toque num ponto para ver o aviso ou as vagas e abrir no Google Maps. '
                      f'Os bolsões costumam lotar por volta das 10h. '
                      f'Tempos de carro a partir de Hilo e Kona são estimativas sem trânsito, '
                      f'pela Hwy 11; confirme a rota no Google Maps.')
-    mapa_fonte_en = (f'Data: <a href="{LINK_PARQUE}">NPS – conditions</a> and '
-                     f'<a href="{LINK_PARKING}">parking</a>. '
+    mapa_fonte_en = (f'Data: <a href="{LINK_PARQUE}">NPS – conditions</a>, '
+                     f'<a href="{LINK_PARKING}">parking</a> and '
+                     f'<a href="{LINK_VIEWING}">eruption viewpoints</a>. '
                      f'Tap a point to see the alert or stall count and open it in Google Maps. '
                      f'Lots are often full by 10 am. '
                      f'Driving times from Hilo and Kona are no-traffic estimates via Hwy 11; '
@@ -902,6 +966,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "leg_caution": "Atenção",
                 "leg_closure": "Fechamento",
                 "leg_estac": "Estacionamento",
+                "leg_mirante": "Mirante da erupção",
                 "h_aviso": ("Último aviso do HVO (tradução automática do inglês)"
                             if aviso_pt else "Último aviso do HVO (original em inglês)"),
                 "h_live": "Transmissões ao vivo",
@@ -955,6 +1020,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "leg_caution": "Caution",
                 "leg_closure": "Closure",
                 "leg_estac": "Parking",
+                "leg_mirante": "Eruption viewpoint",
                 "h_aviso": "Latest HVO notice",
                 "h_live": "Live streams",
                 "live_nota": ("Players are checked every 5 minutes. If one goes offline, "
@@ -1064,6 +1130,17 @@ function popEstac(p) {
   return h + '<p><a href="' + g + '" target="_blank" rel="noopener">' +
          (pt ? 'Como chegar (Google Maps)' : 'Directions (Google Maps)') + '</a></p></div>';
 }
+function popMirante(m) {
+  const pt = curLang === 'pt';
+  const g = 'https://www.google.com/maps/search/?api=1&query=' + m.lat + ',' + m.lng;
+  let h = '<div class="pop"><p><span class="cat cat-mirante">&#9733;</span> <strong>' +
+          escT(m.n) + '</strong></p>' +
+          '<p class="pop-loc">' + (pt ? 'Mirante oficial da erupção (NPS)' : 'Official eruption viewpoint (NPS)') + '</p>' +
+          '<p>' + escT(pt ? m.d_pt : m.d) + '</p>';
+  return h + '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a> &middot; ' +
+         '<a href="' + m.url + '" target="_blank" rel="noopener">' +
+         (pt ? 'Detalhes' : 'Details') + '</a></p></div>';
+}
 function initMapa() {
   if (mapa || typeof L === 'undefined') return;
   const el = document.getElementById('mapa');
@@ -1076,6 +1153,11 @@ function initMapa() {
   sat.addTo(mapa);
   L.control.layers({ 'Satélite': sat, 'Mapa': ruas }).addTo(mapa);
   const bounds = [];
+  for (const m of MAPA_DADOS.mirantes || []) {
+    L.marker([m.lat, m.lng], { icon: L.divIcon({ className: 'mv-ico', html: '&#9733;', iconSize: [24, 24], iconAnchor: [12, 12] }), zIndexOffset: 500 })
+      .addTo(mapa).bindPopup(() => popMirante(m));
+    bounds.push([m.lat, m.lng]);
+  }
   for (const p of MAPA_DADOS.estac) {
     L.marker([p.lat, p.lng], { icon: L.divIcon({ className: 'pk-ico', html: 'P', iconSize: [22, 22], iconAnchor: [11, 11] }) })
       .addTo(mapa).bindPopup(() => popEstac(p));
@@ -1309,6 +1391,10 @@ figcaption {{ margin-top: 5px; }}
 .pk-ico {{ background: #2e6fdb; color: #fff; border-radius: 50%; border: 2px solid #fff;
            font: 700 12px/18px -apple-system, Segoe UI, sans-serif; text-align: center;
            box-shadow: 0 1px 4px rgba(0,0,0,.5); }}
+.mv-ico {{ background: #8e44ad; color: #ffd76a; border-radius: 50%; border: 2px solid #fff;
+           font: 700 14px/20px -apple-system, Segoe UI, sans-serif; text-align: center;
+           box-shadow: 0 1px 4px rgba(0,0,0,.5); }}
+.cat-mirante {{ background: #8e44ad; }}
 .pop p {{ margin: 5px 0; }}
 .pop-loc {{ color: #666; font-size: .85em; }}
 .leaflet-popup-content {{ font-size: .95em; line-height: 1.45; }}
@@ -1386,6 +1472,7 @@ figcaption {{ margin-top: 5px; }}
 </div>
 <div id="mapa"></div>
 <div class="legenda">
+<span><i class="ldot" style="background:#8e44ad"></i><span data-i18n="leg_mirante"></span></span>
 <span><i class="ldot" style="background:#ff4a2e"></i><span data-i18n="leg_danger"></span></span>
 <span><i class="ldot" style="background:#e0a400"></i><span data-i18n="leg_caution"></span></span>
 <span><i class="ldot" style="background:#8f9bb0"></i><span data-i18n="leg_closure"></span></span>
