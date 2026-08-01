@@ -2,45 +2,58 @@ name: Kilauea monitor
 
 on:
   schedule:
+    # Pedimos de 5 em 5 min, mas o agendador do GitHub e "melhor esforco" e na
+    # pratica dispara ~1x por hora. Por isso cada execucao roda um LACO interno
+    # de 5 em 5 minutos durante ~1 hora (ver o step "Vigiar o vulcao").
     - cron: "*/5 * * * *"
   workflow_dispatch: {}
 
 permissions:
   contents: write
 
+# Uma execucao nova substitui a anterior: evita fila de jobs de 1 hora
+# empilhados e garante que o laco em andamento seja sempre o mais recente.
 concurrency:
   group: kilauea-monitor
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verificar o vulcao
+      - name: Vigiar o vulcao (laco de 5 em 5 min por ~1 hora)
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
           PA_TOKEN: ${{ secrets.PA_TOKEN }}
           PA_USER: rafaelcortopassi
-        run: python3 monitor.py
-
-      - name: Salvar estado (se mudou)
         run: |
           git config user.name "kilauea-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add state/
-          if ! git diff --cached --quiet; then
-            git pull --rebase
-            git commit -m "estado: $(date -u +%Y-%m-%dT%H:%MZ)"
-            git push
-          fi
+          for i in $(seq 1 12); do
+            echo "::group::verificacao $i de 12 ($(date -u +%H:%M:%S) UTC)"
+            # "|| true": falha de rede numa iteracao nao pode abortar a hora toda
+            python3 monitor.py || echo "AVISO: iteracao $i falhou; seguindo"
+            # commit a cada iteracao: se esta execucao for cancelada por uma nova,
+            # o estado ja gravado nao se perde (evita push duplicado depois)
+            if ! git diff --quiet state/; then
+              git add state/
+              git commit -q -m "estado: $(date -u +%Y-%m-%dT%H:%MZ)"
+              git pull -q --rebase && git push -q || echo "AVISO: push do estado falhou"
+            fi
+            echo "::endgroup::"
+            if [ "$i" -lt 12 ]; then sleep 300; fi
+          done
 
       # O GitHub desliga crons de repositorios sem atividade ha 60 dias.
       # Entre episodios o estado pode ficar semanas sem mudar, entao um
       # commit vazio mensal mantem o agendamento vivo.
       - name: Keepalive (commit vazio se o repo esta parado ha 25+ dias)
+        if: always()
         run: |
           ULTIMO=$(git log -1 --format=%ct)
           AGORA=$(date +%s)
