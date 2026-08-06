@@ -114,6 +114,14 @@ LOCAIS_ALERTA = [
      "Halemaʻumaʻu (erupting crater)", 19.4067, -155.2800),
 ]
 
+# DE ONDE SAI A LAVA. Todos os episodios desde 23/12/2024 vem da MESMA cratera,
+# a Halemaumau, dentro da caldeira do cume; dentro dela ha duas bocas (norte e
+# sul), lado a lado, no setor SUDOESTE do piso. O USGS nao publica a coordenada
+# de cada boca, entao marcamos a cratera e desenhamos a AREA aproximada delas.
+HALEMAUMAU = (19.4067, -155.2800)
+BOCAS_APROX = (19.4052, -155.2830)
+BOCAS_RAIO_M = 350
+
 # Avisos fixos ("Park Notices" e politicas da pagina de condicoes do NPS,
 # que NAO vem pela API de alertas). Textos ja escritos nas duas linguas.
 AVISOS_FIXOS = [
@@ -893,6 +901,38 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             f'<figcaption class="mono" data-i18n="gcap_{i}"></figcaption></figure>'
         )
 
+    # --- de onde sai a lava (texto do popup da cratera no mapa)
+    ep_txt_pt = ep_txt_en = ""
+    if ult.get("ep"):
+        di, df = fmt_data(ult.get("inicio", ""), "pt"), fmt_data(ult.get("fim", ""), "pt")
+        ei, ef = fmt_data(ult.get("inicio", ""), "en"), fmt_data(ult.get("fim", ""), "en")
+        quando_pt = f" ({di} a {df})" if di and df else (f" ({di})" if di else "")
+        quando_en = f" ({ei} to {ef})" if ei and ef else (f" ({ei})" if ei else "")
+        ep_txt_pt = (f"O episódio {ult['ep']}{quando_pt}, o mais recente, "
+                     f"saiu daqui. ")
+        ep_txt_en = (f"Episode {ult['ep']}{quando_en}, the most recent one, "
+                     f"came from here. ")
+    erup_pt = (
+        "Todos os episódios desde 23/12/2024 saem desta mesma cratera, a "
+        "Halemaʻumaʻu, dentro da caldeira do cume. Não é uma cratera nova a cada vez. "
+        + ep_txt_pt +
+        "Dentro dela existem duas bocas lado a lado, no setor sudoeste do piso: "
+        "a boca norte e a boca sul. A boca norte é a que tem jorrado mais alto nos "
+        "últimos episódios; a sul costuma só brilhar ou soltar chamas. "
+        "O círculo tracejado é a área aproximada das bocas: o USGS não publica a "
+        "coordenada exata de cada uma."
+    )
+    erup_en = (
+        "Every episode since Dec 23, 2024 comes from this same crater, "
+        "Halemaʻumaʻu, inside the summit caldera. It is not a new crater each time. "
+        + ep_txt_en +
+        "Inside it there are two vents side by side, on the southwest part of the "
+        "floor: the north vent and the south vent. The north vent has produced the "
+        "tallest fountains in recent episodes; the south one usually just glows or "
+        "emits flames. The dashed circle is the approximate vent area: the USGS does "
+        "not publish exact coordinates for each vent."
+    )
+
     # --- avisos do parque nacional + dados do mapa
     alertas_html_pt = _bloco_alertas(alertas, "pt")
     alertas_html_en = _bloco_alertas(alertas, "en")
@@ -917,6 +957,13 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             {"n": n, "d_pt": dpt, "d": den, "lat": la, "lng": ln, "url": url}
             for (n, dpt, den, la, ln, url) in MIRANTES
         ],
+        "erupcao": {
+            "lat": HALEMAUMAU[0], "lng": HALEMAUMAU[1],
+            "blat": BOCAS_APROX[0], "blng": BOCAS_APROX[1], "raio": BOCAS_RAIO_M,
+            "t_pt": "Halemaʻumaʻu: é daqui que sai a lava",
+            "t": "Halemaʻumaʻu: this is where the lava comes out",
+            "d_pt": erup_pt, "d": erup_en,
+        },
     }
     alertas_fonte_pt = f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>'
     alertas_fonte_en = f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>'
@@ -957,7 +1004,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "tab_fotos": "Fotos",
                 "tab_mapa": "Mapa",
                 "h_alertas": f"Avisos ativos do parque nacional ({len(alertas)})",
-                "h_mapa": "Mapa dos avisos e estacionamentos",
+                "h_mapa": "Mapa: de onde sai a lava, avisos e estacionamentos",
+                "leg_erup": "Bocas da erupção (Halemaʻumaʻu)",
                 "mp_cume": "Cume do Kīlauea",
                 "mp_coc": "Fim da Chain of Craters",
                 "mp_kahuku": "Kahuku",
@@ -1011,7 +1059,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "tab_fotos": "Photos",
                 "tab_mapa": "Map",
                 "h_alertas": f"Active national park alerts ({len(alertas)})",
-                "h_mapa": "Map of alerts and parking",
+                "h_mapa": "Map: where the lava comes from, alerts and parking",
+                "leg_erup": "Eruption vents (Halemaʻumaʻu)",
                 "mp_cume": "Kīlauea summit",
                 "mp_coc": "End of Chain of Craters",
                 "mp_kahuku": "Kahuku",
@@ -1141,6 +1190,13 @@ function popMirante(m) {
          '<a href="' + m.url + '" target="_blank" rel="noopener">' +
          (pt ? 'Detalhes' : 'Details') + '</a></p></div>';
 }
+function popErupcao(E) {
+  const pt = curLang === 'pt';
+  const g = 'https://www.google.com/maps/search/?api=1&query=' + E.lat + ',' + E.lng;
+  return '<div class="pop"><p><span class="cat cat-erup">&#9650;</span> <strong>' +
+         escT(pt ? E.t_pt : E.t) + '</strong></p><p>' + escT(pt ? E.d_pt : E.d) + '</p>' +
+         '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a></p></div>';
+}
 function initMapa() {
   if (mapa || typeof L === 'undefined') return;
   const el = document.getElementById('mapa');
@@ -1168,6 +1224,18 @@ function initMapa() {
       fillColor: CORES_CAT[a.cat] || CORES_CAT.info, fillOpacity: .95 })
       .addTo(mapa).bindPopup(() => popAlerta(a));
     if (!a.longe) bounds.push([a.lat, a.lng]);
+  }
+  // A fonte da erupcao entra por ULTIMO para ficar por cima de tudo: sem isso
+  // o mapa mostra so avisos e estacionamentos e ninguem descobre de onde sai a lava.
+  const E = MAPA_DADOS.erupcao;
+  if (E) {
+    L.circle([E.blat, E.blng], { radius: E.raio, color: '#ff7043', weight: 2,
+      dashArray: '7 7', fillColor: '#ff5722', fillOpacity: .25 })
+      .addTo(mapa).bindPopup(() => popErupcao(E));
+    L.marker([E.lat, E.lng], { zIndexOffset: 1000, icon: L.divIcon({
+      className: 'er-ico', html: '&#9650;', iconSize: [30, 30], iconAnchor: [15, 15] }) })
+      .addTo(mapa).bindPopup(() => popErupcao(E));
+    bounds.push([E.lat, E.lng], [E.blat, E.blng]);
   }
   // o container pode estar sem tamanho no primeiro load (aba salva = mapa,
   // janela oculta...): espera ter largura real antes do fitBounds, senao
@@ -1395,6 +1463,12 @@ figcaption {{ margin-top: 5px; }}
            font: 700 14px/20px -apple-system, Segoe UI, sans-serif; text-align: center;
            box-shadow: 0 1px 4px rgba(0,0,0,.5); }}
 .cat-mirante {{ background: #8e44ad; }}
+.cat-erup {{ background: #ff5722; border-radius: 50%; padding: 2px 7px; }}
+.er-ico {{ background: #ff5722; color: #fff; border-radius: 50%; border: 3px solid #fff;
+           text-align: center; font-size: 15px; line-height: 24px; font-weight: 700;
+           box-shadow: 0 0 0 4px rgba(255,87,34,.35), 0 2px 8px rgba(0,0,0,.5); }}
+.ldot-erup {{ background: #ff5722; color: #fff; text-align: center; font-size: 9px;
+              line-height: 12px; font-style: normal; }}
 .pop p {{ margin: 5px 0; }}
 .pop-loc {{ color: #666; font-size: .85em; }}
 .leaflet-popup-content {{ font-size: .95em; line-height: 1.45; }}
@@ -1472,6 +1546,7 @@ figcaption {{ margin-top: 5px; }}
 </div>
 <div id="mapa"></div>
 <div class="legenda">
+<span><i class="ldot ldot-erup">&#9650;</i><span data-i18n="leg_erup"></span></span>
 <span><i class="ldot" style="background:#8e44ad"></i><span data-i18n="leg_mirante"></span></span>
 <span><i class="ldot" style="background:#ff4a2e"></i><span data-i18n="leg_danger"></span></span>
 <span><i class="ldot" style="background:#e0a400"></i><span data-i18n="leg_caution"></span></span>

@@ -8,9 +8,16 @@
       "embed": true
     },
     {
-      "id": "c1EH9TQ2XR0",
-      "titulo": "Kilauea Volcano Eruption Live, 24/7 Live Cam and USGS Data",
-      "canal": "Lava Watchers",
+      "id": "FVdmnpJ2kM0",
+      "titulo": "🔴 Live Now:  24/7 Kilauea Volcano Watch in Hawaii (Multi-cams)",
+      "canal": "afarTV",
+      "live": true,
+      "embed": true
+    },
+    {
+      "id": "Nvjf1vZZrkk",
+      "titulo": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam C)",
+      "canal": "afarTV",
       "live": true,
       "embed": true
     }
