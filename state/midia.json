@@ -1,36 +1,14 @@
 {
   "lives": [
     {
-      "id": "gXKuUyKt8mc",
-      "titulo": "[V3cam] Kīlauea volcano, Hawaii (south Halemaʻumaʻu crater)",
+      "id": "Tz5tPqRRv1Y",
+      "titulo": "[V2cam] Kīlauea volcano, Hawaii (east Halemaʻumaʻu crater)",
       "canal": "USGS",
       "live": true,
       "embed": true
-    },
-    {
-      "id": "FVdmnpJ2kM0",
-      "titulo": "🔴 Live Now:  24/7 Kilauea Volcano Watch in Hawaii (Multi-cams)",
-      "canal": "afarTV",
-      "live": true,
-      "embed": true
-    },
-    {
-      "id": "Nvjf1vZZrkk",
-      "titulo": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam C)",
-      "canal": "afarTV",
-      "live": true,
-      "embed": true
     }
   ],
-  "lives_link": [
-    {
-      "id": "iws3rh5vLAQ",
-      "titulo": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam A)",
-      "canal": "afarTV",
-      "live": true,
-      "embed": false
-    }
-  ],
+  "lives_link": [],
   "fotos": {
     "slug": "/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
     "titulo": "Photo & Video Chronology — Full moon and lava fountain: Kīlauea summit episode 52",
