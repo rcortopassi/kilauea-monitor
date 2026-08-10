@@ -36,6 +36,9 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           for i in $(seq 1 12); do
             echo "::group::verificacao $i de 12 ($(date -u +%H:%M:%S) UTC)"
+            # o job dura ~1h com o codigo do checkout inicial; sem este pull ele
+            # continuaria publicando a versao velha por cima de qualquer commit novo
+            git pull -q --rebase 2>/dev/null || { git rebase --abort 2>/dev/null; true; }
             # "|| true": falha de rede numa iteracao nao pode abortar a hora toda
             python3 monitor.py || echo "AVISO: iteracao $i falhou; seguindo"
             # commit a cada iteracao: se esta execucao for cancelada por uma nova,

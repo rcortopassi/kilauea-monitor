@@ -1315,8 +1315,10 @@ function initMapa() {
       L.polyline([[c.lat, c.lng], [E.blat, E.blng]], { color: '#4fc3f7', weight: 2,
         opacity: c.ativa ? .75 : .35, dashArray: '4 8' }).addTo(mapa);
       L.marker([c.lat, c.lng], { zIndexOffset: 800, icon: L.divIcon({
-        className: 'cam-ico' + (c.ativa ? '' : ' cam-off'), html: c.n,
-        iconSize: [46, 22], iconAnchor: [23, 11] }) })
+        className: 'cam-ico' + (c.ativa ? '' : ' cam-off'),
+        html: '<span class="cam-dot"><svg viewBox="0 0 24 24"><path d="M9 3l-1.5 2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.5L15 3H9zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5z"/></svg></span>'
+              + '<span class="cam-tag">' + c.n + '</span>',
+        iconSize: [40, 42], iconAnchor: [20, 21] }) })
         .addTo(mapa).bindPopup(() => popCamera(c));
       bounds.push([c.lat, c.lng]);
     }
@@ -1549,11 +1551,16 @@ figcaption {{ margin-top: 5px; }}
 .cat-mirante {{ background: #8e44ad; }}
 .cat-erup {{ background: #ff5722; border-radius: 50%; padding: 2px 7px; }}
 .cat-cam {{ background: #0288d1; border-radius: 50%; padding: 2px 7px; }}
-.cam-ico {{ background: #0288d1; color: #fff; border: 2px solid #fff; border-radius: 11px;
-            text-align: center; font-size: 11px; line-height: 18px; font-weight: 700;
-            letter-spacing: .3px; box-shadow: 0 2px 6px rgba(0,0,0,.5); }}
-.cam-ico.cam-off {{ background: #62727b; opacity: .75; }}
-.ldot-cam {{ background: #0288d1; }}
+.cam-ico {{ text-align: center; background: none; border: 0; }}
+.cam-dot {{ display: block; width: 26px; height: 26px; margin: 0 auto; background: #0288d1;
+            border: 2px solid #fff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,.55); }}
+.cam-dot svg {{ width: 15px; height: 15px; margin-top: 5.5px; fill: #fff; }}
+.cam-tag {{ display: block; margin-top: 2px; font-size: 10px; font-weight: 700; color: #fff;
+            text-shadow: 0 1px 3px #000, 0 0 3px #000; letter-spacing: .3px; }}
+.cam-ico.cam-off .cam-dot {{ background: #62727b; }}
+.cam-ico.cam-off {{ opacity: .7; }}
+.ldot-cam {{ background: #0288d1; line-height: 12px; }}
+.ldot-cam svg {{ width: 8px; height: 8px; fill: #fff; }}
 .er-ico {{ background: #ff5722; color: #fff; border-radius: 50%; border: 3px solid #fff;
            text-align: center; font-size: 15px; line-height: 24px; font-weight: 700;
            box-shadow: 0 0 0 4px rgba(255,87,34,.35), 0 2px 8px rgba(0,0,0,.5); }}
@@ -1637,7 +1644,7 @@ figcaption {{ margin-top: 5px; }}
 <div id="mapa"></div>
 <div class="legenda">
 <span><i class="ldot ldot-erup">&#9650;</i><span data-i18n="leg_erup"></span></span>
-<span><i class="ldot ldot-cam"></i><span data-i18n="leg_cam"></span></span>
+<span><i class="ldot ldot-cam"><svg viewBox="0 0 24 24"><path d="M9 3l-1.5 2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.5L15 3H9zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5z"/></svg></i><span data-i18n="leg_cam"></span></span>
 <span><i class="ldot" style="background:#8e44ad"></i><span data-i18n="leg_mirante"></span></span>
 <span><i class="ldot" style="background:#ff4a2e"></i><span data-i18n="leg_danger"></span></span>
 <span><i class="ldot" style="background:#e0a400"></i><span data-i18n="leg_caution"></span></span>
