@@ -142,6 +142,28 @@ HALEMAUMAU = (19.4067, -155.2800)
 BOCAS_APROX = (19.4052, -155.2830)
 BOCAS_RAIO_M = 350
 
+# De onde cada camera do USGS filma. O USGS publica apenas o SETOR da borda
+# ("northwest rim of Halemaumau", "northeast rim of the summit caldera",
+# "southern rim of the summit caldera"), nunca a coordenada; e as tres sao
+# pan-tilt-zoom, ou seja, o enquadramento muda conforme a atividade. Logo: a
+# posicao aqui e aproximada dentro do setor certo e a linha ate as bocas
+# indica a direcao geral do olhar, nao o campo de visao exato.
+CAMERAS = [
+    ("HggWKlZv9yk", "V1cam", 19.4110, -155.2850,
+     "Borda noroeste da própria cratera Halemaʻumaʻu. É a mais próxima das bocas.",
+     "Northwest rim of Halemaʻumaʻu crater itself. The closest one to the vents."),
+    ("Tz5tPqRRv1Y", "V2cam", 19.4270, -155.2610,
+     "Borda nordeste da caldeira do cume. É a mais distante: mostra a cratera "
+     "inteira, de longe.",
+     "Northeast rim of the summit caldera. The farthest one: it shows the whole "
+     "crater from a distance."),
+    ("gXKuUyKt8mc", "V3cam", 19.3970, -155.2760,
+     "Borda sul da caldeira do cume. É a que o próprio USGS descreve como a vista "
+     "ao vivo das bocas que entram em erupção no setor sudoeste do Halemaʻumaʻu.",
+     "South rim of the summit caldera. USGS describes it as the live view of the "
+     "vents that erupt in the southwest part of Halemaʻumaʻu."),
+]
+
 # Avisos fixos ("Park Notices" e politicas da pagina de condicoes do NPS,
 # que NAO vem pela API de alertas). Textos ja escritos nas duas linguas.
 AVISOS_FIXOS = [
@@ -986,6 +1008,11 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             "t": "Halemaʻumaʻu: this is where the lava comes out",
             "d_pt": erup_pt, "d": erup_en,
         },
+        "cameras": [
+            {"id": vid, "n": nome, "lat": la, "lng": ln, "d_pt": dpt, "d": den,
+             "ativa": any(s["id"] == vid for s in lives)}
+            for (vid, nome, la, ln, dpt, den) in CAMERAS
+        ],
     }
     alertas_fonte_pt = f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>'
     alertas_fonte_en = f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>'
@@ -1028,6 +1055,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "h_alertas": f"Avisos ativos do parque nacional ({len(alertas)})",
                 "h_mapa": "Mapa: de onde sai a lava, avisos e estacionamentos",
                 "leg_erup": "Bocas da erupção (Halemaʻumaʻu)",
+                "leg_cam": "Câmeras ao vivo do USGS e o que elas olham",
                 "mp_cume": "Cume do Kīlauea",
                 "mp_coc": "Fim da Chain of Craters",
                 "mp_kahuku": "Kahuku",
@@ -1083,6 +1111,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "h_alertas": f"Active national park alerts ({len(alertas)})",
                 "h_mapa": "Map: where the lava comes from, alerts and parking",
                 "leg_erup": "Eruption vents (Halemaʻumaʻu)",
+                "leg_cam": "USGS live cameras and what they look at",
                 "mp_cume": "Kīlauea summit",
                 "mp_coc": "End of Chain of Craters",
                 "mp_kahuku": "Kahuku",
@@ -1222,6 +1251,26 @@ function popErupcao(E) {
          escT(pt ? E.t_pt : E.t) + '</strong></p><p>' + escT(pt ? E.d_pt : E.d) + '</p>' +
          '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a></p></div>';
 }
+function popCamera(c) {
+  const pt = curLang === 'pt';
+  let h = '<div class="pop"><p><span class="cat cat-cam">&#9679;</span> <strong>USGS ' +
+          escT(c.n) + '</strong></p><p>' + escT(pt ? c.d_pt : c.d) + '</p>' +
+          '<p class="pop-loc">' + (pt
+            ? 'Posição aproximada: o USGS informa só o setor da borda. A câmera é '
+              + 'pan-tilt-zoom, então o enquadramento muda conforme a atividade.'
+            : 'Approximate position: USGS only states the rim sector. It is a '
+              + 'pan-tilt-zoom camera, so the framing changes with activity.') + '</p>';
+  if (c.ativa) h += '<p><a href="#" onclick="return verLive()">' +
+                    (pt ? 'Ver esta transmissão ao vivo' : 'Watch this stream live') + '</a></p>';
+  return h + '</div>';
+}
+// funcao propria: evita aspas aninhadas dentro do onclick (ja quebrou o script uma vez)
+function verLive() {
+  setTab('live');
+  const p = document.querySelector('[data-pane="live"]');
+  if (p) p.scrollIntoView();
+  return false;
+}
 function initMapa() {
   if (mapa || typeof L === 'undefined') return;
   const el = document.getElementById('mapa');
@@ -1261,6 +1310,16 @@ function initMapa() {
       className: 'er-ico', html: '&#9650;', iconSize: [30, 30], iconAnchor: [15, 15] }) })
       .addTo(mapa).bindPopup(() => popErupcao(E));
     bounds.push([E.lat, E.lng], [E.blat, E.blng]);
+    // cada camera do USGS e a linha ate as bocas (direcao geral do olhar)
+    for (const c of MAPA_DADOS.cameras || []) {
+      L.polyline([[c.lat, c.lng], [E.blat, E.blng]], { color: '#4fc3f7', weight: 2,
+        opacity: c.ativa ? .75 : .35, dashArray: '4 8' }).addTo(mapa);
+      L.marker([c.lat, c.lng], { zIndexOffset: 800, icon: L.divIcon({
+        className: 'cam-ico' + (c.ativa ? '' : ' cam-off'), html: c.n,
+        iconSize: [46, 22], iconAnchor: [23, 11] }) })
+        .addTo(mapa).bindPopup(() => popCamera(c));
+      bounds.push([c.lat, c.lng]);
+    }
   }
   // o container pode estar sem tamanho no primeiro load (aba salva = mapa,
   // janela oculta...): espera ter largura real antes do fitBounds, senao
@@ -1489,6 +1548,12 @@ figcaption {{ margin-top: 5px; }}
            box-shadow: 0 1px 4px rgba(0,0,0,.5); }}
 .cat-mirante {{ background: #8e44ad; }}
 .cat-erup {{ background: #ff5722; border-radius: 50%; padding: 2px 7px; }}
+.cat-cam {{ background: #0288d1; border-radius: 50%; padding: 2px 7px; }}
+.cam-ico {{ background: #0288d1; color: #fff; border: 2px solid #fff; border-radius: 11px;
+            text-align: center; font-size: 11px; line-height: 18px; font-weight: 700;
+            letter-spacing: .3px; box-shadow: 0 2px 6px rgba(0,0,0,.5); }}
+.cam-ico.cam-off {{ background: #62727b; opacity: .75; }}
+.ldot-cam {{ background: #0288d1; }}
 .er-ico {{ background: #ff5722; color: #fff; border-radius: 50%; border: 3px solid #fff;
            text-align: center; font-size: 15px; line-height: 24px; font-weight: 700;
            box-shadow: 0 0 0 4px rgba(255,87,34,.35), 0 2px 8px rgba(0,0,0,.5); }}
@@ -1572,6 +1637,7 @@ figcaption {{ margin-top: 5px; }}
 <div id="mapa"></div>
 <div class="legenda">
 <span><i class="ldot ldot-erup">&#9650;</i><span data-i18n="leg_erup"></span></span>
+<span><i class="ldot ldot-cam"></i><span data-i18n="leg_cam"></span></span>
 <span><i class="ldot" style="background:#8e44ad"></i><span data-i18n="leg_mirante"></span></span>
 <span><i class="ldot" style="background:#ff4a2e"></i><span data-i18n="leg_danger"></span></span>
 <span><i class="ldot" style="background:#e0a400"></i><span data-i18n="leg_caution"></span></span>
