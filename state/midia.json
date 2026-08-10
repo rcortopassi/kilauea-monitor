@@ -1,6 +1,20 @@
 {
   "lives": [
     {
+      "id": "HggWKlZv9yk",
+      "titulo": "[V1cam] Kīlauea volcano, Hawaii (west Halemaʻumaʻu crater)",
+      "canal": "USGS",
+      "live": true,
+      "embed": true
+    },
+    {
+      "id": "gXKuUyKt8mc",
+      "titulo": "[V3cam] Kīlauea volcano, Hawaii (south Halemaʻumaʻu crater)",
+      "canal": "USGS",
+      "live": true,
+      "embed": true
+    },
+    {
       "id": "Tz5tPqRRv1Y",
       "titulo": "[V2cam] Kīlauea volcano, Hawaii (east Halemaʻumaʻu crater)",
       "canal": "USGS",

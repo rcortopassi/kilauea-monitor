@@ -47,7 +47,27 @@ NOTICE_URL = "https://volcanoes.usgs.gov/hans-public/api/notice/getNotice/{ident
 CHRONO_URL = "https://www.usgs.gov/volcanoes/kilauea/photo-and-video-chronology"
 
 # Lives conhecidas de monitoramento continuo do Kilauea (a ordem importa)
-LIVES_FIXAS = ["gXKuUyKt8mc", "c1EH9TQ2XR0", "iws3rh5vLAQ"]
+# As tres cameras OFICIAIS do USGS no Halemaumau vem primeiro: imagem melhor e
+# fonte primaria. As de terceiros ficam como reserva, so entram se as oficiais
+# sairem do ar (o codigo pega as 3 primeiras que estiverem vivas e com embed).
+LIVES_FIXAS = [
+    "HggWKlZv9yk",  # USGS V1cam - oeste da cratera
+    "gXKuUyKt8mc",  # USGS V3cam - sul da cratera
+    "Tz5tPqRRv1Y",  # USGS V2cam - leste da cratera
+    "c1EH9TQ2XR0",  # Lava Watchers (reserva)
+    "FVdmnpJ2kM0",  # afarTV (reserva)
+]
+
+# Legenda curta por camera conhecida: id -> (pt, en). O titulo do YouTube so
+# existe em ingles, entao isto e o que o visitante brasileiro le.
+LIVES_ROTULO = {
+    "HggWKlZv9yk": ("USGS V1cam, lado oeste da cratera Halemaʻumaʻu",
+                    "USGS V1cam, west side of Halemaʻumaʻu crater"),
+    "Tz5tPqRRv1Y": ("USGS V2cam, lado leste da cratera Halemaʻumaʻu",
+                    "USGS V2cam, east side of Halemaʻumaʻu crater"),
+    "gXKuUyKt8mc": ("USGS V3cam, lado sul da cratera Halemaʻumaʻu",
+                    "USGS V3cam, south side of Halemaʻumaʻu crater"),
+}
 BUSCA_LIVES = ("https://www.youtube.com/results"
                "?search_query=kilauea+volcano+live+eruption&sp=EgJAAQ%3D%3D")
 
@@ -791,11 +811,13 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
     aviso_pt_html = aviso_pt or aviso_en  # sem traducao, cai no original
 
     # --- aba Ao vivo (players fora do i18n para nao recarregar ao trocar idioma)
-    lives_html = ""
-    for s in lives:
+    lives_html, lcaps = "", {}
+    for i, s in enumerate(lives):
         rot = html_mod.escape(f"{s['titulo']} ({s['canal']})" if s["canal"] else s["titulo"])
+        pt_rot, en_rot = LIVES_ROTULO.get(s["id"], ("", ""))
+        lcaps[f"lcap_{i}"] = {"pt": pt_rot or rot, "en": en_rot or rot}
         lives_html += (
-            f'<p class="mono">{rot}</p>'
+            f'<p class="mono" data-i18n="lcap_{i}"></p>'
             f'<div class="video"><iframe data-src="https://www.youtube-nocookie.com/embed/{s["id"]}" '
             f'title="{rot}" allowfullscreen loading="lazy"></iframe></div>'
         )
@@ -1104,6 +1126,9 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         i18n["pt"]["text"][k] = v["pt"]
         i18n["en"]["text"][k] = v["en"]
     for k, v in gcaps.items():
+        i18n["pt"]["text"][k] = v["pt"]
+        i18n["en"]["text"][k] = v["en"]
+    for k, v in lcaps.items():
         i18n["pt"]["text"][k] = v["pt"]
         i18n["en"]["text"][k] = v["en"]
 
