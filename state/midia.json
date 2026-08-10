@@ -64,5 +64,37 @@
     "ep": 52,
     "inicio": "2026-07-28",
     "fim": "2026-07-29"
+  },
+  "mirantes_fotos": {
+    "https://www.nps.gov/places/eruption-viewing-near-welcome-center.htm": {
+      "src": "https://www.nps.gov/common/uploads/cropped_image/primary/941B8CDB-D8EE-1395-3D80F7E1B426B79E.jpg",
+      "cap_en": "A couple views an eruption at night.",
+      "cap_pt": "Um casal vê uma erupção à noite."
+    },
+    "https://www.nps.gov/places/eruption-viewing-from-uekahuna.htm": {
+      "src": "https://www.nps.gov/common/uploads/cropped_image/primary/B4C9C9F0-920B-464A-F076B9F7F04AB765.jpg",
+      "cap_en": "Group of visitors viewing the eruption from the crater's edge.",
+      "cap_pt": "Grupo de visitantes observando a erupção da borda da cratera."
+    },
+    "https://www.nps.gov/places/eruption-viewing-from-kapalikapuokamohoalii.htm": {
+      "src": "https://www.nps.gov/common/uploads/cropped_image/primary/B6A48749-9E6C-9C23-7C5B26EE300CE221.jpg",
+      "cap_en": "Molten lava within a crater at night.",
+      "cap_pt": "Lava derretida dentro de uma cratera à noite."
+    },
+    "https://www.nps.gov/places/eruption-viewing-at-keanakakoi.htm": {
+      "src": "https://www.nps.gov/common/uploads/cropped_image/primary/B712E995-DD5A-D381-5C179B495F9ECFEC.jpg",
+      "cap_en": "Visitors view an eruption within a crater.",
+      "cap_pt": "Visitantes observam uma erupção dentro de uma cratera."
+    },
+    "https://www.nps.gov/places/eruption-viewing-from-wahinekapu.htm": {
+      "src": "https://www.nps.gov/common/uploads/cropped_image/primary/B78E5C81-F8D5-F7FC-AAD1258EFA3F486D.jpg",
+      "cap_en": "Lava within a volcanic crater.",
+      "cap_pt": "Lava dentro de uma cratera vulcânica."
+    },
+    "https://www.nps.gov/places/eruption-viewing-from-kupinai-pali.htm": {
+      "src": "https://www.nps.gov/common/uploads/cropped_image/primary/B84C6831-DD65-21E1-AEBCA159B627AE18.jpg",
+      "cap_en": "Visitors look into an erupting crater.",
+      "cap_pt": "Visitantes olham para uma cratera em erupção."
+    }
   }
 }

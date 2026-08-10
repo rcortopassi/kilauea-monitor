@@ -687,6 +687,36 @@ def push_ntfy(titulo, corpo, prioridade="default", tags="", click=""):
         print(f"ERRO no push: {e}")
 
 
+def fotos_mirantes(cache):
+    """Foto de cada mirante tirada DO PROPRIO ponto de vista, da pagina do NPS
+    daquele mirante (dominio publico). Cacheada por URL: essas paginas mudam
+    muito raramente, entao so busca o que ainda nao tem."""
+    out = dict(cache.get("mirantes_fotos") or {})
+    for (nome, _dpt, _den, _la, _ln, url) in MIRANTES:
+        if out.get(url, {}).get("src"):
+            continue
+        try:
+            h = fetch_text(url, ua=UA_NAV)
+            m = re.search(r'<img[^>]+src="(/common/uploads/cropped_image/[^"]+)"[^>]*>', h)
+            if not m:
+                print(f"aviso: sem foto na pagina do mirante {nome}")
+                continue
+            caminho = m.group(1).split("?")[0]
+            a = re.search(r'alt="([^"]*)"', m.group(0))
+            # o NPS as vezes serve o alt com barra invertida antes do apostrofo
+            cap_en = html_mod.unescape(a.group(1)).replace("\\'", "'").strip() if a else ""
+            try:
+                cap_pt = _traduz_bloco(cap_en) if cap_en else ""
+            except Exception:  # noqa: BLE001 - legenda traduzida e opcional
+                cap_pt = ""
+            out[url] = {"src": "https://www.nps.gov" + caminho,
+                        "cap_en": cap_en, "cap_pt": cap_pt}
+            print(f"foto do mirante {nome}: ok")
+        except Exception as e:  # noqa: BLE001 - foto e opcional
+            print(f"aviso: foto do mirante {nome} falhou ({e})")
+    return out
+
+
 def push_telegram(titulo, corpo, urgente=False):
     """Redundancia ao ntfy: manda o mesmo alerta por um bot do Telegram.
     Inerte se TELEGRAM_TOKEN/TELEGRAM_CHAT nao estiverem definidos."""
@@ -804,12 +834,13 @@ def _bloco_alertas(alertas, lang):
 
 def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 aviso_pt="", lives=None, lives_link=None, fotos=None, frases=None,
-                galeria=None, alertas=None):
+                galeria=None, alertas=None, mir_fotos=None):
     lives = lives or []
     lives_link = lives_link or []
     fotos = fotos or {}
     frases = frases or {}
     galeria = galeria or []
+    mir_fotos = mir_fotos or {}
     alertas = alertas or []
     cor = atual["color_code"]
     cores = {"GREEN": "#1e7e34", "YELLOW": "#b8860b", "ORANGE": "#d2691e", "RED": "#b22222"}
@@ -998,7 +1029,10 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             for (n, v, o, la, ln, opt, oen, longe, extra) in ESTACIONAMENTOS
         ],
         "mirantes": [
-            {"n": n, "d_pt": dpt, "d": den, "lat": la, "lng": ln, "url": url}
+            {"n": n, "d_pt": dpt, "d": den, "lat": la, "lng": ln, "url": url,
+             "foto": (mir_fotos.get(url) or {}).get("src", ""),
+             "fcap_pt": (mir_fotos.get(url) or {}).get("cap_pt", ""),
+             "fcap": (mir_fotos.get(url) or {}).get("cap_en", "")}
             for (n, dpt, den, la, ln, url) in MIRANTES
         ],
         "erupcao": {
@@ -1238,8 +1272,18 @@ function popMirante(m) {
   const g = 'https://www.google.com/maps/search/?api=1&query=' + m.lat + ',' + m.lng;
   let h = '<div class="pop"><p><span class="cat cat-mirante">&#9733;</span> <strong>' +
           escT(m.n) + '</strong></p>' +
-          '<p class="pop-loc">' + (pt ? 'Mirante oficial da erupção (NPS)' : 'Official eruption viewpoint (NPS)') + '</p>' +
-          '<p>' + escT(pt ? m.d_pt : m.d) + '</p>';
+          '<p class="pop-loc">' + (pt ? 'Mirante oficial da erupção (NPS)' : 'Official eruption viewpoint (NPS)') + '</p>';
+  if (m.foto) {
+    const cap = (pt ? m.fcap_pt : m.fcap) || '';
+    h += '<img class="pop-foto" loading="lazy" src="' + m.foto + '?width=520&quality=85&mode=crop"'
+       + ' data-full="' + m.foto + '?width=1600&quality=90&mode=crop"'
+       + ' data-cap="' + escT(cap) + '" alt="' + escT(cap) + '"'
+       + ' onclick="return lbMirante(this)">'
+       + '<p class="pop-cap">' + escT(cap) + ' '
+       + (pt ? '(foto do NPS, tirada deste mirante)' : '(NPS photo, taken from this viewpoint)')
+       + '</p>';
+  }
+  h += '<p>' + escT(pt ? m.d_pt : m.d) + '</p>';
   return h + '<p><a href="' + g + '" target="_blank" rel="noopener">Google Maps</a> &middot; ' +
          '<a href="' + m.url + '" target="_blank" rel="noopener">' +
          (pt ? 'Detalhes' : 'Details') + '</a></p></div>';
@@ -1285,7 +1329,7 @@ function initMapa() {
   const bounds = [];
   for (const m of MAPA_DADOS.mirantes || []) {
     L.marker([m.lat, m.lng], { icon: L.divIcon({ className: 'mv-ico', html: '&#9733;', iconSize: [24, 24], iconAnchor: [12, 12] }), zIndexOffset: 500 })
-      .addTo(mapa).bindPopup(() => popMirante(m));
+      .addTo(mapa).bindPopup(() => popMirante(m), { maxWidth: 290, autoPanPadding: [18, 18] });
     bounds.push([m.lat, m.lng]);
   }
   for (const p of MAPA_DADOS.estac) {
@@ -1352,7 +1396,7 @@ setTab(aba);
 const LB = document.getElementById('lightbox');
 const lbImg = LB.querySelector('img');
 const lbCap = LB.querySelector('.lb-cap');
-let lbLista = [], lbIdx = 0;
+let lbLista = [], lbIdx = 0, lbSolo = false;
 function lbAbre(i) {
   lbLista = [...document.querySelectorAll('.grid figure img')];
   if (!lbLista.length) return;
@@ -1365,7 +1409,18 @@ function lbAbre(i) {
   lbCap.textContent = fc ? fc.textContent : '';
   LB.classList.add('on');
 }
-function lbFecha() { LB.classList.remove('on'); lbImg.removeAttribute('src'); }
+function lbFecha() { LB.classList.remove('on'); lbImg.removeAttribute('src'); lbSolo = false; }
+// foto avulsa (mirante): abre o mesmo lightbox, mas sem navegacao pela galeria
+function lbFoto(src, cap) {
+  lbSolo = true;
+  lbImg.onerror = null;
+  lbImg.src = src;
+  lbImg.alt = cap || '';
+  lbCap.textContent = cap || '';
+  LB.classList.add('on');
+  return false;
+}
+function lbMirante(el) { return lbFoto(el.dataset.full, el.dataset.cap); }
 document.addEventListener('click', e => {
   const img = e.target.closest('.grid figure img');
   if (img) {
@@ -1374,13 +1429,14 @@ document.addEventListener('click', e => {
   }
 });
 LB.addEventListener('click', e => {
-  if (e.target.classList.contains('lb-prev')) { lbAbre(lbIdx - 1); return; }
-  if (e.target.classList.contains('lb-next')) { lbAbre(lbIdx + 1); return; }
+  if (e.target.classList.contains('lb-prev')) { if (!lbSolo) lbAbre(lbIdx - 1); return; }
+  if (e.target.classList.contains('lb-next')) { if (!lbSolo) lbAbre(lbIdx + 1); return; }
   if (e.target !== lbImg) lbFecha();
 });
 document.addEventListener('keydown', e => {
   if (!LB.classList.contains('on')) return;
   if (e.key === 'Escape') lbFecha();
+  else if (lbSolo) return;
   else if (e.key === 'ArrowLeft') lbAbre(lbIdx - 1);
   else if (e.key === 'ArrowRight') lbAbre(lbIdx + 1);
 });
@@ -1569,6 +1625,9 @@ figcaption {{ margin-top: 5px; }}
 .pop p {{ margin: 5px 0; }}
 .pop-loc {{ color: #666; font-size: .85em; }}
 .leaflet-popup-content {{ font-size: .95em; line-height: 1.45; }}
+.pop-foto {{ width: 100%; height: 118px; object-fit: cover; border-radius: 8px; display: block;
+              margin: 6px 0 4px; cursor: zoom-in; }}
+.pop-cap {{ font-size: .82em; color: #6b6157; margin: 0 0 6px; }}
 </style>
 </head>
 <body>
@@ -1794,9 +1853,11 @@ def main():
 
     STATE_FILE.write_text(json.dumps(atual, indent=2), encoding="utf-8")
     HISTORY_FILE.write_text(json.dumps(historico, indent=2), encoding="utf-8")
+    mir_fotos = fotos_mirantes(midia)
     MIDIA_CACHE.write_text(
         json.dumps({"lives": lives, "lives_link": lives_link, "fotos": fotos,
-                    "ultimo_ep": midia.get("ultimo_ep")},
+                    "ultimo_ep": midia.get("ultimo_ep"),
+                    "mirantes_fotos": mir_fotos},
                    ensure_ascii=False, indent=2), encoding="utf-8")
 
     aviso_pt = traduz_aviso(atual["notice_identifier"], resumo_html, sinopse)
@@ -1814,7 +1875,8 @@ def main():
               "prev_en": prev_en, "prev_pt": _t(prev_en),
               "ult": midia.get("ultimo_ep") or {}}
     pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
-                         aviso_pt, lives, lives_link, fotos, frases, galeria, alertas)
+                         aviso_pt, lives, lives_link, fotos, frases, galeria, alertas,
+                         mir_fotos)
     upload_pa(pagina)
     print("ok")
     return 0
