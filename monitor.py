@@ -518,8 +518,10 @@ def alertas_nps(cache):
         d = fetch_json(NPS_ALERTS_URL.format(key=quote(NPS_KEY, safe="")))
         brutos = d.get("data") or []
     except Exception as e:  # noqa: BLE001 - alertas sao opcionais
+        # falha de rede/limite de cota: devolve o cache E o carimbo antigo, para
+        # a pagina poder dizer que os avisos estao velhos em vez de fingir frescor
         print(f"aviso: alertas do NPS indisponiveis ({e}); usando cache")
-        return cache.get("alertas", [])
+        return cache.get("alertas", []), cache.get("atualizado_em", "")
     saida = []
     for b in brutos:
         titulo = (b.get("title") or "").strip()
@@ -554,7 +556,7 @@ def alertas_nps(cache):
             "local_pt": local_pt, "local_en": local_en,
             "lat": lat, "lng": lng,
         })
-    return saida
+    return saida, datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 # ---------------------------------------------------------------- midia
@@ -834,7 +836,7 @@ def _bloco_alertas(alertas, lang):
 
 def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 aviso_pt="", lives=None, lives_link=None, fotos=None, frases=None,
-                galeria=None, alertas=None, mir_fotos=None):
+                galeria=None, alertas=None, mir_fotos=None, alertas_em=""):
     lives = lives or []
     lives_link = lives_link or []
     fotos = fotos or {}
@@ -1048,8 +1050,28 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
             for (vid, nome, la, ln, dpt, den) in CAMERAS
         ],
     }
-    alertas_fonte_pt = f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>'
-    alertas_fonte_en = f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>'
+    # frescor dos avisos: se a API do NPS falhar, a pagina precisa DIZER que os
+    # avisos estao velhos em vez de exibir cache antigo como se fosse atual
+    fresco_pt = fresco_en = ""
+    if alertas_em:
+        try:
+            dt_al = datetime.fromisoformat(alertas_em)
+            mins = (agora_utc - dt_al).total_seconds() / 60
+            q_pt, q_en = fmt_hora(dt_al, "pt"), fmt_hora(dt_al, "en")
+            if mins > 120:
+                fresco_pt = (f' <strong>Atenção: a API do NPS não responde desde {q_pt}, '
+                             f'então estes avisos podem estar desatualizados.</strong>')
+                fresco_en = (f' <strong>Warning: the NPS API has not responded since {q_en}, '
+                             f'so these alerts may be out of date.</strong>')
+            else:
+                fresco_pt = f' Avisos conferidos com o NPS em {q_pt}.'
+                fresco_en = f' Alerts checked with NPS at {q_en}.'
+        except Exception:  # noqa: BLE001
+            pass
+    alertas_fonte_pt = (f'Fonte: <a href="{LINK_PARQUE}">NPS – condições atuais do parque</a>.'
+                        f'{fresco_pt}')
+    alertas_fonte_en = (f'Source: <a href="{LINK_PARQUE}">NPS – current park conditions</a>.'
+                        f'{fresco_en}')
     mapa_fonte_pt = (f'Dados: <a href="{LINK_PARQUE}">NPS – condições</a>, '
                      f'<a href="{LINK_PARKING}">estacionamentos</a> e '
                      f'<a href="{LINK_VIEWING}">mirantes da erupção</a>. '
@@ -1622,6 +1644,10 @@ figcaption {{ margin-top: 5px; }}
            box-shadow: 0 0 0 4px rgba(255,87,34,.35), 0 2px 8px rgba(0,0,0,.5); }}
 .ldot-erup {{ background: #ff5722; color: #fff; text-align: center; font-size: 9px;
               line-height: 12px; font-style: normal; }}
+.ldot-mir {{ background: #8e44ad; color: #ffd76a; text-align: center; font-size: 9px;
+             line-height: 12px; font-style: normal; }}
+.ldot-est {{ background: #2e6fdb; color: #fff; text-align: center; font-size: 8px;
+             line-height: 12px; font-style: normal; font-weight: 700; }}
 .pop p {{ margin: 5px 0; }}
 .pop-loc {{ color: #666; font-size: .85em; }}
 .leaflet-popup-content {{ font-size: .95em; line-height: 1.45; }}
@@ -1704,11 +1730,11 @@ figcaption {{ margin-top: 5px; }}
 <div class="legenda">
 <span><i class="ldot ldot-erup">&#9650;</i><span data-i18n="leg_erup"></span></span>
 <span><i class="ldot ldot-cam"><svg viewBox="0 0 24 24"><path d="M9 3l-1.5 2H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.5L15 3H9zm3 5.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5z"/></svg></i><span data-i18n="leg_cam"></span></span>
-<span><i class="ldot" style="background:#8e44ad"></i><span data-i18n="leg_mirante"></span></span>
+<span><i class="ldot ldot-mir">&#9733;</i><span data-i18n="leg_mirante"></span></span>
 <span><i class="ldot" style="background:#ff4a2e"></i><span data-i18n="leg_danger"></span></span>
 <span><i class="ldot" style="background:#e0a400"></i><span data-i18n="leg_caution"></span></span>
 <span><i class="ldot" style="background:#8f9bb0"></i><span data-i18n="leg_closure"></span></span>
-<span><i class="ldot" style="background:#2e6fdb"></i><span data-i18n="leg_estac"></span></span>
+<span><i class="ldot ldot-est">P</i><span data-i18n="leg_estac"></span></span>
 </div>
 <p class="mono" data-i18n-html="mapa_fonte"></p></div>
 </div>
@@ -1825,12 +1851,20 @@ def main():
             cache_alertas = json.loads(ALERTAS_CACHE.read_text(encoding="utf-8"))
         except Exception:  # noqa: BLE001
             cache_alertas = {}
-    alertas_api = alertas_nps(cache_alertas)
+    alertas_api, alertas_em = alertas_nps(cache_alertas)
     ALERTAS_CACHE.write_text(
-        json.dumps({"alertas": alertas_api}, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps({"alertas": alertas_api, "atualizado_em": alertas_em},
+                   ensure_ascii=False, indent=2), encoding="utf-8")
     alertas = alertas_api + AVISOS_FIXOS
+    idade = ""
+    if alertas_em:
+        try:
+            dt = datetime.fromisoformat(alertas_em)
+            idade = f"{(datetime.now(timezone.utc) - dt).total_seconds() / 60:.0f} min atras"
+        except Exception:  # noqa: BLE001
+            idade = alertas_em
     print(f"alertas do parque: {len(alertas_api)} da API + {len(AVISOS_FIXOS)} fixos "
-          f"({[a['cat'] for a in alertas]})")
+          f"({[a['cat'] for a in alertas]}) | API respondeu {idade or 'nunca'}")
 
     # galeria dos episodios anteriores (backfill + episodios novos conforme saem)
     galeria = []
@@ -1876,7 +1910,7 @@ def main():
               "ult": midia.get("ultimo_ep") or {}}
     pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                          aviso_pt, lives, lives_link, fotos, frases, galeria, alertas,
-                         mir_fotos)
+                         mir_fotos, alertas_em)
     upload_pa(pagina)
     print("ok")
     return 0
