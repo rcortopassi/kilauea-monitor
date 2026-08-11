@@ -1,6 +1,20 @@
 {
   "alertas": [
     {
+      "id": "AA4190DA-C97B-49A3-B427-98AB2EABE9DA",
+      "titulo": "Hilina Pali Rd Closed to Vehicles at Maunaiki Trail for Fire Risk",
+      "titulo_pt": "Hilina Pali Rd fechada para veículos na trilha Maunaiki por risco de incêndio",
+      "desc": "Hilina Pali Road is closed to vehicles at the Maunaiki Trail due to increased fire danger. Non-motorized day use, including hiking and bicycling, is allowed. Backcountry permit holders are also allowed.",
+      "desc_pt": "A estrada Hilina Pali está fechada para veículos na trilha Maunaiki devido ao aumento do risco de incêndio. É permitido o uso diurno não motorizado, incluindo caminhadas e ciclismo. Portadores de licença de backcountry também são permitidos.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-08-10",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
       "id": "C5BB7508-D601-479A-AB9E-AC3DF3E74549",
       "titulo": "Partial Closure at Sulfur Banks Trail",
       "titulo_pt": "Fechamento parcial na trilha Sulphur Banks",
@@ -71,5 +85,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-11T01:17:21+00:00"
+  "atualizado_em": "2026-08-11T01:22:34+00:00"
 }
