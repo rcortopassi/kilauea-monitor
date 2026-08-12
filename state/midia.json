@@ -10,39 +10,26 @@
   ],
   "lives_link": [],
   "fotos": {
-    "slug": "/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
-    "titulo": "Photo & Video Chronology — Full moon and lava fountain: Kīlauea summit episode 52",
-    "url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
+    "slug": "/observatories/hvo/news/photo-video-chronology-kilauea-summit-monitoring-overflight-5",
+    "titulo": "Photo & Video Chronology — Kīlauea summit monitoring overflight",
+    "ep": 0,
+    "data": "",
+    "url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-kilauea-summit-monitoring-overflight-5",
     "itens": [
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_3045.jpeg?itok=RzYv6G3Z",
-        "cap_en": "Color photograph of volcanic eruption and full moon",
-        "cap_pt": "Fotografia colorida de erupção vulcânica e lua cheia"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/20260811_Zoeller_HMM_6473.JPG?itok=-gE1wrgA",
+        "cap_en": "Color photograph of crater at summit of volcano with another volcano in background",
+        "cap_pt": "Fotografia colorida da cratera no cume do vulcão com outro vulcão ao fundo"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4010_0.jpeg?itok=Xk8eAHjE",
-        "cap_en": "Color photograph of volcanic plume and full moon",
-        "cap_pt": "Fotografia colorida de pluma vulcânica e lua cheia"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_5976.JPG?itok=0DxDTRmB",
+        "cap_en": "Color photograph of volcanic eruptive vents emitting a gas plume",
+        "cap_pt": "Fotografia colorida de aberturas eruptivas vulcânicas emitindo uma pluma de gás"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_5841.jpeg?itok=PRIfrATY",
-        "cap_en": "Color photograph of eruption viewers at night",
-        "cap_pt": "Fotografia colorida de espectadores da erupção à noite"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/DSC06253.JPG?itok=yE6rWV3m",
-        "cap_en": "Silhouettes of people at night with a lava fountain and plume behind them",
-        "cap_pt": "Silhuetas de pessoas à noite com uma fonte de lava e uma pluma atrás delas"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4017.jpeg?itok=43r0lsx3",
-        "cap_en": "Color photograph of lava fountain and lava flows",
-        "cap_pt": "Fotografia colorida de fonte de lava e fluxos de lava"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4006.jpeg?itok=SQU-RuPm",
-        "cap_en": "Color photograph of lava fountain",
-        "cap_pt": "Fotografia colorida de fonte de lava"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/multimediaFile-4693.jpg?itok=FIQ_RAQo",
+        "cap_en": "Color photograph of caldera at summit of volcano with gas plume from eruptive vents",
+        "cap_pt": "Fotografia colorida da caldeira no cume do vulcão com pluma de gás proveniente de aberturas eruptivas"
       }
     ]
   },
