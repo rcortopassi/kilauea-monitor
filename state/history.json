@@ -4,5 +4,11 @@
     "de": "YELLOW",
     "para": "ORANGE",
     "notice": "DOI-USGS-HVO-2026-08-12T21:24:42+00:00"
+  },
+  {
+    "quando_unix": 1786620610,
+    "de": "ORANGE",
+    "para": "YELLOW",
+    "notice": "DOI-USGS-HVO-2026-08-13T04:16:32+00:00"
   }
 ]
