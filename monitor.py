@@ -616,16 +616,30 @@ def lives_atuais(cache):
     return vivas[:3], so_link[:2]
 
 
+# A cronologia do USGS mistura, na mesma lista, os artigos do EPISODIO (fontes
+# de lava) com sobrevoos de monitoramento, coleta de tefra e trabalho de campo
+# feitos durante a PAUSA, que so tem pluma de gas e cratera fria. Pegar o mais
+# recente cegamente enche a pagina de foto de fumaca.
+NAO_E_EPISODIO = ("post-episode", "fieldwork", "deposit", "sampling",
+                  "overflight", "surveying", "thickness")
+
+
+def _slug_de_episodio(slug):
+    return "episode" in slug and not any(x in slug for x in NAO_E_EPISODIO)
+
+
 def fotos_episodio(cache):
-    """Fotos oficiais do episodio mais recente na cronologia do USGS
+    """Fotos oficiais do EPISODIO mais recente na cronologia do USGS
     (dominio publico), com legendas traduzidas. Cache por artigo."""
     antigo = cache.get("fotos") or {}
     try:
         h = fetch_text(CHRONO_URL, ua=UA_NAV)
-        m = re.search(r'href="(/observatories/hvo/news/photo-video-chronology-[^"]+)"', h)
-        if not m:
-            raise RuntimeError("nenhuma entrada na cronologia")
-        slug = m.group(1)
+        slugs = list(dict.fromkeys(
+            re.findall(r'href="(/observatories/hvo/news/photo-video-chronology-[^"]+)"', h)))
+        episodios = [s for s in slugs if _slug_de_episodio(s)]
+        if not episodios:
+            raise RuntimeError("nenhum artigo de episodio na cronologia")
+        slug = episodios[0]
         if antigo.get("slug") == slug and antigo.get("itens"):
             return antigo
         art = fetch_text("https://www.usgs.gov" + slug, ua=UA_NAV)
@@ -1128,7 +1142,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                               "a próxima verificação busca outra transmissão no ar."),
                 "live_vazio": "Nenhuma transmissão confirmada agora.",
                 "h_maislinks": "Mais links",
-                "h_fotos": "Fotos do episódio atual (USGS)",
+                "h_fotos": (f"Fotos do episódio {fotos['ep']} (USGS)" if fotos.get("ep")
+                            else "Fotos do último episódio (USGS)"),
                 "h_galeria": "Episódios anteriores, uma foto de cada",
                 "galeria_nota": ("Episódios sem artigo de fotos na cronologia do USGS "
                                  "não aparecem aqui."),
@@ -1183,7 +1198,8 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                               "the next check looks for another stream on air."),
                 "live_vazio": "No stream confirmed right now.",
                 "h_maislinks": "More links",
-                "h_fotos": "Current episode photos (USGS)",
+                "h_fotos": (f"Episode {fotos['ep']} photos (USGS)" if fotos.get("ep")
+                            else "Latest episode photos (USGS)"),
                 "h_galeria": "Previous episodes, one photo each",
                 "galeria_nota": ("Episodes without their own photo article in the USGS "
                                  "chronology are not listed here."),
