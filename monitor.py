@@ -460,26 +460,41 @@ def extrai_ultimo_ep(texto, ano_padrao):
     """Numero, inicio e fim do episodio mais recente citado no aviso do HVO.
     Cobre "episode 52 on July 28-29, 2026", "on June 30-July 1" e frases
     separadas de began/ended. Retorna dict {ep, inicio, fim} ou None."""
-    t = re.sub(r"\b([apAP])\.[mM]\.", r"\1m", texto or "")
+    t = texto or ""
+    t = re.sub(r"\b([apAP])\.[mM]\.", r"\1m", t)   # "3:45 p.m." nao encerra frase
+    t = re.sub(r"(\d)\.(\d)", r"\1,\2", t)          # nem "9.6 hours"
 
     def iso(mes, dia, ano):
         return f"{int(ano):04d}-{MES_NUM[mes.lower()]:02d}-{int(dia):02d}"
 
-    m = re.search(rf"[Ee]pisode\s+(\d+)[^.]*?\bon\s+({_MESES_RE})\s+(\d+)\s*[-–]\s*"
-                  rf"(?:({_MESES_RE})\s+)?(\d+)(?:,\s*(\d{{4}}))?", t, re.I)
-    if m:
-        ano = m.group(6) or ano_padrao
-        return {"ep": int(m.group(1)),
-                "inicio": iso(m.group(2), m.group(3), ano),
-                "fim": iso(m.group(4) or m.group(2), m.group(5), ano)}
-    res = {}
-    for chave, verbo in (("inicio", "began|started"), ("fim", "ended")):
-        mm = re.search(rf"[Ee]pisode\s+(\d+)\s+(?:{verbo})[^.]*?\bon\s+"
-                       rf"({_MESES_RE})\s+(\d+)(?:,\s*(\d{{4}}))?", t, re.I)
-        if mm:
-            res.setdefault("ep", int(mm.group(1)))
-            res[chave] = iso(mm.group(2), mm.group(3), mm.group(4) or ano_padrao)
-    return res or None
+    # Trabalha frase a frase: a redacao do HVO varia demais para um regex unico.
+    # Ja apareceram "episode 52 on July 28-29, 2026" e "Episode 53 of the ongoing
+    # Halemaumau eruption began at 3:45 pm HST August 12 and ended at 1:23 am HST
+    # on August 13, 2026" (aqui o verbo NAO vem colado ao numero).
+    achados = {}
+    for frase in re.findall(r"[^.]*?[Ee]pisode\s+\d+[^.]*\.", t):
+        m_ep = re.search(r"[Ee]pisode\s+(\d+)", frase)
+        if not m_ep:
+            continue
+        ep = int(m_ep.group(1))
+        m_ano = re.search(r"\b(20\d{2})\b", frase)
+        ano = m_ano.group(1) if m_ano else ano_padrao
+        info = achados.setdefault(ep, {"ep": ep})
+        faixa = re.search(rf"\bon\s+({_MESES_RE})\s+(\d+)\s*[-–]\s*"
+                          rf"(?:({_MESES_RE})\s+)?(\d+)", frase, re.I)
+        if faixa:
+            info.setdefault("inicio", iso(faixa.group(1), faixa.group(2), ano))
+            info.setdefault("fim", iso(faixa.group(3) or faixa.group(1), faixa.group(4), ano))
+            continue
+        ini = re.search(rf"\b(?:began|started)\b[^.]*?({_MESES_RE})\s+(\d+)", frase, re.I)
+        if ini:
+            info.setdefault("inicio", iso(ini.group(1), ini.group(2), ano))
+        fim = re.search(rf"\bended\b[^.]*?({_MESES_RE})\s+(\d+)", frase, re.I)
+        if fim:
+            info.setdefault("fim", iso(fim.group(1), fim.group(2), ano))
+    if not achados:
+        return None
+    return achados[max(achados)]   # o episodio de numero mais alto citado
 
 
 def frases_chave(sinopse):
@@ -909,6 +924,16 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         )
     if not fotos_html:
         fotos_html = '<p data-i18n="fotos_vazio">Sem fotos disponiveis no momento.</p>'
+    # o USGS leva dias para publicar as fotos de um episodio; se o ultimo
+    # episodio ja e mais novo que o artigo, a pagina precisa dizer isso
+    ep_foto = fotos.get("ep") or 0
+    ep_ult = (frases.get("ult") or {}).get("ep") or 0
+    nota_pt = nota_en = ""
+    if ep_ult and ep_foto and ep_ult > ep_foto:
+        nota_pt = (f"O USGS ainda não publicou as fotos do episódio {ep_ult}. "
+                   f"Estas são do episódio {ep_foto}, o último com ensaio disponível.")
+        nota_en = (f"USGS has not published photos of episode {ep_ult} yet. "
+                   f"These are from episode {ep_foto}, the latest one available.")
     fotos_link = ""
     if fotos.get("url"):
         fotos_link = (f'<p><a href="{html_mod.escape(fotos["url"], quote=True)}">'
@@ -1148,6 +1173,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "galeria_nota": ("Episódios sem artigo de fotos na cronologia do USGS "
                                  "não aparecem aqui."),
                 "fotos_credito": "Fotos: USGS / Hawaiian Volcano Observatory, domínio público.",
+                "fotos_nota": nota_pt,
                 "fotos_vazio": "Sem fotos disponíveis no momento.",
                 "h_hist": "Mudanças de nível registradas por este monitor",
                 "hist_empty": "Nenhuma mudança registrada ainda",
@@ -1204,6 +1230,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                 "galeria_nota": ("Episodes without their own photo article in the USGS "
                                  "chronology are not listed here."),
                 "fotos_credito": "Photos: USGS / Hawaiian Volcano Observatory, public domain.",
+                "fotos_nota": nota_en,
                 "fotos_vazio": "No photos available right now.",
                 "h_hist": "Alert changes recorded by this monitor",
                 "hist_empty": "No changes recorded yet",
@@ -1726,6 +1753,7 @@ figcaption {{ margin-top: 5px; }}
 
 <div class="pane" data-pane="fotos">
 <div class="card"><h2 data-i18n="h_fotos"></h2>
+<p class="mono" data-i18n="fotos_nota"></p>
 {fotos_link}
 <div class="grid">{fotos_html}</div>
 <p class="mono" data-i18n="fotos_credito"></p></div>
