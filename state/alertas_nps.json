@@ -1,6 +1,20 @@
 {
   "alertas": [
     {
+      "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
+      "titulo": "Most of Park Will Close Temporarily for Storm Safety",
+      "titulo_pt": "A maior parte do parque fechará temporariamente para segurança contra tempestades",
+      "desc": "Hawaiʻi Volcanoes National Park is planning parkwide closures starting Thurs., Aug. 13 at 2 p.m. ahead of Tropical Storm Lala which is forecast to bring heavy rains, flooding and strong damaging winds to Hawaiʻi Island.",
+      "desc_pt": "O Parque Nacional dos Vulcões do Havaí está planejando o fechamento de todo o parque a partir de quinta-feira, 13 de agosto, às 14h. antes da tempestade tropical Lala, que deverá trazer fortes chuvas, inundações e ventos fortes e prejudiciais à ilha do Havaí.",
+      "cat": "closure",
+      "url": "https://www.nps.gov/havo/learn/news/20260813-nr-park-closure-storm-safety.htm",
+      "data": "2026-08-13",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
       "id": "AA4190DA-C97B-49A3-B427-98AB2EABE9DA",
       "titulo": "Hilina Pali Rd Closed to Vehicles at Maunaiki Trail for Fire Risk",
       "titulo_pt": "Hilina Pali Rd fechada para veículos na trilha Maunaiki por risco de incêndio",
@@ -85,5 +99,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-13T23:53:02+00:00"
+  "atualizado_em": "2026-08-13T23:59:09+00:00"
 }
