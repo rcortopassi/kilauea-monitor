@@ -1,9 +1,23 @@
 {
   "lives": [
     {
-      "id": "gXKuUyKt8mc",
-      "titulo": "[V3cam] Kīlauea volcano, Hawaii (south Halemaʻumaʻu crater)",
-      "canal": "USGS",
+      "id": "mKJ7ZyIdjeQ",
+      "titulo": "Kilauea volcano LIVE: Eruption in Hawaii",
+      "canal": "Associated Press",
+      "live": true,
+      "embed": true
+    },
+    {
+      "id": "Ejg3LtZp980",
+      "titulo": "KILAUEA ERUPTS LIVE | Hawaii Volcano Eruption Episode 53 Underway, Lava Fountains Explode",
+      "canal": "Times Now World",
+      "live": true,
+      "embed": true
+    },
+    {
+      "id": "bHsFmytksHk",
+      "titulo": "Kilauea volcano LIVE: Eruption in Hawaii | Massive Kilauea Eruption In Hawaii | Shocking V",
+      "canal": "ET Now World",
       "live": true,
       "embed": true
     }
