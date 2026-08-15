@@ -2,13 +2,13 @@
   "alertas": [
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
-      "titulo": "Most of Park Will Close Temporarily for Storm Safety",
-      "titulo_pt": "A maior parte do parque fechará temporariamente para segurança contra tempestades",
-      "desc": "Most of Hawaiʻi Volcanoes National Park will close by noon on Friday, August 14 ahead of Tropical Storm Lala which is forecast to bring heavy rains, flooding and strong damaging winds to Hawaiʻi Island.",
-      "desc_pt": "A maior parte do Parque Nacional dos Vulcões do Havaí fechará ao meio-dia de sexta-feira, 14 de agosto, antes da tempestade tropical Lala, que deverá trazer fortes chuvas, inundações e fortes ventos prejudiciais à Ilha do Havaí.",
+      "titulo": "Park is Temporarily Closed for Severe Storm Safety",
+      "titulo_pt": "O parque está temporariamente fechado para segurança contra tempestades severas",
+      "desc": "Most of Hawaiʻi Volcanoes National Park is closed due to impacts from Hurricane Lala which include very heavy rain, flooding, and strong damaging winds in the park and throughout Hawai'i Island.",
+      "desc_pt": "A maior parte do Parque Nacional dos Vulcões do Havaí está fechada devido aos impactos do furacão Lala, que incluem chuvas muito fortes, inundações e ventos fortes e prejudiciais no parque e em toda a Ilha do Havaí.",
       "cat": "closure",
       "url": "https://www.nps.gov/havo/learn/news/20260813-nr-park-closure-storm-safety.htm",
-      "data": "2026-08-14",
+      "data": "2026-08-15",
       "local_pt": "",
       "local_en": "",
       "lat": null,
@@ -43,5 +43,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-15T19:56:19+00:00"
+  "atualizado_em": "2026-08-15T20:01:35+00:00"
 }
