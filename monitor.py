@@ -1884,7 +1884,18 @@ def main():
             historico = historico[-50:]
 
     lives, lives_link = lives_atuais(midia)
+    slug_antes = ((midia.get("fotos") or {}).get("slug") or "")
+    ep_foto_antes = ((midia.get("fotos") or {}).get("ep") or 0)
     fotos = fotos_episodio(midia)
+    # o USGS leva dias para publicar o ensaio de cada episodio; avisa (sem
+    # incomodar: prioridade baixa) quando o ensaio de um episodio NOVO sai
+    if (fotos.get("slug") and fotos["slug"] != slug_antes
+            and (fotos.get("ep") or 0) > ep_foto_antes and not primeira_vez):
+        notifica(
+            f"Fotos do episodio {fotos['ep']} publicadas",
+            f"O USGS acaba de publicar o ensaio fotografico do episodio "
+            f"{fotos['ep']}. Veja na aba Fotos.",
+            "low", "camera", click=LINK_SITE)
     print(f"lives no ar (embed): {[s['id'] for s in lives]}; so link: {[s['id'] for s in lives_link]}")
     print(f"fotos: {len(fotos.get('itens') or [])} de {fotos.get('slug', '-')}")
 
