@@ -1,9 +1,23 @@
 {
   "lives": [
     {
+      "id": "HggWKlZv9yk",
+      "titulo": "[V1cam] Kīlauea volcano, Hawaii (west Halemaʻumaʻu crater)",
+      "canal": "USGS",
+      "live": true,
+      "embed": true
+    },
+    {
       "id": "gXKuUyKt8mc",
       "titulo": "[V3cam] Kīlauea volcano, Hawaii (south Halemaʻumaʻu crater)",
       "canal": "USGS",
+      "live": true,
+      "embed": true
+    },
+    {
+      "id": "FVdmnpJ2kM0",
+      "titulo": "🔴 Live Now:  24/7 Kilauea Volcano Watch in Hawaii (Multi-cams)",
+      "canal": "afarTV",
       "live": true,
       "embed": true
     }
@@ -49,7 +63,9 @@
     ]
   },
   "ultimo_ep": {
-    "ep": 54
+    "ep": 53,
+    "inicio": "2026-08-12",
+    "fim": "2026-08-13"
   },
   "mirantes_fotos": {
     "https://www.nps.gov/places/eruption-viewing-near-welcome-center.htm": {

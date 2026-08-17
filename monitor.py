@@ -492,9 +492,13 @@ def extrai_ultimo_ep(texto, ano_padrao):
         fim = re.search(rf"\bended\b[^.]*?({_MESES_RE})\s+(\d+)", frase, re.I)
         if fim:
             info.setdefault("fim", iso(fim.group(1), fim.group(2), ano))
-    if not achados:
+    # Descarta episodio citado SEM data: e previsao ("episode 54 fountaining is
+    # likely"), nao evento ocorrido. Sem esse filtro o painel anuncia como
+    # "ultimo episodio" um que ainda nem aconteceu (aconteceu em 17/08/2026).
+    ocorridos = {n: v for n, v in achados.items() if v.get("inicio") or v.get("fim")}
+    if not ocorridos:
         return None
-    return achados[max(achados)]   # o episodio de numero mais alto citado
+    return ocorridos[max(ocorridos)]
 
 
 def frases_chave(sinopse):
@@ -503,7 +507,7 @@ def frases_chave(sinopse):
     s = re.sub(r"\b([apAP])\.[mM]\.", r"\1m", sinopse or "")
     ep = (re.search(r"([^.]*[Ee]pisode\s+\d+\s+(?:began|ended|started)[^.]*\.)", s)
           or re.search(r"([^.]*(?:end|start|beginning) of [Ee]pisode\s+\d+[^.]*\.)", s))
-    prev = re.search(r"([^.]*(?:another episode|next episode|forecast|precursory)[^.]*\.)", s)
+    prev = re.search(r"([^.]*(?:another episode|next\s+(?:\w+\s+){0,2}episode|forecast|precursory|likely between)[^.]*\.)", s)
     return (ep.group(1).strip() if ep else "",
             prev.group(1).strip() if prev else "")
 
