@@ -2,17 +2,17 @@
   "alertas": [
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
-      "titulo": "Park is Temporarily Closed Following Hurricane Impacts",
-      "titulo_pt": "O parque está temporariamente fechado após os impactos do furacão",
-      "desc": "Hawaiʻi Volcanoes National Park including Kahuku is closed due to impacts following Hurricane Lala that include extremely hazardous road conditions, downed trees, flooded areas and more. There is no timeline for reopening as rangers assess and address storm impacts. Park phone lines, internet and power are down. Highway 11 in the park is open.",
-      "desc_pt": "O Parque Nacional dos Vulcões do Havaí, incluindo Kahuku, está fechado devido aos impactos após o furacão Lala, que incluem condições de estradas extremamente perigosas, árvores derrubadas, áreas inundadas e muito mais. Não há prazo para a reabertura enquanto os guardas avaliam e abordam os impactos das tempestades. As linhas telefônicas, internet e energia do parque estão desligadas. A rodovia 11 do parque está aberta.",
+      "titulo": "Crater Rim Drive West to Uēkahuna is Open - Other Areas Are Closed",
+      "titulo_pt": "Crater Rim Drive West para Uēkahuna está aberta - outras áreas estão fechadas",
+      "desc": "Hawaiʻi Volcanoes National Park partially reopened Monday around 10 a.m. from the entrance to Uēkahuna. All other areas are closed. Expect very limited services. Restrooms are not functioning at Uēkahuna. Park phone lines, internet and power are down. Highway 11 through the park is open.",
+      "desc_pt": "O Parque Nacional dos Vulcões do Havaí reabriu parcialmente na segunda-feira, por volta das 10h, na entrada de Uēkahuna. Todas as outras áreas estão fechadas. Espere serviços muito limitados. Os banheiros não funcionam em Uēkahuna. As linhas telefônicas, internet e energia do parque estão desligadas. A rodovia 11 que atravessa o parque está aberta.",
       "cat": "closure",
-      "url": "https://www.nps.gov/havo/learn/news/20260813-nr-park-closure-storm-safety.htm",
-      "data": "2026-08-16",
-      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
-      "local_en": "Kahuku Unit (entrance, Hwy 11)",
-      "lat": 19.069,
-      "lng": -155.6778
+      "url": "",
+      "data": "2026-08-17",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
     },
     {
       "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
@@ -43,5 +43,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-17T20:24:38+00:00"
+  "atualizado_em": "2026-08-17T20:29:51+00:00"
 }
