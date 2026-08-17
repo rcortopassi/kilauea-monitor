@@ -647,6 +647,57 @@ def _slug_de_episodio(slug):
     return "episode" in slug and not any(x in slug for x in NAO_E_EPISODIO)
 
 
+GALERIA_URL = "https://www.usgs.gov/volcanoes/kilauea/multimedia"
+
+
+def _ep_do_slug(slug):
+    m = re.search(r"episode-?(\d+)", slug)
+    return int(m.group(1)) if m else 0
+
+
+def fotos_da_galeria(ep):
+    """Plano B para as fotos do episodio: o USGS publica imagens avulsas na
+    galeria de multimidia dias ANTES do artigo da cronologia. Sem isto o site
+    fica mostrando o episodio anterior enquanto o ensaio nao sai."""
+    if not ep:
+        return None
+    try:
+        h = fetch_text(GALERIA_URL, ua=UA_NAV)
+    except Exception as e:  # noqa: BLE001
+        print(f"aviso: galeria de multimidia indisponivel ({e})")
+        return None
+    slugs = [s for s in dict.fromkeys(re.findall(r'href="(/media/images/[^"?]+)"', h))
+             if _ep_do_slug(s) == ep]
+    if not slugs:
+        return None
+    itens, data = [], ""
+    for s in slugs[:6]:
+        try:
+            art = fetch_text("https://www.usgs.gov" + s, ua=UA_NAV)
+        except Exception:  # noqa: BLE001
+            continue
+        im = re.search(r'<img[^>]+src="(https://d9-wret[^"]+?\.(?:jpe?g|png)[^"]*)"[^>]*>',
+                       art, re.I)
+        if not im:
+            continue
+        a = re.search(r'alt="([^"]*)"', im.group(0))
+        cap_en = html_mod.unescape(a.group(1)).strip() if a else ""
+        if not data:
+            dm = re.search(r'datetime="(\d{4}-\d{2}-\d{2})', art)
+            data = dm.group(1) if dm else ""
+        try:
+            cap_pt = _traduz_bloco(cap_en) if cap_en else ""
+        except Exception:  # noqa: BLE001
+            cap_pt = ""
+        itens.append({"src": im.group(1), "cap_en": cap_en, "cap_pt": cap_pt})
+    if not itens:
+        return None
+    print(f"fotos do episodio {ep} vieram da galeria de multimidia ({len(itens)})")
+    return {"slug": f"galeria-ep-{ep}", "ep": ep, "data": data,
+            "titulo": f"Kilauea summit episode {ep}",
+            "url": GALERIA_URL, "itens": itens}
+
+
 def fotos_episodio(cache):
     """Fotos oficiais do EPISODIO mais recente na cronologia do USGS
     (dominio publico), com legendas traduzidas. Cache por artigo."""
@@ -1891,6 +1942,16 @@ def main():
     slug_antes = ((midia.get("fotos") or {}).get("slug") or "")
     ep_foto_antes = ((midia.get("fotos") or {}).get("ep") or 0)
     fotos = fotos_episodio(midia)
+    # se a cronologia ainda nao publicou o ensaio do episodio mais recente,
+    # tenta as imagens avulsas da galeria de multimidia (saem bem antes)
+    ep_ultimo = (midia.get("ultimo_ep") or {}).get("ep") or 0
+    if ep_ultimo and (fotos.get("ep") or 0) < ep_ultimo:
+        if (midia.get("fotos") or {}).get("ep") == ep_ultimo:
+            fotos = midia["fotos"]          # ja veio da galeria numa rodada anterior
+        else:
+            alt = fotos_da_galeria(ep_ultimo)
+            if alt:
+                fotos = alt
     # o USGS leva dias para publicar o ensaio de cada episodio; avisa (sem
     # incomodar: prioridade baixa) quando o ensaio de um episodio NOVO sai
     if (fotos.get("slug") and fotos["slug"] != slug_antes

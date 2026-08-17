@@ -24,41 +24,41 @@
   ],
   "lives_link": [],
   "fotos": {
-    "slug": "/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
-    "titulo": "Photo & Video Chronology — Full moon and lava fountain: Kīlauea summit episode 52",
-    "ep": 52,
-    "data": "",
-    "url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
+    "slug": "galeria-ep-53",
+    "ep": 53,
+    "data": "2026-08-12",
+    "titulo": "Kilauea summit episode 53",
+    "url": "https://www.usgs.gov/volcanoes/kilauea/multimedia",
     "itens": [
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_3045.jpeg?itok=RzYv6G3Z",
-        "cap_en": "Color photograph of volcanic eruption and full moon",
-        "cap_pt": "Fotografia colorida de erupção vulcânica e lua cheia"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/multimediaFile-4699.jpg?itok=H2oywkd_",
+        "cap_en": "Color panoramic photo of volcanic crater with lava fountain and flows",
+        "cap_pt": "Foto panorâmica colorida da cratera vulcânica com fonte de lava e fluxos"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4010_0.jpeg?itok=Xk8eAHjE",
-        "cap_en": "Color photograph of volcanic plume and full moon",
-        "cap_pt": "Fotografia colorida de pluma vulcânica e lua cheia"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/Image_6.jpg?itok=_N7oFPam",
+        "cap_en": "Orange and incandescent lava fountain erupting from a crater",
+        "cap_pt": "Fonte de lava laranja e incandescente em erupção de uma cratera"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_5841.jpeg?itok=PRIfrATY",
-        "cap_en": "Color photograph of eruption viewers at night",
-        "cap_pt": "Fotografia colorida de espectadores da erupção à noite"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/Image_%288%29_1.jpg?itok=hPLSnDDW",
+        "cap_en": "Wide view of lava fountain, rising gas plume, and viewing area",
+        "cap_pt": "Vista ampla da fonte de lava, da pluma de gás ascendente e da área de observação"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/DSC06253.JPG?itok=yE6rWV3m",
-        "cap_en": "Silhouettes of people at night with a lava fountain and plume behind them",
-        "cap_pt": "Silhuetas de pessoas à noite com uma fonte de lava e uma pluma atrás delas"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/Image_%285%29_0.jpg?itok=GHOGCzp0",
+        "cap_en": "Visitors watch lava fountain at national park viewing area",
+        "cap_pt": "Visitantes observam fonte de lava na área de observação do parque nacional"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4017.jpeg?itok=43r0lsx3",
-        "cap_en": "Color photograph of lava fountain and lava flows",
-        "cap_pt": "Fotografia colorida de fonte de lava e fluxos de lava"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/multimediaFile-4695.jpg?itok=wiv_m5Db",
+        "cap_en": "Color photograph of crowds watching lava fountain",
+        "cap_pt": "Fotografia colorida de multidões observando a fonte de lava"
       },
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4006.jpeg?itok=SQU-RuPm",
-        "cap_en": "Color photograph of lava fountain",
-        "cap_pt": "Fotografia colorida de fonte de lava"
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/multimediaFile-4696.jpg?itok=RmAjCS9_",
+        "cap_en": "Color photograph of lava fountain in the evening",
+        "cap_pt": "Fotografia colorida da fonte de lava à noite"
       }
     ]
   },
