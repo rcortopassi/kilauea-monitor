@@ -2,17 +2,17 @@
   "alertas": [
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
-      "titulo": "Most of Park is Closed and Without Power Following Hurricane Lala",
-      "titulo_pt": "A maior parte do parque está fechada e sem energia após o furacão Lala",
-      "desc": "Hawaiʻi Volcanoes National Park is open from the entrance to Uēkahuna but remains without power, internet or phone lines following Hurricane Lala. Highway 11 through the park is open. The Welcome Center and park store are open. Expect limited services and no flush toilets. Most other areas remain closed. (8/19/26)",
-      "desc_pt": "O Parque Nacional dos Vulcões do Havaí está aberto desde a entrada de Uēkahuna, mas permanece sem energia, internet ou linhas telefônicas após o furacão Lala. A rodovia 11 que atravessa o parque está aberta. O Welcome Center e a loja do parque estão abertos. Espere serviços limitados e sem vasos sanitários com descarga. A maioria das outras áreas permanece fechada. (19/08/26)",
+      "titulo": "Park Will Close Friday 8/21/26 by 5 p.m. Ahead of New Storm System",
+      "titulo_pt": "O parque fechará na sexta-feira, 21/08/26, às 17h. À frente do novo sistema de tempestade",
+      "desc": "Hawaiʻi Volcanoes National Park, including the Kahuku Unit, will temporarily close Friday, August 21 by 5 p.m. ahead of a new storm system that could again bring torrential rainfall and high winds to Hawaiʻi Island as early as Saturday. The park is still without power, internet or phone lines as the community, and many park employees, volunteers and partners, recover from the devastating impacts of last weekend’s Hurricane Lala.",
+      "desc_pt": "O Parque Nacional dos Vulcões do Havaí, incluindo a Unidade Kahuku, fechará temporariamente na sexta-feira, 21 de agosto, às 17h. antes de um novo sistema de tempestades que pode trazer novamente chuvas torrenciais e ventos fortes para a Ilha do Havaí já no sábado. O parque ainda está sem energia, internet ou linhas telefônicas enquanto a comunidade e muitos funcionários do parque, voluntários e parceiros se recuperam dos impactos devastadores do furacão Lala do último fim de semana.",
       "cat": "closure",
-      "url": "https://www.nps.gov/havo/learn/news/20260817-nr-most-of-hvnp-remains-closed.htm",
-      "data": "2026-08-19",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
+      "url": "https://www.nps.gov/havo/learn/news/20260821-nr-storm-closure.htm",
+      "data": "2026-08-20",
+      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
+      "local_en": "Kahuku Unit (entrance, Hwy 11)",
+      "lat": 19.069,
+      "lng": -155.6778
     },
     {
       "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
@@ -43,5 +43,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-20T23:46:57+00:00"
+  "atualizado_em": "2026-08-20T23:52:13+00:00"
 }
