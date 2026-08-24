@@ -3,13 +3,13 @@
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
-      "titulo": "Park Temporarily Closed Due to Tropical Storm Moke",
-      "titulo_pt": "Parque temporariamente fechado devido à tempestade tropical Moke",
-      "desc": "Hawaiʻi Volcanoes National Park, including the Kahuku Unit, is closed due to potential impacts from Tropical Storm Moke. This new storm system could again bring heavy rainfall and high winds to Hawaiʻi Island through Monday, August 24. Parts of the park are still without power, internet or phone lines. The community, and many park employees, volunteers and partners, are still recovering from the devastating impacts of last weekend’s Hurricane Lala.",
-      "desc_pt": "O Parque Nacional dos Vulcões do Havaí, incluindo a Unidade Kahuku, está fechado devido aos possíveis impactos da tempestade tropical Moke. Este novo sistema de tempestades pode trazer novamente fortes chuvas e ventos fortes para a Ilha do Havaí até segunda-feira, 24 de agosto. Partes do parque ainda estão sem energia, internet ou linhas telefônicas. A comunidade e muitos funcionários, voluntários e parceiros do parque ainda estão a recuperar dos impactos devastadores do furacão Lala do fim de semana passado.",
+      "titulo": "Park Remains Closed Monday Morning 8/24/26 as Staff Assess Conditions",
+      "titulo_pt": "O parque permanece fechado na manhã de segunda-feira, 24/08/26, enquanto a equipe avalia as condições",
+      "desc": "Hawaiʻi Volcanoes National Park is closed Monday morning August 24 while staff assess roads and trails following storms. Staff are working towards reopening parts of the park today, exact time to be determined. The public will be kept informed. The Kahuku Unit is closed until further notice.",
+      "desc_pt": "O Parque Nacional dos Vulcões do Havaí está fechado na manhã de segunda-feira, 24 de agosto, enquanto a equipe avalia estradas e trilhas após tempestades. A equipe está trabalhando para reabrir partes do parque hoje, horário exato a ser determinado. O público será mantido informado. A Unidade Kahuku está fechada até novo aviso.",
       "cat": "closure",
       "url": "https://www.nps.gov/havo/learn/news/20260821-nr-storm-closure.htm",
-      "data": "2026-08-23",
+      "data": "2026-08-24",
       "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
       "local_en": "Kahuku Unit (entrance, Hwy 11)",
       "lat": 19.069,
@@ -46,5 +46,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-24T17:53:47+00:00"
+  "atualizado_em": "2026-08-24T17:59:07+00:00"
 }
