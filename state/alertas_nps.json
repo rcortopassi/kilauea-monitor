@@ -5,15 +5,15 @@
       "trad_ok": true,
       "titulo": "Some Areas of Park Now Open",
       "titulo_pt": "Algumas áreas do parque já abertas",
-      "desc": "Crater Rim Drive West from the park entrance to Uēkahuna is open, along with the Welcome Center and Hawaiʻi Pacific Parks Association store. Popular overlooks like Kīlauea Overlook and Kūkamāhuākea (Steam Vents) are also open. All other areas remain closed while park staff continue to address hazards but will reopen as soon as they are deemed safe. The Kahuku Unit is closed until further notice.",
-      "desc_pt": "A Crater Rim Drive West, da entrada do parque para Uēkahuna, está aberta, junto com o Welcome Center e a loja da Hawai'i Pacific Parks Association. Mirantes populares como Kīlauea Overlook e Kūkamāhuākea (Steam Vents) também estão abertos. Todas as outras áreas permanecem fechadas enquanto a equipe do parque continua a lidar com os perigos, mas reabrirão assim que forem consideradas seguras. A Unidade Kahuku está fechada até novo aviso.",
+      "desc": "Crater Rim Drive West from the park entrance to Uēkahuna is open, along with the Welcome Center and Hawaiʻi Pacific Parks Association store. Popular overlooks like Kīlauea Overlook and Kūkamāhuākea (Steam Vents) are also open. Mauna Loa Road is open to Kīpukapuaulu, but Kīpukapuaulu Trail is closed due to tree hazards. All other areas remain closed while park staff continue to address hazards but will reopen as soon as they are deemed safe. The Kahuku Unit is closed until further notice.",
+      "desc_pt": "A Crater Rim Drive West, da entrada do parque para Uēkahuna, está aberta, junto com o Welcome Center e a loja da Hawai'i Pacific Parks Association. Mirantes populares como Kīlauea Overlook e Kūkamāhuākea (Steam Vents) também estão abertos. A estrada Mauna Loa está aberta para Kīpukapuaulu, mas a trilha Kīpukapuaulu está fechada devido a perigos de árvores. Todas as outras áreas permanecem fechadas enquanto a equipe do parque continua a lidar com os perigos, mas reabrirão assim que forem consideradas seguras. A Unidade Kahuku está fechada até novo aviso.",
       "cat": "closure",
       "url": "https://www.nps.gov/havo/learn/news/20260821-nr-storm-closure.htm",
       "data": "2026-08-24",
-      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
-      "local_en": "Kahuku Unit (entrance, Hwy 11)",
-      "lat": 19.069,
-      "lng": -155.6778
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
     },
     {
       "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
@@ -46,5 +46,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-24T22:25:40+00:00"
+  "atualizado_em": "2026-08-24T22:30:56+00:00"
 }
