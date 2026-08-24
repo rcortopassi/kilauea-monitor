@@ -393,12 +393,35 @@ def detalhe_notice(ident):
 # ---------------------------------------------------------------- traducao
 
 def _traduz_bloco(texto):
-    """Traduz um bloco de texto en->pt pelo endpoint gtx do Google Translate.
-    Nao oficial, mas estavel ha anos; em falha, quem chama decide o fallback."""
-    url = ("https://translate.googleapis.com/translate_a/single"
-           "?client=gtx&sl=en&tl=pt&dt=t&q=" + quote(texto))
-    data = fetch_json(url, tries=2, timeout=30)
-    return "".join(seg[0] for seg in data[0] if seg and seg[0])
+    """Traduz en->pt. Dois endpoints publicos do Google: quando um devolve 429
+    (cota por IP; os runners do GitHub sao IPs muito usados) o outro costuma
+    responder. Se os dois falharem, quem chama mantem o ingles."""
+    alvos = (
+        ("gtx", "https://translate.googleapis.com/translate_a/single"
+                "?client=gtx&sl=en&tl=pt&dt=t&q={q}"),
+        ("clients5", "https://clients5.google.com/translate_a/t"
+                     "?client=dict-chrome-ex&sl=en&tl=pt&q={q}"),
+    )
+    q = quote(texto)
+    erro = None
+    for nome, url in alvos:
+        try:
+            req = Request(url.format(q=q), headers={"User-Agent": UA_NAV})
+            with urlopen(req, timeout=30) as r:
+                d = json.loads(r.read().decode("utf-8"))
+        except Exception as e:  # noqa: BLE001 - tenta o proximo endpoint
+            erro = f"{nome}: {e}"
+            continue
+        # gtx devolve [[[trecho, original, ...], ...], ...]; clients5 devolve
+        # ["texto"] ou [["texto", ...]]
+        if isinstance(d, list) and d and isinstance(d[0], list) and d[0] and isinstance(d[0][0], list):
+            return "".join(s[0] for s in d[0] if s and s[0])
+        if isinstance(d, list) and d and isinstance(d[0], str):
+            return d[0]
+        if isinstance(d, list) and d and isinstance(d[0], list) and d[0] and isinstance(d[0][0], str):
+            return d[0][0]
+        erro = f"{nome}: formato inesperado"
+    raise RuntimeError(erro or "traducao indisponivel")
 
 
 def _linkifica(texto_escapado):
@@ -407,46 +430,90 @@ def _linkifica(texto_escapado):
                   r'<a href="\1">\1</a>', texto_escapado)
 
 
-def traduz_aviso(ident, resumo_html, sinopse):
-    """Versao em portugues do aviso, paragrafo a paragrafo, preservando
-    negrito dos titulos de secao e links clicaveis.
-    Cacheada por notice_identifier em state/traducao.json."""
-    if not (resumo_html or sinopse):
-        return ""
+def _cache_trad():
+    """Cache de traducao: {"notice", "pt_html", "textos": {ingles: portugues}}.
+    O dicionario `textos` e o que segura o rojao: o aviso diario do HVO repete
+    quase todos os paragrafos de um dia para o outro, entao a maioria ja vem
+    pronta do cache e nao gasta chamada."""
     if TRAD_CACHE.exists():
         try:
-            cache = json.loads(TRAD_CACHE.read_text(encoding="utf-8"))
-            if cache.get("notice") == ident and cache.get("pt_html"):
-                return cache["pt_html"]
-        except Exception:  # noqa: BLE001 - cache corrompido: retraduz
+            d = json.loads(TRAD_CACHE.read_text(encoding="utf-8"))
+            d.setdefault("textos", {})
+            return d
+        except Exception:  # noqa: BLE001 - cache corrompido: comeca limpo
             pass
+    return {"notice": "", "pt_html": "", "textos": {}}
+
+
+def _grava_trad(cache):
+    # nao deixa o cache de textos crescer sem fim
+    if len(cache.get("textos", {})) > 400:
+        cache["textos"] = dict(list(cache["textos"].items())[-300:])
+    TRAD_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2),
+                          encoding="utf-8")
+
+
+def traduz_txt(texto, cache, orcamento):
+    """Traduz um trecho usando o cache. `orcamento` e uma lista de 1 posicao
+    com quantas chamadas novas ainda podem sair NESTA rodada: o endpoint gtx
+    devolve 429 quando se abusa, e ai o site inteiro cai para o ingles."""
+    texto = (texto or "").strip()
+    if not texto:
+        return ""
+    if texto in cache["textos"]:
+        return cache["textos"][texto]
+    if orcamento[0] <= 0:
+        return ""          # sem orcamento: quem chamou usa o original
+    orcamento[0] -= 1
+    try:
+        pt = _traduz_bloco(texto)
+    except Exception as e:  # noqa: BLE001 - 429 e falha de rede sao esperados
+        print(f"aviso: traducao falhou ({e})")
+        return ""
+    if pt:
+        cache["textos"][texto] = pt
+    return pt
+
+
+def traduz_aviso(ident, resumo_html, sinopse, cache, orcamento):
+    """Versao em portugues do aviso, paragrafo a paragrafo, preservando
+    negrito dos titulos de secao e links clicaveis.
+
+    Traduz o que der e mantem em ingles so o que faltar, em vez de desistir do
+    aviso inteiro na primeira falha (era assim antes: um 429 e a pagina toda
+    voltava para o ingles). O que ficou faltando entra na proxima rodada, ja
+    que o texto pendente nao vai para o cache."""
+    if not (resumo_html or sinopse):
+        return ""
     origem = resumo_html or f"<p>{html_mod.escape(sinopse)}</p>"
     unidades = re.split(r"(?i)</p\s*>|<br\s*/?>", origem)
-    partes = []
-    try:
-        for u in unidades:
-            tem_negrito = re.search(r"(?i)<(strong|b)\b", u) is not None
-            texto = html_mod.unescape(re.sub(r"<[^>]+>", "", u)).strip()
-            if not texto or texto == "\xa0":
-                continue
-            trad = _traduz_bloco(texto)
-            esc = _linkifica(html_mod.escape(trad))
-            if tem_negrito:
-                # os <strong> do HVO sao titulos de secao ("Overview:", "NOTE:"):
-                # mantem o negrito ate o primeiro dois-pontos
-                pos = esc.find(":")
-                if 0 < pos < 80:
-                    esc = f"<strong>{esc[:pos + 1]}</strong>{esc[pos + 1:]}"
-                elif len(esc) < 90:
-                    esc = f"<strong>{esc}</strong>"
-            partes.append(f"<p>{esc}</p>")
-    except Exception as e:  # noqa: BLE001 - traducao e opcional
-        print(f"aviso: traducao falhou ({e}); pagina usa o original")
-        return ""
+    partes, faltou = [], 0
+    for u in unidades:
+        tem_negrito = re.search(r"(?i)<(strong|b)\b", u) is not None
+        texto = html_mod.unescape(re.sub(r"<[^>]+>", "", u)).strip()
+        if not texto or texto == "\xa0":
+            continue
+        trad = traduz_txt(texto, cache, orcamento)
+        if not trad:
+            faltou += 1
+            trad = texto            # fica em ingles so este paragrafo
+        esc = _linkifica(html_mod.escape(trad))
+        if tem_negrito:
+            # os <strong> do HVO sao titulos de secao ("Overview:", "NOTE:"):
+            # mantem o negrito ate o primeiro dois-pontos
+            pos = esc.find(":")
+            if 0 < pos < 80:
+                esc = f"<strong>{esc[:pos + 1]}</strong>{esc[pos + 1:]}"
+            elif len(esc) < 90:
+                esc = f"<strong>{esc}</strong>"
+        partes.append(f"<p>{esc}</p>")
     pt_html = "".join(partes)
-    TRAD_CACHE.write_text(
-        json.dumps({"notice": ident, "pt_html": pt_html}, ensure_ascii=False, indent=2),
-        encoding="utf-8")
+    if faltou:
+        print(f"aviso: {faltou} paragrafo(s) sem traducao nesta rodada; "
+              f"tentarei de novo na proxima")
+    cache["notice"] = ident
+    cache["pt_html"] = pt_html
+    cache["completo"] = (faltou == 0)
     return pt_html
 
 
@@ -549,15 +616,22 @@ def alertas_nps(cache):
             continue
         aid = b.get("id") or titulo
         ant = antigos.get(aid) or {}
-        if ant.get("titulo") == titulo and ant.get("desc") == desc and ant.get("titulo_pt"):
+        # so reaproveita se a traducao daquele texto tiver dado certo de fato:
+        # antes, um 429 gravava o INGLES como se fosse a traducao e o aviso
+        # ficava em ingles para sempre, sem nunca tentar de novo
+        if (ant.get("titulo") == titulo and ant.get("desc") == desc
+                and ant.get("trad_ok")):
             titulo_pt, desc_pt = ant["titulo_pt"], ant["desc_pt"]
+            trad_ok = True
         else:
             try:
                 titulo_pt = _traduz_bloco(titulo) if titulo else ""
                 desc_pt = _traduz_bloco(desc) if desc else ""
-            except Exception as e:  # noqa: BLE001 - sem traducao, fica o original
+                trad_ok = True
+            except Exception as e:  # noqa: BLE001 - fica o original, e tenta na proxima
                 print(f"aviso: traducao de alerta do NPS falhou ({e})")
                 titulo_pt, desc_pt = titulo, desc
+                trad_ok = False
         chave = f"{titulo} {desc}".lower()
         local_pt = local_en = ""
         lat = lng = None
@@ -567,6 +641,7 @@ def alertas_nps(cache):
                 break
         saida.append({
             "id": aid,
+            "trad_ok": trad_ok,
             "titulo": titulo, "titulo_pt": titulo_pt,
             "desc": desc, "desc_pt": desc_pt,
             "cat": _cat_alerta(b.get("category")),
@@ -2014,19 +2089,25 @@ def main():
                     "mirantes_fotos": mir_fotos},
                    ensure_ascii=False, indent=2), encoding="utf-8")
 
-    aviso_pt = traduz_aviso(atual["notice_identifier"], resumo_html, sinopse)
+    # Orcamento de chamadas de traducao POR RODADA. O gtx devolve 429 quando se
+    # abusa, e o monitor roda a cada 5 min: sem teto, uma rodada gastava a cota
+    # e o aviso inteiro saia em ingles (aconteceu em 23/08/2026). Como o cache e
+    # por texto e o aviso diario repete quase tudo, 25 basta com folga.
+    trad_cache = _cache_trad()
+    orcamento = [25]
+    aviso_pt = traduz_aviso(atual["notice_identifier"], resumo_html, sinopse,
+                            trad_cache, orcamento)
     ep_en, prev_en = frases_chave(sinopse)
+    # as duas frases do painel eram traduzidas TODA rodada (576 chamadas/dia a
+    # toa); agora passam pelo mesmo cache por texto
+    ep_pt = traduz_txt(ep_en, trad_cache, orcamento) or ep_en
+    prev_pt = traduz_txt(prev_en, trad_cache, orcamento) or prev_en
+    _grava_trad(trad_cache)
+    print(f"traducao: {25 - orcamento[0]} chamada(s) nesta rodada, "
+          f"{len(trad_cache['textos'])} trechos em cache")
 
-    def _t(s):
-        if not s:
-            return ""
-        try:
-            return _traduz_bloco(s)
-        except Exception:  # noqa: BLE001 - fallback: frase original
-            return s
-
-    frases = {"ep_en": ep_en, "ep_pt": _t(ep_en),
-              "prev_en": prev_en, "prev_pt": _t(prev_en),
+    frases = {"ep_en": ep_en, "ep_pt": ep_pt,
+              "prev_en": prev_en, "prev_pt": prev_pt,
               "ult": midia.get("ultimo_ep") or {}}
     pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                          aviso_pt, lives, lives_link, fotos, frases, galeria, alertas,

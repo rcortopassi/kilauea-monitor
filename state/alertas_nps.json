@@ -2,10 +2,11 @@
   "alertas": [
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
+      "trad_ok": true,
       "titulo": "Park Temporarily Closed Due to Tropical Storm Moke",
-      "titulo_pt": "Park Temporarily Closed Due to Tropical Storm Moke",
+      "titulo_pt": "Parque temporariamente fechado devido à tempestade tropical Moke",
       "desc": "Hawaiʻi Volcanoes National Park, including the Kahuku Unit, is closed due to potential impacts from Tropical Storm Moke. This new storm system could again bring heavy rainfall and high winds to Hawaiʻi Island through Monday, August 24. Parts of the park are still without power, internet or phone lines. The community, and many park employees, volunteers and partners, are still recovering from the devastating impacts of last weekend’s Hurricane Lala.",
-      "desc_pt": "Hawaiʻi Volcanoes National Park, including the Kahuku Unit, is closed due to potential impacts from Tropical Storm Moke. This new storm system could again bring heavy rainfall and high winds to Hawaiʻi Island through Monday, August 24. Parts of the park are still without power, internet or phone lines. The community, and many park employees, volunteers and partners, are still recovering from the devastating impacts of last weekend’s Hurricane Lala.",
+      "desc_pt": "O Parque Nacional dos Vulcões do Havaí, incluindo a Unidade Kahuku, está fechado devido aos possíveis impactos da tempestade tropical Moke. Este novo sistema de tempestades pode trazer novamente fortes chuvas e ventos fortes para a Ilha do Havaí até segunda-feira, 24 de agosto. Partes do parque ainda estão sem energia, internet ou linhas telefônicas. A comunidade e muitos funcionários, voluntários e parceiros do parque ainda estão a recuperar dos impactos devastadores do furacão Lala do fim de semana passado.",
       "cat": "closure",
       "url": "https://www.nps.gov/havo/learn/news/20260821-nr-storm-closure.htm",
       "data": "2026-08-23",
@@ -16,6 +17,7 @@
     },
     {
       "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
+      "trad_ok": true,
       "titulo": "Protect Yourself from Volcanic Tephra",
       "titulo_pt": "Proteja-se da Tefra Vulcânica",
       "desc": "Volcanic ash, rock and glassy strands (tephra) is present at Kīlauea summit and can irritate your skin, eyes and respiratory system. For your safety, do not handle it. Eye protection, long sleeves, long pants, a hat, closed-toe shoes and a dust mask are recommended.",
@@ -30,6 +32,7 @@
     },
     {
       "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
+      "trad_ok": true,
       "titulo": "Kīlauea eruption",
       "titulo_pt": "Erupção Kilauea",
       "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
@@ -43,5 +46,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-24T12:15:16+00:00"
+  "atualizado_em": "2026-08-24T12:18:44+00:00"
 }
