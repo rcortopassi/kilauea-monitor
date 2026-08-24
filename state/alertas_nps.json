@@ -3,10 +3,10 @@
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
-      "titulo": "Park Remains Closed Monday Morning 8/24/26 as Staff Assess Conditions",
-      "titulo_pt": "O parque permanece fechado na manhã de segunda-feira, 24/08/26, enquanto a equipe avalia as condições",
-      "desc": "Hawaiʻi Volcanoes National Park is closed Monday morning August 24 while staff assess roads and trails following storms. Staff are working towards reopening parts of the park today, exact time to be determined. The public will be kept informed. The Kahuku Unit is closed until further notice.",
-      "desc_pt": "O Parque Nacional dos Vulcões do Havaí está fechado na manhã de segunda-feira, 24 de agosto, enquanto a equipe avalia estradas e trilhas após tempestades. A equipe está trabalhando para reabrir partes do parque hoje, horário exato a ser determinado. O público será mantido informado. A Unidade Kahuku está fechada até novo aviso.",
+      "titulo": "Some Areas of Park Now Open",
+      "titulo_pt": "Algumas áreas do parque já abertas",
+      "desc": "Crater Rim Drive West from the park entrance to Uēkahuna is open, along with the Welcome Center and Hawaiʻi Pacific Parks Association store. Popular overlooks like Kīlauea Overlook and Kūkamāhuākea (Steam Vents) are also open. All other areas remain closed while park staff continue to address hazards but will reopen as soon as they are deemed safe. The Kahuku Unit is closed until further notice.",
+      "desc_pt": "A Crater Rim Drive West, da entrada do parque para Uēkahuna, está aberta, junto com o Welcome Center e a loja da Hawai'i Pacific Parks Association. Mirantes populares como Kīlauea Overlook e Kūkamāhuākea (Steam Vents) também estão abertos. Todas as outras áreas permanecem fechadas enquanto a equipe do parque continua a lidar com os perigos, mas reabrirão assim que forem consideradas seguras. A Unidade Kahuku está fechada até novo aviso.",
       "cat": "closure",
       "url": "https://www.nps.gov/havo/learn/news/20260821-nr-storm-closure.htm",
       "data": "2026-08-24",
@@ -46,5 +46,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-24T22:04:27+00:00"
+  "atualizado_em": "2026-08-24T22:09:44+00:00"
 }
