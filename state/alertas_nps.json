@@ -3,13 +3,13 @@
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
-      "titulo": "Some Areas of Park Now Open",
-      "titulo_pt": "Algumas áreas do parque já abertas",
-      "desc": "Crater Rim Drive West from the park entrance to Uēkahuna is open, along with the Welcome Center and Hawaiʻi Pacific Parks Association store. Popular overlooks like Kīlauea Overlook and Kūkamāhuākea (Steam Vents) are also open. Mauna Loa Road is open to Kīpukapuaulu, but Kīpukapuaulu Trail is closed due to tree hazards. All other areas remain closed while park staff continue to address hazards but will reopen as soon as they are deemed safe. The Kahuku Unit is closed until further notice.",
-      "desc_pt": "A Crater Rim Drive West, da entrada do parque para Uēkahuna, está aberta, junto com o Welcome Center e a loja da Hawai'i Pacific Parks Association. Mirantes populares como Kīlauea Overlook e Kūkamāhuākea (Steam Vents) também estão abertos. A estrada Mauna Loa está aberta para Kīpukapuaulu, mas a trilha Kīpukapuaulu está fechada devido a perigos de árvores. Todas as outras áreas permanecem fechadas enquanto a equipe do parque continua a lidar com os perigos, mas reabrirão assim que forem consideradas seguras. A Unidade Kahuku está fechada até novo aviso.",
+      "titulo": "Most of Hawaiʻi Volcanoes National Park Now Open",
+      "titulo_pt": "A maior parte do Parque Nacional dos Vulcões do Havaí já está aberta",
+      "desc": "The remaining storm and safety closures that remain include Devastation Trail (parking lot is open), Puʻupuaʻi, Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail and the Kahuku Unit.",
+      "desc_pt": "Os restantes fechamentos contra tempestades e segurança que permanecem incluem a Trilha da Devastação (o estacionamento está aberto), Puʻupuaʻi, a Estrada Mauna Loa além do portão em Kīpukapuaulu, a Trilha Kīpukapuaulu e a Unidade Kahuku.",
       "cat": "closure",
-      "url": "https://www.nps.gov/havo/learn/news/20260824-nr-park-partially-open.htm",
-      "data": "2026-08-24",
+      "url": "",
+      "data": "2026-08-25",
       "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
       "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
       "lat": 19.4386,
@@ -46,5 +46,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-25T23:22:59+00:00"
+  "atualizado_em": "2026-08-25T23:28:12+00:00"
 }
