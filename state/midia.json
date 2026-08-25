@@ -24,16 +24,41 @@
   ],
   "lives_link": [],
   "fotos": {
-    "slug": "galeria-ep-54",
+    "slug": "/observatories/hvo/news/photo-video-chronology-kilauea-summit-episode-54",
+    "titulo": "Photo & Video Chronology — Kīlauea summit episode 54",
     "ep": 54,
-    "data": "2026-08-25",
-    "titulo": "Kilauea summit episode 54",
-    "url": "https://www.usgs.gov/volcanoes/kilauea/multimedia",
+    "data": "",
+    "url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-kilauea-summit-episode-54",
     "itens": [
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/IMG_4145.jpeg?itok=E8fF2iH2",
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4703.jpg?itok=1Z00vFFv",
+        "cap_en": "Color photograph of volcanic eruption within caldera",
+        "cap_pt": "Fotografia colorida de erupção vulcânica dentro da caldeira"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4704.jpg?itok=QmXgKbsU",
         "cap_en": "Color photograph of lava fountain",
-        "cap_pt": "Fotografia colorida da fonte de lava"
+        "cap_pt": "Fotografia colorida de fonte de lava"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4705.jpg?itok=Z-IigWQK",
+        "cap_en": "Color photograph of lava fountain",
+        "cap_pt": "Fotografia colorida de fonte de lava"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4145.jpeg?itok=6GglOCTy",
+        "cap_en": "Color photograph of lava fountain",
+        "cap_pt": "Fotografia colorida de fonte de lava"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/10482.jpg?itok=5gJMxjnk",
+        "cap_en": "Color photograph of lava fountain within caldera",
+        "cap_pt": "Fotografia colorida da fonte de lava dentro da caldeira"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/M_%283%29.jpg?itok=Vh4Usrkz",
+        "cap_en": "Color photograph of lava fountain and visitors",
+        "cap_pt": "Fotografia colorida da fonte de lava e visitantes"
       }
     ]
   },
