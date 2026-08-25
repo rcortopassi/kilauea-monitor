@@ -24,41 +24,16 @@
   ],
   "lives_link": [],
   "fotos": {
-    "slug": "/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
-    "titulo": "Photo & Video Chronology — Full moon and lava fountain: Kīlauea summit episode 52",
-    "ep": 52,
-    "data": "",
-    "url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-full-moon-and-lava-fountain-kilauea-summit-episode-52",
+    "slug": "galeria-ep-54",
+    "ep": 54,
+    "data": "2026-08-25",
+    "titulo": "Kilauea summit episode 54",
+    "url": "https://www.usgs.gov/volcanoes/kilauea/multimedia",
     "itens": [
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_3045.jpeg?itok=RzYv6G3Z",
-        "cap_en": "Color photograph of volcanic eruption and full moon",
-        "cap_pt": "Fotografia colorida de erupção vulcânica e lua cheia"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4010_0.jpeg?itok=Xk8eAHjE",
-        "cap_en": "Color photograph of volcanic plume and full moon",
-        "cap_pt": "Fotografia colorida de pluma vulcânica e lua cheia"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_5841.jpeg?itok=PRIfrATY",
-        "cap_en": "Color photograph of eruption viewers at night",
-        "cap_pt": "Fotografia colorida de espectadores da erupção à noite"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/DSC06253.JPG?itok=yE6rWV3m",
-        "cap_en": "Silhouettes of people at night with a lava fountain and plume behind them",
-        "cap_pt": "Silhuetas de pessoas à noite com uma fonte de lava e uma pluma atrás delas"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4017.jpeg?itok=43r0lsx3",
-        "cap_en": "Color photograph of lava fountain and lava flows",
-        "cap_pt": "Fotografia colorida de fonte de lava e fluxos de lava"
-      },
-      {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/IMG_4006.jpeg?itok=SQU-RuPm",
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/IMG_4145.jpeg?itok=E8fF2iH2",
         "cap_en": "Color photograph of lava fountain",
-        "cap_pt": "Fotografia colorida de fonte de lava"
+        "cap_pt": "Fotografia colorida da fonte de lava"
       }
     ]
   },
