@@ -84,7 +84,8 @@
     const base = Math.max(1, rbt12);
     for (let i = 0; i < ANEXO4.length; i++) {
       if (base <= ANEXO4[i][0]) {
-        return { aliq: Math.max(0, (base * ANEXO4[i][1] - ANEXO4[i][2]) / base), faixa: i + 1 };
+        return { aliq: Math.max(0, (base * ANEXO4[i][1] - ANEXO4[i][2]) / base),
+          faixa: i + 1, nominal: ANEXO4[i][1] };
       }
     }
     return null; /* acima do teto de R$ 4,8 mi */
@@ -236,6 +237,53 @@
     document.getElementById("q-aliquotas").innerHTML = h + "</tbody>";
   }
 
+  /* Deslocar clientes sem exigência de crédito de SP para Brasília:
+     cada cenário refaz SP em 2033 com menos receita e o Simples de
+     Brasília com o RBT12 correspondentemente maior. */
+  function deslocamento(s) {
+    const c33 = s.fim;
+    /* alíquota marginal de SP em 2033: com os créditos fixos, cada real a
+       menos deixa de pagar o IBS/CBS embutido (se ainda há saldo devedor)
+       e o IRPJ/CSLL presumidos */
+    const margSP = (c33.iva > 0 ? c33.tAdv / (1 + c33.tAdv) : 0) + P.irpj / 100;
+    const simBase = simples(P.rbt12);
+    const base = c33.total + (s.das || 0);
+
+    const prosa = document.getElementById("p-desloca");
+    if (simBase == null) {
+      prosa.innerHTML = "Brasília já está fora do teto do Simples — o deslocamento não se aplica.";
+    } else {
+      prosa.innerHTML = "Na margem, cada real que sai de São Paulo em 2033 deixa de pagar <strong>" +
+        F.num1(margSP * 100) + "%</strong> (IBS/CBS embutido mais IRPJ/CSLL) e passa a pagar cerca de <strong>" +
+        F.num1(simBase.nominal * 100) + "%</strong> em Brasília — a alíquota nominal da faixa " + simBase.faixa +
+        " do Anexo IV, que é o custo marginal do Simples. Economia de aproximadamente <strong>" +
+        F.dinheiro(Math.max(0, (margSP - simBase.nominal) * 1000)) +
+        " por R$ 1.000 deslocados</strong>, enquanto o RBT12 de Brasília couber na faixa — subir de faixa ou " +
+        "estourar o teto de R$ 4,8 milhões muda a conta, como a tabela mostra. Vale só para os clientes que " +
+        "<strong>não precisam do crédito</strong>; quem exige crédito de IBS/CBS fica em SP.";
+    }
+
+    let h = "<thead><tr><th>Deslocado para BSB</th><th>Carga SP 2033</th><th>Faixa BSB</th>" +
+      "<th>DAS de BSB</th><th>Carga total</th><th>Economia por mês</th></tr></thead><tbody>";
+    [0, 5000, 10000, 20000, 30000, 50000].filter(x => x <= P.fatSP).forEach(x => {
+      const cSP = cargaSP(Object.assign({}, P, { fatSP: P.fatSP - x }), 2033);
+      const rbt = P.rbt12 + 12 * x;
+      const sim = simples(rbt);
+      if (sim == null) {
+        h += "<tr><td>" + F.dinheiro(x) + "/mês</td><td>" + F.dinheiro(cSP.total) +
+          '</td><td colspan="4">RBT12 de ' + F.dinheiro(rbt) + " estoura o teto de R$ 4,8 mi — Brasília sairia do Simples</td></tr>";
+        return;
+      }
+      const das = (P.fatBSB + x) * sim.aliq;
+      const eco = base - (cSP.total + das);
+      h += "<tr" + (x === 0 ? ' class="realce"' : "") + "><td>" + F.dinheiro(x) + "/mês</td><td>" +
+        F.dinheiro(cSP.total) + "</td><td>" + sim.faixa + " · " + F.num2(sim.aliq * 100) + "% efetiva</td><td>" +
+        F.dinheiro(das) + "</td><td>" + F.dinheiro(cSP.total + das) + '</td><td class="' +
+        (eco >= 0 ? "pos" : "neg") + '">' + F.sinal(eco) + "</td></tr>";
+    });
+    document.getElementById("q-desloca").innerHTML = h + "</tbody>";
+  }
+
   function memorial(s) {
     let h = "<thead><tr><th>Ano</th><th>Alíquota advocacia</th><th>IBS/CBS líquido</th><th>Créditos usados</th><th>PIS/COFINS</th>" +
       "<th>ISS</th><th>IRPJ/CSLL</th><th>Carga de SP</th><th>Contra hoje</th></tr></thead><tbody>";
@@ -252,7 +300,7 @@
 
   function desenhar() {
     const s = simular(P);
-    parecer(s); tabelaAliquotas(s); demonstracao(s); cliente(s); memorial(s);
+    parecer(s); tabelaAliquotas(s); demonstracao(s); cliente(s); deslocamento(s); memorial(s);
 
     /* o seletor de ISS decide qual dos dois campos faz sentido mostrar */
     document.getElementById("c-iss").closest(".campo").style.display =
