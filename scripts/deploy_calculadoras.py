@@ -41,14 +41,39 @@ def upload(local, nome):
                 raise
 
 
+def apagar(nome):
+    dest = f"/home/{PA_USER}/calculadoras/{nome}"
+    url = f"{PA_API}/api/v0/user/{PA_USER}/files/path{dest}"
+    req = Request(url, method="DELETE", headers={"Authorization": f"Token {PA_TOKEN}"})
+    try:
+        with urlopen(req, timeout=60) as r:
+            print(f"removido ({r.getcode()}): {dest}")
+    except Exception as e:  # noqa: BLE001
+        print(f"remocao de {nome} pulada ({e})")
+
+
 def main():
-    arquivos = sorted(glob.glob("calculadoras/*.html"))
+    arquivos = sorted(glob.glob("calculadoras/*.html") + glob.glob("calculadoras/*.js"))
     if not arquivos:
         print("nada a publicar")
         return 0
     for a in arquivos:
         upload(a, os.path.basename(a))
-    return 0
+    # rascunho de uma versao anterior, substituido por escritorios.html
+    apagar("reforma-advocacia.html")
+
+    # conferencia: as paginas publicadas respondem no endereco publico
+    base = f"https://{PA_USER}.pythonanywhere.com/calculadoras"
+    falhas = 0
+    for a in arquivos:
+        nome = os.path.basename(a)
+        try:
+            with urlopen(f"{base}/{nome}", timeout=30) as r:
+                print(f"no ar ({r.getcode()}): {base}/{nome}")
+        except Exception as e:  # noqa: BLE001
+            print(f"ERRO: {base}/{nome} nao respondeu: {e}")
+            falhas += 1
+    return 1 if falhas else 0
 
 
 if __name__ == "__main__":

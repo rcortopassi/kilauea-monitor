@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assinar ou comprar o carro — Calculadoras patrimoniais</title>
+<meta name="description" content="Simulação mês a mês da assinatura de carro contra a compra, separando item por item o que a mensalidade embute e mostrando até quanto vale a pena pagar.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="capa">
+    <div class="capa-topo">
+      <a class="marca" href="./">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="currentColor"/><rect x="14" y="30" width="14" height="22" rx="3" fill="#3987e5"/><rect x="36" y="14" width="14" height="38" rx="3" fill="#eb6834"/></svg>
+        <span>Calculadoras patrimoniais</span>
+      </a>
+      <nav class="nav">
+        <a href="./">Índice</a>
+        <a href="imovel.html">Imóvel</a>
+        <a href="carro.html" aria-current="page">Carro</a>
+        <a href="escritorios.html">Escritórios</a>
+        <a href="metodo.html">Método</a>
+      </nav>
+    </div>
+    <div class="capa-corpo">
+      <div class="rubrica">Demonstração comparativa · pessoa física</div>
+      <h1>Assinar ou comprar o carro</h1>
+      <p class="subtitulo">O carro perde valor nos dois cenários. A pergunta não é qual constrói patrimônio, e sim qual destrói menos dinheiro pelo mesmo serviço.</p>
+      <div class="capa-grade" id="carimbo"></div>
+    </div>
+  </header>
+
+  <section class="parecer" id="parecer">
+    <div>
+      <div class="parecer-rotulo" id="p-rotulo">Diferença no horizonte</div>
+      <div class="cifra" id="p-cifra">—</div>
+      <div class="parecer-texto" id="p-texto"></div>
+    </div>
+    <div class="indicadores">
+      <div>
+        <div class="ind-rotulo">Custo real comprando</div>
+        <div class="ind-valor" id="i-custoC">—</div>
+        <div class="ind-nota">por mês, já contando a depreciação</div>
+      </div>
+      <div>
+        <div class="ind-rotulo">Custo real assinando</div>
+        <div class="ind-valor" id="i-custoA">—</div>
+        <div class="ind-nota">por mês, tudo incluso</div>
+      </div>
+      <div>
+        <div class="ind-rotulo">Mensalidade de indiferença</div>
+        <div class="ind-valor" id="i-indif">—</div>
+        <div class="ind-nota">acima disso, comprar compensa</div>
+      </div>
+      <div>
+        <div class="ind-rotulo">Assinatura sobre o preço</div>
+        <div class="ind-valor" id="i-taxa">—</div>
+        <div class="ind-nota" id="i-taxa-nota"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="corpo">
+
+    <form class="premissas" id="premissas" autocomplete="off">
+      <div class="premissas-topo">
+        <h2>Premissas</h2>
+        <button type="button" class="btn" id="restaurar">Restaurar</button>
+      </div>
+      <div id="campos"></div>
+      <fieldset>
+        <legend>Critérios da simulação</legend>
+        <label class="marcar"><input type="checkbox" id="m-moedaHoje" checked><span>Apresentar em moeda de hoje, descontada a inflação</span></label>
+        <label class="marcar"><input type="checkbox" id="m-iofFinanciado" checked><span>IOF e tarifas embutidos no financiamento</span></label>
+      </fieldset>
+    </form>
+
+    <main>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro I</div>
+          <h3>O que a assinatura já cobre</h3>
+          <p>Comparação direta entre a mensalidade e a soma do que você pagaria separado sendo dono. A última linha é o preço da conveniência: o que a assinatura cobra além do custo dos mesmos serviços. Valores nominais, sem desconto de inflação nem custo de oportunidade, que aparecem nos quadros seguintes.</p>
+        </div>
+        <div class="quadro">
+          <div class="rolagem-quadro"><table id="q-custos"></table></div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro II</div>
+          <h3>Patrimônio líquido ao longo do tempo</h3>
+          <p>Quem compra fica com um bem que derrete; quem assina não fica com nada, mas investe a entrada e cada real de diferença mensal. As duas linhas partem de pontos diferentes por isso.</p>
+        </div>
+        <div class="quadro">
+          <div class="chaves">
+            <div class="chave"><i style="background:var(--serie-a)"></i>Comprar</div>
+            <div class="chave"><i style="background:var(--serie-b)"></i>Assinar e investir a diferença</div>
+          </div>
+          <div class="tela" id="t-patrimonio">
+            <div class="rolagem"><svg id="g-patrimonio" viewBox="0 0 880 400" role="img" aria-label="Patrimônio líquido nos cenários de compra e de assinatura"></svg></div>
+            <div class="dica" id="d-patrimonio"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro III</div>
+          <h3>Desembolso mensal</h3>
+          <p>Enquanto o financiamento corre, ser dono costuma pesar mais no caixa. Quando a última parcela cai, a conta se inverte de uma vez, e é aí que a compra recupera o atraso. Trocando de carro todo ano, esse alívio nunca chega.</p>
+        </div>
+        <div class="quadro">
+          <div class="chaves">
+            <div class="chave"><i class="bloco" style="background:var(--serie-a)"></i>Parcela, seguro, IPVA, manutenção e pneus</div>
+            <div class="chave"><i class="bloco" style="background:var(--serie-b)"></i>Mensalidade e km excedente</div>
+          </div>
+          <div class="tela" id="t-fluxo">
+            <div class="rolagem"><svg id="g-fluxo" viewBox="0 0 880 330" role="img" aria-label="Desembolso mensal médio por ano em cada cenário"></svg></div>
+            <div class="dica" id="d-fluxo"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro IV</div>
+          <h3>Até quanto vale a pena pagar</h3>
+          <p>A mensalidade cruzada com o tempo que você pretende ficar com o carro. Cada célula traz a vantagem de comprar sobre assinar naquele cenário. A faixa onde a cor vira é o teto que a assinatura pode cobrar para ainda valer a pena.</p>
+        </div>
+        <div class="quadro">
+          <div class="tela" id="t-calor">
+            <div class="rolagem"><svg id="g-calor" viewBox="0 0 880 400" role="img" aria-label="Sensibilidade da decisão à mensalidade da assinatura e ao horizonte"></svg></div>
+            <div class="dica" id="d-calor"></div>
+          </div>
+          <div class="faixa-legenda">
+            <span>Assinar ganha</span>
+            <div class="faixa" id="faixa-calor"></div>
+            <span>Comprar ganha</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro V</div>
+          <h3>Memorial ano a ano</h3>
+          <p>A conta aberta, para conferência.</p>
+        </div>
+        <div class="quadro">
+          <details class="abrir">
+            <summary>Abrir o memorial completo</summary>
+            <div class="rolagem-quadro"><table id="q-anos"></table></div>
+          </details>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Notas explicativas</div>
+          <h3>Como ler o resultado</h3>
+        </div>
+        <div class="quadro">
+          <div class="explicativas">
+            <section>
+              <h4 data-n="1">A depreciação é o maior custo e o mais invisível</h4>
+              <p>Um zero-quilômetro perde de <strong>15% a 20% no primeiro ano</strong> e algo perto de 10% ao ano depois. Ninguém sente porque não sai da conta corrente, mas sai do patrimônio.</p>
+            </section>
+            <section>
+              <h4 data-n="2">Trocar de carro todo ano inverte a conta</h4>
+              <p>Quem troca sempre paga a <strong>depreciação do primeiro ano de novo</strong>, que é a fatia mais cara da vida do veículo, e nunca chega ao período sem parcela. É o cenário em que a assinatura mais brilha. Ligue a opção no painel para comparar sem trapaça: dos dois lados você estará sempre num carro novo.</p>
+            </section>
+            <section>
+              <h4 data-n="3">A regra dos 3% ao mês</h4>
+              <p>Assinaturas costumam ser cotadas entre <strong>2,5% e 3,5% do valor do carro por mês</strong>. Acima disso é caro para quase qualquer horizonte; abaixo vale olhar com atenção, porque a locadora compra com desconto de frota e repassa parte.</p>
+            </section>
+            <section>
+              <h4 data-n="4">Você compara serviços, não preços</h4>
+              <p>A mensalidade embute seguro, IPVA, licenciamento, revisões, pneus e assistência. Comparar com a parcela do financiamento é erro grosseiro: a parcela é só uma parte do custo de ser dono. O Quadro I separa item por item.</p>
+            </section>
+            <section>
+              <h4 data-n="5">Contrato curto custa mais por mês</h4>
+              <p>Assinatura de 12 meses é mais cara que a de 24 ou 36, justamente porque a locadora absorve a depreciação inicial. Se você marcar a troca anual, use uma cotação de 12 meses na mensalidade, senão a comparação fica boa demais para a assinatura.</p>
+            </section>
+            <section>
+              <h4 data-n="6">O que não entra na conta</h4>
+              <p>Combustível, estacionamento, pedágio, lavagem e multas são iguais nos dois cenários e ficam de fora. Também não entram franquia de sinistro nem variação do bônus do seguro.</p>
+            </section>
+            <section>
+              <h4 data-n="7">Risco e flexibilidade têm valor</h4>
+              <p>Na assinatura, pane, sinistro, desvalorização e revenda são problema da locadora. Em compensação há fidelidade, multa por cancelamento e limite de quilometragem. Se a sua rotina muda com frequência, isso vale mais que a diferença da planilha.</p>
+            </section>
+            <section>
+              <h4 data-n="8">Se o carro for da empresa</h4>
+              <p>Para pessoa jurídica a lógica muda: a mensalidade é despesa operacional dedutível, enquanto o carro comprado vira ativo imobilizado com depreciação fiscal em prazo próprio. Isso pode virar o resultado e precisa ser conferido com o contador. Este quadro é de pessoa física.</p>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <footer class="rodape">
+        Estimativa para apoiar a decisão, não recomendação de investimento. O financiamento é calculado como crédito direto ao consumidor com juros mensais e IOF, a depreciação usa uma taxa para o primeiro ano e outra para os seguintes, e seguro e IPVA acompanham o valor corrente do carro. Confira as premissas com uma cotação real antes de decidir. Veja também a <a href="imovel.html">comparação de imóvel</a>.
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script src="comum.js"></script>
+<script src="carro.js"></script>
+</body>
+</html>

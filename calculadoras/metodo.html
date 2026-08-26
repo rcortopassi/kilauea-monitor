@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formulação matemática — Calculadoras patrimoniais</title>
+<meta name="description" content="As equações por trás das calculadoras de alugar ou comprar: o mecanismo comum, a especialização para imóvel e para carro, e a identidade contábil que fecha as duas contas.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="capa">
+    <div class="capa-topo">
+      <a class="marca" href="./">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="currentColor"/><rect x="14" y="30" width="14" height="22" rx="3" fill="#3987e5"/><rect x="36" y="14" width="14" height="38" rx="3" fill="#eb6834"/></svg>
+        <span>Calculadoras patrimoniais</span>
+      </a>
+      <nav class="nav">
+        <a href="./">Índice</a>
+        <a href="imovel.html">Imóvel</a>
+        <a href="carro.html">Carro</a>
+        <a href="escritorios.html">Escritórios</a>
+        <a href="metodo.html" aria-current="page">Método</a>
+      </nav>
+    </div>
+    <div class="capa-corpo">
+      <div class="rubrica">Notas técnicas · formulação</div>
+      <h1>A matemática das duas contas</h1>
+      <p class="subtitulo">Imóvel e carro são o mesmo modelo. Muda o que entra no fluxo de caixa e o que acontece com o valor do bem: um cresce a uma taxa, o outro encolhe. Abaixo, primeiro o mecanismo comum, depois cada especialização.</p>
+    </div>
+  </header>
+
+  <main style="margin-top:30px">
+
+    <!-- ===================== NOTAÇÃO ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro I</div>
+        <h3>Notação</h3>
+        <p>Índice <span class="eq" style="line-height:1"><span class="v">t</span></span> = 1, 2, …, <span class="eq" style="line-height:1"><span class="v">N</span></span> percorre os meses, com <span class="eq" style="line-height:1"><span class="v">N</span> = 12<span class="v">H</span></span> e <span class="eq" style="line-height:1"><span class="v">H</span></span> em anos. O sobrescrito <span class="eq" style="line-height:1"><span class="v">A</span></span> marca o cenário de comprar e <span class="eq" style="line-height:1"><span class="v">B</span></span> o de alugar ou assinar.</p>
+      </div>
+      <div class="quadro">
+        <div class="duas-colunas">
+          <table class="simbolos"><tbody>
+            <tr><td>P</td><td>Preço do bem</td><td>R$</td></tr>
+            <tr><td>e</td><td>Fração de entrada</td><td>0 a 1</td></tr>
+            <tr><td>L</td><td>Valor financiado</td><td>R$</td></tr>
+            <tr><td>n</td><td>Prazo do financiamento</td><td>meses</td></tr>
+            <tr><td>i<sub>m</sub></td><td>Juros mensais</td><td>ao mês</td></tr>
+            <tr><td>B<sub>t</sub></td><td>Saldo devedor</td><td>R$</td></tr>
+            <tr><td>J<sub>t</sub></td><td>Juros do mês</td><td>R$</td></tr>
+            <tr><td>Â<sub>t</sub></td><td>Amortização do mês</td><td>R$</td></tr>
+            <tr><td>p<sub>t</sub></td><td>Parcela</td><td>R$</td></tr>
+            <tr><td>S<sub>t</sub></td><td>Valor de mercado do bem</td><td>R$</td></tr>
+            <tr><td>R<sub>t</sub></td><td>Valor de realização, líquido</td><td>R$</td></tr>
+          </tbody></table>
+          <table class="simbolos"><tbody>
+            <tr><td>C<sub>t</sub></td><td>Desembolso do mês</td><td>R$</td></tr>
+            <tr><td>D<sub>t</sub></td><td>Diferença entre os cenários</td><td>R$</td></tr>
+            <tr><td>W<sub>t</sub></td><td>Carteira de investimentos</td><td>R$</td></tr>
+            <tr><td>Q<sub>t</sub></td><td>Aportes acumulados</td><td>R$</td></tr>
+            <tr><td>V<sub>t</sub></td><td>Patrimônio líquido</td><td>R$</td></tr>
+            <tr><td>K<sub>0</sub></td><td>Caixa próprio inicial</td><td>R$</td></tr>
+            <tr><td>r<sub>m</sub></td><td>Rendimento mensal</td><td>ao mês</td></tr>
+            <tr><td>τ</td><td>Imposto sobre o ganho</td><td>0 a 1</td></tr>
+            <tr><td>π</td><td>Inflação anual</td><td>ao ano</td></tr>
+            <tr><td>g<sub>m</sub></td><td>Valorização mensal do imóvel</td><td>ao mês</td></tr>
+            <tr><td>δ<sub>1</sub>, δ<sub>n</sub></td><td>Depreciação do carro, 1º ano e demais</td><td>ao ano</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MECANISMO COMUM ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro II</div>
+        <h3>O mecanismo comum</h3>
+        <p>Sete equações. Elas valem para os dois bens; a diferença entre imóvel e carro está apenas em como se calculam <span class="eq" style="line-height:1"><span class="v">C<sub>t</sub></span></span> e <span class="eq" style="line-height:1"><span class="v">S<sub>t</sub></span></span>.</p>
+      </div>
+      <div class="quadro">
+
+        <div class="bloco-eq">
+          <div class="rot">1 · Equivalência de taxas</div>
+          <div class="eq"><span class="v">i<sub>m</sub></span> <span class="op">=</span> (1 <span class="op">+</span> <span class="v">i<sub>a</sub></span>)<sup>1/12</sup> <span class="op">&minus;</span> 1</div>
+        </div>
+        <p class="prosa">Toda taxa anual vira mensal equivalente por composição, não por divisão por doze. É o que garante que doze meses de rendimento reproduzam exatamente a taxa anual informada.</p>
+
+        <div class="bloco-eq">
+          <div class="rot">2 · Amortização</div>
+          <div class="eq">
+            <span class="v">J<sub>t</sub></span> <span class="op">=</span> <span class="v">i<sub>m</sub></span> <span class="v">B</span><sub><span class="v">t</span>&minus;1</sub><span class="op">,</span>
+            <span class="v">B<sub>t</sub></span> <span class="op">=</span> <span class="v">B</span><sub><span class="v">t</span>&minus;1</sub> <span class="op">&minus;</span> <span class="v">Â<sub>t</sub></span><span class="op">,</span>
+            <span class="v">p<sub>t</sub></span> <span class="op">=</span> (<span class="v">J<sub>t</sub></span> <span class="op">+</span> <span class="v">Â<sub>t</sub></span>) · <span class="fn">1</span><sub>{<span class="v">t</span> &le; <span class="v">n</span>}</sub>
+          </div>
+          <div class="eq">
+            <span class="v">Â<sub>t</sub></span>
+            <span class="casos">
+              <span><span class="frac"><span><span class="v">L</span></span><span><span class="v">n</span></span></span></span><span class="cond">no SAC</span>
+              <span><span class="frac"><span><span class="v">L</span> <span class="v">i<sub>m</sub></span></span><span>1 <span class="op">&minus;</span> (1 <span class="op">+</span> <span class="v">i<sub>m</sub></span>)<sup>&minus;<span class="v">n</span></sup></span></span> <span class="op">&minus;</span> <span class="v">J<sub>t</sub></span></span><span class="cond">na Price</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">3 · Diferença de desembolso</div>
+          <div class="eq"><span class="v">D<sub>t</sub></span> <span class="op">=</span> <span class="v">C<sub>t</sub><sup>A</sup></span> <span class="op">&minus;</span> <span class="v">C<sub>t</sub><sup>B</sup></span></div>
+        </div>
+        <p class="prosa">Esta é a equação que torna a comparação honesta. Ela mede, mês a mês, o quanto um cenário custa a mais que o outro, e é esse excedente que vai render juros do lado de quem gastou menos.</p>
+
+        <div class="bloco-eq">
+          <div class="rot">4 · Carteiras: quem gasta menos, investe a diferença</div>
+          <div class="eq">
+            <span class="v">W<sub>t</sub><sup>A</sup></span> <span class="op">=</span> <span class="v">W</span><sub><span class="v">t</span>&minus;1</sub><sup><span class="v">A</span></sup>(1 <span class="op">+</span> <span class="v">r<sub>m</sub></span>) <span class="op">+</span> <span class="fn">máx</span>(<span class="op">&minus;</span><span class="v">D<sub>t</sub></span><span class="op">,</span> 0)<span class="op">,</span>
+            <span class="v">W</span><sub>0</sub><sup><span class="v">A</span></sup> <span class="op">=</span> 0
+          </div>
+          <div class="eq">
+            <span class="v">W<sub>t</sub><sup>B</sup></span> <span class="op">=</span> <span class="v">W</span><sub><span class="v">t</span>&minus;1</sub><sup><span class="v">B</span></sup>(1 <span class="op">+</span> <span class="v">r<sub>m</sub></span>) <span class="op">+</span> <span class="fn">máx</span>(<span class="v">D<sub>t</sub></span><span class="op">,</span> 0)<span class="op">,</span>
+            <span class="v">W</span><sub>0</sub><sup><span class="v">B</span></sup> <span class="op">=</span> <span class="v">K</span><sub>0</sub>
+          </div>
+        </div>
+        <p class="prosa">O comprador desembolsa <span class="v">K</span><sub>0</sub> na entrada e nos custos de aquisição; quem aluga ou assina aplica exatamente esse mesmo valor. Daí em diante, o excedente mensal de um alimenta a carteira do outro. Os aportes acumulados <span class="v">Q<sub>t</sub></span> seguem as mesmas recorrências sem o fator de rendimento, e servem de base para o imposto.</p>
+
+        <div class="bloco-eq">
+          <div class="rot">5 · Carteira líquida de imposto</div>
+          <div class="eq">
+            <span class="v">Ŵ<sub>t</sub></span> <span class="op">=</span> <span class="v">W<sub>t</sub></span> <span class="op">&minus;</span> τ · <span class="fn">máx</span>(<span class="v">W<sub>t</sub></span> <span class="op">&minus;</span> <span class="v">Q<sub>t</sub></span><span class="op">,</span> 0)
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">6 · Patrimônio líquido de cada cenário</div>
+          <div class="eq">
+            <span class="v">V<sub>t</sub><sup>A</sup></span> <span class="op">=</span> <span class="v">R<sub>t</sub></span> <span class="op">&minus;</span> <span class="v">B<sub>t</sub></span> <span class="op">+</span> <span class="v">Ŵ<sub>t</sub><sup>A</sup></span>
+            <span style="display:inline-block;width:2.4em"></span>
+            <span class="v">V<sub>t</sub><sup>B</sup></span> <span class="op">=</span> <span class="v">Ŵ<sub>t</sub><sup>B</sup></span> <span class="op">+</span> <span class="v">Z<sub>t</sub></span>
+          </div>
+        </div>
+        <p class="prosa">Quem comprou tem o bem realizável menos a dívida, mais o que porventura investiu. Quem alugou tem só a carteira, mais <span class="v">Z<sub>t</sub></span>, que no imóvel é o FGTS rendendo à taxa dele e no carro é zero.</p>
+
+        <div class="bloco-eq">
+          <div class="rot">7 · Resultado e ponto de equilíbrio</div>
+          <div class="eq">
+            Δ<sub><span class="v">t</span></sub> <span class="op">=</span> (<span class="v">V<sub>t</sub><sup>A</sup></span> <span class="op">&minus;</span> <span class="v">V<sub>t</sub><sup>B</sup></span>)(1 <span class="op">+</span> π)<sup>&minus;<span class="v">t</span>/12</sup>
+          </div>
+          <div class="eq">
+            <span class="v">k</span><sup>&lowast;</sup> <span class="op">=</span> <span class="fn">mín</span> { <span class="v">k</span> <span class="op">:</span> <span class="v">V</span><sub>12<span class="v">k</span></sub><sup><span class="v">A</span></sup> <span class="op">&ge;</span> <span class="v">V</span><sub>12<span class="v">k</span></sub><sup><span class="v">B</span></sup> }
+          </div>
+        </div>
+        <p class="prosa">O deflator traz tudo a moeda de hoje. O sinal de Δ<sub><span class="v">N</span></sub> é o veredito, e <span class="v">k</span><sup>&lowast;</sup> é o primeiro ano em que comprar passa à frente. Se o conjunto for vazio, não há empate no horizonte.</p>
+
+      </div>
+    </section>
+
+    <!-- ===================== IMÓVEL ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro III</div>
+        <h3>Especialização: imóvel</h3>
+        <p>O bem cresce a uma taxa constante e sai caro nas duas pontas. Reajustes anuais usam <span class="eq" style="line-height:1">&lfloor;(<span class="v">t</span>&minus;1)/12&rfloor;</span>, de modo que o valor só muda a cada doze meses completos.</p>
+      </div>
+      <div class="quadro">
+
+        <div class="bloco-eq">
+          <div class="rot">Valor do imóvel e caixa inicial</div>
+          <div class="eq">
+            <span class="v">S<sub>t</sub></span> <span class="op">=</span> <span class="v">P</span>(1 <span class="op">+</span> <span class="v">g<sub>m</sub></span>)<sup><span class="v">t</span></sup>
+            <span style="display:inline-block;width:2.4em"></span>
+            <span class="v">K</span><sub>0</sub> <span class="op">=</span> <span class="v">eP</span> <span class="op">&minus;</span> <span class="v">F̂</span> <span class="op">+</span> <span class="v">c<sub>a</sub>P</span><span class="op">,</span>
+            <span class="v">F̂</span> <span class="op">=</span> <span class="fn">mín</span>(<span class="v">F</span><span class="op">,</span> <span class="v">eP</span>)
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Desembolso de quem compra</div>
+          <div class="eq">
+            <span class="v">C<sub>t</sub><sup>A</sup></span> <span class="op">=</span> <span class="v">p<sub>t</sub></span>
+            <span class="op">+</span> <span class="frac"><span>σ</span><span>12</span></span> <span class="v">B</span><sub><span class="v">t</span>&minus;1</sub>
+            <span class="op">+</span> <span class="frac"><span><span class="v">m</span></span><span>12</span></span> <span class="v">S</span><sub><span class="v">t</span>&minus;1</sub>
+            <span class="op">+</span> <span class="v">I<sub>t</sub></span> <span class="op">+</span> <span class="v">K<sub>t</sub></span>
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Desembolso de quem aluga</div>
+          <div class="eq">
+            <span class="v">C<sub>t</sub><sup>B</sup></span> <span class="op">=</span> (1 <span class="op">+</span> γ) <span class="v">a<sub>t</sub></span>
+            <span class="op">+</span> <span class="fn">1</span><sub>{encargos}</sub> (<span class="v">I<sub>t</sub></span> <span class="op">+</span> <span class="v">K<sub>t</sub></span>)<span class="op">,</span>
+            <span style="display:inline-block;width:1em"></span>
+            <span class="v">a<sub>t</sub></span> <span class="op">=</span> <span class="v">a</span>(1 <span class="op">+</span> <span class="v">u</span>)<sup>&lfloor;(<span class="v">t</span>&minus;1)/12&rfloor;</sup>
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Realização na venda</div>
+          <div class="eq">
+            <span class="v">R<sub>t</sub></span> <span class="op">=</span> <span class="v">S<sub>t</sub></span>(1 <span class="op">&minus;</span> <span class="v">c<sub>v</sub></span>)
+            <span class="op">&minus;</span> τ<sub><span class="v">g</span></sub> · <span class="fn">máx</span>[ <span class="v">S<sub>t</sub></span>(1 <span class="op">&minus;</span> <span class="v">c<sub>v</sub></span>) <span class="op">&minus;</span> <span class="v">P</span>(1 <span class="op">+</span> <span class="v">c<sub>a</sub></span>)<span class="op">,</span> 0 ]
+          </div>
+          <div class="eq">
+            <span class="v">Z<sub>t</sub></span> <span class="op">=</span> <span class="v">F̂</span>(1 <span class="op">+</span> φ<sub><span class="v">m</span></sub>)<sup><span class="v">t</span></sup>
+          </div>
+        </div>
+        <p class="prosa">A base do ganho de capital é o custo de aquisição corrigido pelos custos da compra, e não o preço puro. O FGTS aparece só do lado de quem aluga porque, do lado de quem compra, ele virou parte do imóvel. Desligar a venda ao final zera <span class="v">c<sub>v</sub></span> e τ<sub><span class="v">g</span></sub> de uma vez; marcar a isenção zera apenas τ<sub><span class="v">g</span></sub>.</p>
+
+      </div>
+    </section>
+
+    <!-- ===================== CARRO ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro IV</div>
+        <h3>Especialização: carro</h3>
+        <p>Aqui o valor do bem encolhe, e a taxa depende da idade do veículo, não do calendário. Seja <span class="eq" style="line-height:1">α<sub><span class="v">t</span></sub></span> a idade em meses do carro que está na garagem no mês <span class="eq" style="line-height:1"><span class="v">t</span></span>.</p>
+      </div>
+      <div class="quadro">
+
+        <div class="bloco-eq">
+          <div class="rot">Depreciação por idade</div>
+          <div class="eq">
+            <span class="v">S<sub>t</sub></span> <span class="op">=</span> <span class="v">S</span><sub><span class="v">t</span>&minus;1</sub>[1 <span class="op">+</span> <span class="v">d</span>(α<sub><span class="v">t</span>&minus;1</sub>)]<span class="op">,</span>
+            <span style="display:inline-block;width:.6em"></span>
+            <span class="v">d</span>(α)
+            <span class="casos">
+              <span>(1 <span class="op">&minus;</span> δ<sub>1</sub>)<sup>1/12</sup> <span class="op">&minus;</span> 1</span><span class="cond">se α &lt; 12</span>
+              <span>(1 <span class="op">&minus;</span> δ<sub><span class="v">n</span></sub>)<sup>1/12</sup> <span class="op">&minus;</span> 1</span><span class="cond">se α &ge; 12</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Desembolso de quem compra</div>
+          <div class="eq">
+            <span class="v">C<sub>t</sub><sup>A</sup></span> <span class="op">=</span> <span class="v">p<sub>t</sub></span>
+            <span class="op">+</span> <span class="frac"><span>θ <span class="op">+</span> ν</span><span>12</span></span> <span class="v">S</span><sub><span class="v">t</span>&minus;1</sub>
+            <span class="op">+</span> (μ<sub><span class="v">t</span></sub> <span class="op">+</span> ρ<sub><span class="v">t</span></sub>)<span class="v">q</span>
+            <span class="op">+</span> <span class="v">ℓ<sub>t</sub></span> <span class="op">+</span> <span class="v">ϑ<sub>t</sub></span> <span class="op">+</span> <span class="v">h<sub>t</sub></span>
+            <span class="op">+</span> <span class="v">T<sub>t</sub></span>
+          </div>
+        </div>
+        <p class="prosa">θ é o seguro e ν o IPVA, ambos incidindo sobre o valor corrente do carro, por isso caem junto com ele. μ é o desgaste por quilômetro e ρ o rateio dos pneus, ρ = preço do jogo dividido pela vida em quilômetros; os dois multiplicam a quilometragem <span class="v">q</span>. ℓ é o licenciamento, ϑ as revisões e <span class="v">h</span> o rastreador.</p>
+
+        <div class="bloco-eq">
+          <div class="rot">Desembolso de quem assina</div>
+          <div class="eq">
+            <span class="v">C<sub>t</sub><sup>B</sup></span> <span class="op">=</span> <span class="v">s<sub>t</sub></span>
+            <span class="op">+</span> <span class="v">x</span> · <span class="fn">máx</span>(<span class="v">q</span> <span class="op">&minus;</span> <span class="v">q̄</span><span class="op">,</span> 0)<span class="op">,</span>
+            <span style="display:inline-block;width:1em"></span>
+            <span class="v">s<sub>t</sub></span> <span class="op">=</span> <span class="v">s</span>(1 <span class="op">+</span> <span class="v">u<sub>s</sub></span>)<sup>&lfloor;(<span class="v">t</span>&minus;1)/12&rfloor;</sup>
+          </div>
+          <div class="eq"><span class="v">R<sub>t</sub></span> <span class="op">=</span> <span class="v">S<sub>t</sub></span>(1 <span class="op">&minus;</span> <span class="v">d<sub>v</sub></span>)</div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Troca de carro todo ano</div>
+          <div class="eq">
+            Π<sub><span class="v">j</span></sub> <span class="op">=</span> <span class="v">P</span>(1 <span class="op">+</span> π)<sup><span class="v">j</span></sup><span class="op">,</span>
+            <span style="display:inline-block;width:1em"></span>
+            <span class="v">G<sub>j</sub></span> <span class="op">=</span> <span class="v">S</span><sub>12<span class="v">j</span></sub>(1 <span class="op">&minus;</span> <span class="v">d<sub>v</sub></span>) <span class="op">&minus;</span> <span class="v">B</span><sub>12<span class="v">j</span></sub>
+          </div>
+          <div class="eq">
+            <span class="v">T</span><sub>12<span class="v">j</span></sub> <span class="op">=</span> <span class="v">e</span>Π<sub><span class="v">j</span></sub>
+            <span class="op">+</span> (1 <span class="op">&minus;</span> <span class="fn">1</span><sub>{IOF fin.}</sub>) ι(1 <span class="op">&minus;</span> <span class="v">e</span>)Π<sub><span class="v">j</span></sub>
+            <span class="op">&minus;</span> <span class="v">G<sub>j</sub></span>
+          </div>
+          <div class="eq" style="font-size:15px">
+            e então <span class="v">S</span><sub>12<span class="v">j</span></sub> <span class="op">&larr;</span> Π<sub><span class="v">j</span></sub><span class="op">,</span>
+            <span class="v">B</span><sub>12<span class="v">j</span></sub> <span class="op">&larr;</span> (1 <span class="op">&minus;</span> <span class="v">e</span>)Π<sub><span class="v">j</span></sub> <span class="op">+</span> <span class="fn">1</span><sub>{IOF fin.}</sub> ι(1 <span class="op">&minus;</span> <span class="v">e</span>)Π<sub><span class="v">j</span></sub><span class="op">,</span>
+            α <span class="op">&larr;</span> 0
+          </div>
+        </div>
+        <p class="prosa">A cada doze meses o carro é vendido, a dívida é quitada com o que a venda rendeu, e um zero é comprado ao preço corrigido pela inflação. <strong>O reinício de α é o ponto todo</strong>: a depreciação volta para a faixa do primeiro ano, e é isso que faz a conta virar contra quem compra e troca sempre. Sem troca, <span class="v">T<sub>t</sub></span> = 0 para todo <span class="v">t</span>.</p>
+
+      </div>
+    </section>
+
+    <!-- ===================== IDENTIDADE ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro V</div>
+        <h3>Identidade contábil</h3>
+        <p>O custo de bolso de ser dono, definido como tudo que saiu menos o que sobrou, é idêntico à soma das rubricas econômicas. Serve de verificação: se os dois lados não fecharem, o modelo tem vazamento.</p>
+      </div>
+      <div class="quadro">
+
+        <div class="bloco-eq">
+          <div class="rot">Definição pelo caixa</div>
+          <div class="eq">
+            <span class="v">R<sup>A</sup></span> <span class="op">=</span> <span class="v">K</span><sub>0</sub>
+            <span class="op">+</span> <span class="somatorio"><span class="lim"><span class="v">N</span></span><span class="sinal">&Sigma;</span><span class="lim"><span class="v">t</span>=1</span></span> (<span class="v">p<sub>t</sub></span> <span class="op">+</span> <span class="v">O<sub>t</sub></span> <span class="op">+</span> <span class="v">T<sub>t</sub></span>)
+            <span class="op">&minus;</span> (<span class="v">R<sub>N</sub></span> <span class="op">&minus;</span> <span class="v">B<sub>N</sub></span>)
+          </div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Igualdade com as rubricas econômicas</div>
+          <div class="eq">
+            <span class="v">R<sup>A</sup></span> <span class="op">&equiv;</span>
+            <span class="somatorio"><span class="lim"></span><span class="sinal">&Sigma;</span><span class="lim"><span class="v">j</span></span></span>(Π<sub><span class="v">j</span>&minus;1</sub> <span class="op">&minus;</span> <span class="v">G<sub>j</sub></span><sup>&plus;</sup>)
+            <span class="op">+</span> <span class="somatorio"><span class="lim"></span><span class="sinal">&Sigma;</span><span class="lim"><span class="v">j</span></span></span><span class="v">IOF<sub>j</sub></span>
+            <span class="op">+</span> <span class="somatorio"><span class="lim"><span class="v">N</span></span><span class="sinal">&Sigma;</span><span class="lim"><span class="v">t</span>=1</span></span><span class="v">J<sub>t</sub></span>
+            <span class="op">+</span> <span class="somatorio"><span class="lim"><span class="v">N</span></span><span class="sinal">&Sigma;</span><span class="lim"><span class="v">t</span>=1</span></span><span class="v">O<sub>t</sub></span>
+          </div>
+        </div>
+
+        <p class="prosa"><span class="v">O<sub>t</sub></span> reúne os custos operacionais do mês, isto é, tudo em <span class="v">C<sub>t</sub><sup>A</sup></span> que não é parcela nem troca. <span class="v">G<sub>j</sub></span><sup>+</sup> é a receita bruta da venda do carro <span class="v">j</span>, sem abater a dívida, e Π<sub>0</sub> = <span class="v">P</span>.</p>
+        <p class="prosa"><strong>Demonstração.</strong> Para cada bem <span class="v">j</span> vale <span class="v">e</span>Π<sub><span class="v">j</span></sub> <span class="op">+</span> ΣÂ <span class="op">+</span> saldo na venda <span class="op">=</span> Π<sub><span class="v">j</span></sub> <span class="op">+</span> IOF financiado. Somando sobre todos os bens, os saldos devedores e as receitas de venda se cancelam entre a compra seguinte e a venda anterior, e o que resta é depreciação, IOF, juros e custos operacionais. Sem troca anual, a soma tem um único termo e a identidade se reduz ao caso simples.</p>
+        <p class="prosa">A igualdade foi conferida numericamente em seis configurações, com e sem troca anual, à vista e financiada, em SAC e em Price, com diferença inferior a um real.</p>
+
+      </div>
+    </section>
+
+    <!-- ===================== FORMA REDUZIDA ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro VI</div>
+        <h3>Forma reduzida: o custo de uso</h3>
+        <p>Removendo financiamento, custos de transação e impostos, o modelo colapsa numa desigualdade de uma linha. É a regra de bolso, e explica por que os vereditos caem para onde caem.</p>
+      </div>
+      <div class="quadro">
+
+        <div class="bloco-eq">
+          <div class="rot">Custo anual de ser dono</div>
+          <div class="eq"><span class="v">U</span> <span class="op">=</span> <span class="v">P</span>(<span class="v">r</span> <span class="op">+</span> <span class="v">m</span> <span class="op">+</span> ν <span class="op">&minus;</span> <span class="v">g</span>)</div>
+        </div>
+
+        <div class="bloco-eq">
+          <div class="rot">Critério</div>
+          <div class="eq">
+            comprar compensa <span class="op">&hArr;</span>
+            <span class="frac"><span>12<span class="v">a</span></span><span><span class="v">P</span></span></span>
+            <span class="op">&gt;</span> <span class="v">r</span> <span class="op">+</span> <span class="v">m</span> <span class="op">+</span> ν <span class="op">&minus;</span> <span class="v">g</span>
+          </div>
+        </div>
+
+        <p class="prosa">O lado esquerdo é o aluguel anual sobre o preço. O direito é o custo de imobilizar o capital, mais manutenção e imposto, menos o que o bem valoriza. Com os padrões do simulador, o lado esquerdo dá 4,8% e o direito fica perto de 5,7% em termos reais: alugar ganha, e é exatamente o que a simulação completa devolve.</p>
+        <p class="prosa">No carro a mesma desigualdade vale com <span class="v">g</span> negativo e grande, já que a depreciação é uma valorização às avessas. Como δ costuma passar de 10% ao ano, o lado direito fica enorme e a assinatura só perde quando cobra bem acima de 3% do valor do carro por mês. <strong>Trocar todo ano prende δ na faixa do primeiro ano</strong>, entre 15% e 20%, e é por isso que a conta vira.</p>
+        <p class="prosa">A forma reduzida ignora ITBI, corretagem, IOF e o efeito da alavancagem, que são justamente os termos que decidem horizontes curtos. Por isso ela serve para triagem, não para decisão.</p>
+
+      </div>
+    </section>
+
+    <!-- ===================== RAÍZES ===================== -->
+    <section class="nota-secao">
+      <div class="nota-cabeca">
+        <div class="nota-num">Quadro VII</div>
+        <h3>Os indicadores como raízes</h3>
+        <p>Valorização necessária, rendimento de indiferença e mensalidade de indiferença são o mesmo objeto: o valor do parâmetro que zera o resultado final.</p>
+      </div>
+      <div class="quadro">
+
+        <div class="bloco-eq">
+          <div class="rot">Definição</div>
+          <div class="eq">
+            <span class="v">x</span><sup>&lowast;</sup> <span class="op">:</span> Δ<sub><span class="v">N</span></sub>(<span class="v">x</span><sup>&lowast;</sup>) <span class="op">=</span> 0<span class="op">,</span>
+            <span style="display:inline-block;width:1.4em"></span>
+            <span class="v">x</span> <span class="op">&isin;</span> { <span class="v">g</span><span class="op">,</span> <span class="v">r</span><span class="op">,</span> <span class="v">s</span> }
+          </div>
+        </div>
+
+        <p class="prosa">Δ<sub><span class="v">N</span></sub> é monótona em cada um desses parâmetros, isoladamente: cresce com a valorização e com a mensalidade da assinatura, e decresce com o rendimento dos investimentos. A monotonicidade garante raiz única quando ela existe, e é o que autoriza a bissecção, executada em setenta iterações sobre um intervalo de busca amplo. Quando não há troca de sinal nas extremidades, o indicador aparece como travessão: naquele intervalo não existe valor que empate os cenários.</p>
+
+      </div>
+    </section>
+
+    <footer class="rodape">
+      As equações acima descrevem exatamente o que os arquivos <span style="font-family:var(--mono)">imovel.js</span> e <span style="font-family:var(--mono)">carro.js</span> executam, sem simplificação. Voltar para a <a href="imovel.html">calculadora de imóvel</a> ou a <a href="carro.html">de carro</a>.
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alugar ou comprar o imóvel — Calculadoras patrimoniais</title>
+<meta name="description" content="Simulação mês a mês dos cenários de aluguel e de compra de imóvel, com patrimônio, fluxo de caixa, demonstração de custos e análise de sensibilidade.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="capa">
+    <div class="capa-topo">
+      <a class="marca" href="./">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="currentColor"/><rect x="14" y="30" width="14" height="22" rx="3" fill="#3987e5"/><rect x="36" y="14" width="14" height="38" rx="3" fill="#eb6834"/></svg>
+        <span>Calculadoras patrimoniais</span>
+      </a>
+      <nav class="nav">
+        <a href="./">Índice</a>
+        <a href="imovel.html" aria-current="page">Imóvel</a>
+        <a href="carro.html">Carro</a>
+        <a href="escritorios.html">Escritórios</a>
+        <a href="metodo.html">Método</a>
+      </nav>
+    </div>
+    <div class="capa-corpo">
+      <div class="rubrica">Demonstração comparativa · pessoa física</div>
+      <h1>Alugar ou comprar o imóvel</h1>
+      <p class="subtitulo">Os dois cenários simulados mês a mês com o mesmo desembolso total. Cada real que o comprador gasta a mais, o inquilino investe. Vence quem termina com mais patrimônio.</p>
+      <div class="capa-grade" id="carimbo"></div>
+    </div>
+  </header>
+
+  <section class="parecer" id="parecer">
+    <div>
+      <div class="parecer-rotulo" id="p-rotulo">Diferença de patrimônio</div>
+      <div class="cifra" id="p-cifra">—</div>
+      <div class="parecer-texto" id="p-texto"></div>
+    </div>
+    <div class="indicadores">
+      <div>
+        <div class="ind-rotulo">Ponto de equilíbrio</div>
+        <div class="ind-valor" id="i-equilibrio">—</div>
+        <div class="ind-nota" id="i-equilibrio-nota">a partir daqui comprar passa à frente</div>
+      </div>
+      <div>
+        <div class="ind-rotulo">Aluguel sobre o preço</div>
+        <div class="ind-valor" id="i-yield">—</div>
+        <div class="ind-nota" id="i-yield-nota"></div>
+      </div>
+      <div>
+        <div class="ind-rotulo">Valorização necessária</div>
+        <div class="ind-valor" id="i-valoriz">—</div>
+        <div class="ind-nota">para os dois cenários empatarem</div>
+      </div>
+      <div>
+        <div class="ind-rotulo">Rendimento de indiferença</div>
+        <div class="ind-valor" id="i-rend">—</div>
+        <div class="ind-nota">acima disso, investir vence a compra</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="corpo">
+
+    <form class="premissas" id="premissas" autocomplete="off">
+      <div class="premissas-topo">
+        <h2>Premissas</h2>
+        <button type="button" class="btn" id="restaurar">Restaurar</button>
+      </div>
+      <div id="campos"></div>
+      <fieldset>
+        <legend>Critérios da simulação</legend>
+        <label class="marcar"><input type="checkbox" id="m-moedaHoje" checked><span>Apresentar em moeda de hoje, descontada a inflação</span></label>
+        <label class="marcar"><input type="checkbox" id="m-venderFinal" checked><span>Considerar a venda ao final, com corretagem e imposto sobre o ganho</span></label>
+        <label class="marcar"><input type="checkbox" id="m-isentoIR"><span>Isento de imposto na venda (imóvel único até R$ 440 mil ou reinvestimento em 180 dias)</span></label>
+        <label class="marcar"><input type="checkbox" id="m-encargos" checked><span>No aluguel, o inquilino paga IPTU e condomínio</span></label>
+      </fieldset>
+    </form>
+
+    <main>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro I</div>
+          <h3>Patrimônio líquido ao longo do tempo</h3>
+          <p>O que sobraria em cada cenário se você liquidasse tudo naquele ano. De um lado o imóvel valorizado menos o saldo devedor e os custos de saída; do outro, a carteira formada pela entrada e pela diferença mensal.</p>
+        </div>
+        <div class="quadro">
+          <div class="chaves">
+            <div class="chave"><i style="background:var(--serie-a)"></i>Comprar</div>
+            <div class="chave"><i style="background:var(--serie-b)"></i>Alugar e investir a diferença</div>
+          </div>
+          <div class="tela" id="t-patrimonio">
+            <div class="rolagem"><svg id="g-patrimonio" viewBox="0 0 880 400" role="img" aria-label="Patrimônio líquido acumulado nos cenários de compra e de aluguel"></svg></div>
+            <div class="dica" id="d-patrimonio"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro II</div>
+          <h3>Desembolso mensal</h3>
+          <p>A parcela é fixa em termos nominais e o aluguel sobe todo ano. O cruzamento das barras marca o momento em que ser dono passa a custar menos no caixa, o que é diferente de compensar patrimonialmente.</p>
+        </div>
+        <div class="quadro">
+          <div class="chaves">
+            <div class="chave"><i class="bloco" style="background:var(--serie-a)"></i>Parcela, seguros, manutenção, IPTU e condomínio</div>
+            <div class="chave"><i class="bloco" style="background:var(--serie-b)"></i>Aluguel, garantia, IPTU e condomínio</div>
+          </div>
+          <div class="tela" id="t-fluxo">
+            <div class="rolagem"><svg id="g-fluxo" viewBox="0 0 880 330" role="img" aria-label="Desembolso mensal médio por ano em cada cenário"></svg></div>
+            <div class="dica" id="d-fluxo"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro III</div>
+          <h3>Demonstração de custos do período</h3>
+          <p>Somente o que não vira patrimônio. A amortização não entra porque volta para você em forma de imóvel, e o rendimento da carteira do inquilino é crédito, não custo. Valores nominais, sem desconto de inflação.</p>
+        </div>
+        <div class="quadro">
+          <div class="rolagem-quadro"><table id="q-custos"></table></div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro IV</div>
+          <h3>Análise de sensibilidade</h3>
+          <p>As duas variáveis mais incertas da conta, cruzadas. Cada célula traz a vantagem de comprar sobre alugar no horizonte escolhido, mantido o resto constante. O contorno marca o cenário configurado ao lado.</p>
+        </div>
+        <div class="quadro">
+          <div class="tela" id="t-calor">
+            <div class="rolagem"><svg id="g-calor" viewBox="0 0 880 400" role="img" aria-label="Sensibilidade da decisão à valorização do imóvel e ao rendimento dos investimentos"></svg></div>
+            <div class="dica" id="d-calor"></div>
+          </div>
+          <div class="faixa-legenda">
+            <span>Alugar ganha</span>
+            <div class="faixa" id="faixa-calor"></div>
+            <span>Comprar ganha</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro V</div>
+          <h3>Memorial ano a ano</h3>
+          <p>A conta aberta, para conferência.</p>
+        </div>
+        <div class="quadro">
+          <details class="abrir">
+            <summary>Abrir o memorial completo</summary>
+            <div class="rolagem-quadro"><table id="q-anos"></table></div>
+          </details>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Notas explicativas</div>
+          <h3>Como ler o resultado</h3>
+        </div>
+        <div class="quadro">
+          <div class="explicativas">
+            <section>
+              <h4 data-n="1">A comparação exige desembolso igual</h4>
+              <p>Todo mês a simulação compara o custo de ser dono com o de ser inquilino e manda a diferença para a carteira de quem gastou menos. Sem isso, a conta favorece artificialmente quem paga a parcela mais alta.</p>
+            </section>
+            <section>
+              <h4 data-n="2">Aluguel sobre preço é o primeiro filtro</h4>
+              <p>No Brasil o aluguel anual costuma equivaler a algo entre <strong>4% e 6%</strong> do valor do imóvel. Se esse número for menor que o juro real dos seus investimentos, alugar tende a ganhar. É por isso que a conta aqui costuma dar diferente da americana ou da europeia.</p>
+            </section>
+            <section>
+              <h4 data-n="3">O horizonte decide quase sozinho</h4>
+              <p>Somando ITBI, cartório e corretagem, comprar e vender custa perto de <strong>10% do imóvel</strong>. Em quinze anos isso se dilui; em três anos, destrói o resultado. Abaixo de cinco anos, alugar quase sempre vence.</p>
+            </section>
+            <section>
+              <h4 data-n="4">O FGTS muda o jogo</h4>
+              <p>Parado, o FGTS rende 3% mais TR, abaixo da inflação. Usado na entrada, o custo de oportunidade dele é quase nulo. Preencher esse campo é o ajuste que mais empurra a conta a favor da compra.</p>
+            </section>
+            <section>
+              <h4 data-n="5">Valorização é a variável mais frágil</h4>
+              <p>Historicamente o imóvel residencial brasileiro acompanha a inflação no longo prazo, com ciclos fortes nos dois sentidos. Desconfie de premissa muito acima disso e use o Quadro IV em vez de um número só.</p>
+            </section>
+            <section>
+              <h4 data-n="6">O que não cabe na planilha</h4>
+              <p>Liquidez, concentração de patrimônio, segurança de posse, liberdade de reformar e a poupança forçada do financiamento. Se você não investir a diferença de fato todo mês, o cenário do aluguel simplesmente não acontece.</p>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <footer class="rodape">
+        Estimativa para apoiar a decisão, não recomendação de investimento. Os cálculos usam juros compostos convertidos a taxa mensal equivalente, reajustes aplicados a cada doze meses e imposto de 15% sobre o ganho da carteira e sobre o ganho de capital do imóvel. Confira as premissas com o seu contador antes de decidir. Veja também a <a href="carro.html">comparação de carro</a>.
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<script src="comum.js"></script>
+<script src="imovel.js"></script>
+</body>
+</html>
