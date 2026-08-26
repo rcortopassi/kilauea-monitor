@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reforma Tributária — Escritórios de Advocacia</title>
+<style>
+:root{
+  --bg:#f5f6fa; --card:#ffffff; --ink:#1c2333; --mut:#5b6478; --line:#e3e6ef;
+  --azul:#2456c8; --azul-fraco:#e8eefc; --verde:#0f7b4d; --verde-fraco:#e6f5ee;
+  --verm:#b3362c; --verm-fraco:#faebe9; --ambar:#8a6100; --ambar-fraco:#fdf3d9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12151d; --card:#1a1f2b; --ink:#e8ebf3; --mut:#9aa3b8; --line:#2a3143;
+    --azul:#7ea2f0; --azul-fraco:#1d2941; --verde:#5fce9d; --verde-fraco:#15301f;
+    --verm:#f08c82; --verm-fraco:#3a1d1a; --ambar:#e8c363; --ambar-fraco:#33290f;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Ubuntu,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 64px}
+a{color:var(--azul)}
+h1{font-size:1.5rem;margin:.2rem 0 .3rem}
+h2{font-size:1.05rem;margin:0 0 .6rem}
+.sub{color:var(--mut);margin:0 0 1.2rem;font-size:.95rem}
+.voltar{font-size:.9rem;text-decoration:none}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h2 .tag{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;
+  vertical-align:2px;margin-left:6px}
+.tag-sp{background:var(--azul-fraco);color:var(--azul)}
+.tag-bsb{background:var(--verde-fraco);color:var(--verde)}
+label{display:block;font-size:.82rem;color:var(--mut);margin:10px 0 3px}
+input[type=number],select{width:100%;padding:8px 10px;border:1px solid var(--line);
+  border-radius:8px;background:var(--bg);color:var(--ink);font-size:.95rem}
+input:focus,select:focus{outline:2px solid var(--azul);outline-offset:-1px}
+.linha2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.anos{display:flex;flex-wrap:wrap;gap:6px;margin:.4rem 0 1rem}
+.anos button{padding:6px 12px;border:1px solid var(--line);border-radius:8px;
+  background:var(--card);color:var(--ink);cursor:pointer;font-size:.9rem}
+.anos button.on{background:var(--azul);border-color:var(--azul);color:#fff;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:600;font-size:.8rem}
+tr.total td{font-weight:700;border-top:2px solid var(--line)}
+.res{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:16px}
+.kpi{display:flex;gap:14px;flex-wrap:wrap;margin:.4rem 0 .8rem}
+.kpi div{flex:1;min-width:110px;background:var(--bg);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px}
+.kpi .v{font-size:1.25rem;font-weight:700;display:block}
+.kpi .l{font-size:.74rem;color:var(--mut)}
+.delta-bom{color:var(--verde)} .delta-ruim{color:var(--verm)}
+.nota{font-size:.82rem;color:var(--mut);margin-top:.7rem}
+.aviso{background:var(--ambar-fraco);color:var(--ambar);border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;font-size:.88rem;margin-top:16px}
+.destaque{background:var(--azul-fraco);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;font-size:.92rem;margin-top:10px}
+.overx{overflow-x:auto}
+details{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--card)}
+summary{cursor:pointer;font-weight:600;font-size:.95rem}
+.rodape{margin-top:28px;font-size:.8rem;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="voltar" href="./">&larr; voltar às calculadoras</a>
+<h1>Reforma Tributária — Escritórios de Advocacia</h1>
+<p class="sub">Compara a carga tributária dos dois escritórios, hoje e ao longo da transição
+da reforma (2026–2033): <strong>SP</strong> no regime regular do IBS/CBS (com crédito e a
+redução de 30% para advocacia) e <strong>Brasília</strong> mantido no Simples Nacional
+(Anexo IV, sem destaque de crédito).</p>
+
+<div class="grid">
+  <div class="card">
+    <h2>Escritório São Paulo <span class="tag tag-sp">Lucro Presumido &rarr; IBS/CBS</span></h2>
+    <label>Faturamento mensal (R$)</label>
+    <input type="number" id="fatSP" value="100000" min="0" step="1000">
+    <div class="linha2">
+      <div><label>PIS/COFINS hoje (%)</label><input type="number" id="pisCof" value="3.65" step="0.01"></div>
+      <div><label>IRPJ + CSLL efetivo (%)</label><input type="number" id="irpj" value="7.68" step="0.01"></div>
+    </div>
+    <div class="linha2">
+      <div><label>ISS hoje (%)</label><input type="number" id="iss" value="5" step="0.1"></div>
+      <div><label>Custos com crédito de IBS/CBS (R$/mês)</label><input type="number" id="custos" value="15000" step="500"></div>
+    </div>
+    <p class="nota">Custos creditáveis: aluguel comercial, energia, software, contabilidade,
+    telefonia, material — despesas com nota em que o fornecedor destaca IBS/CBS.
+    Folha de sócios e salários <em>não</em> geram crédito.</p>
+  </div>
+
+  <div class="card">
+    <h2>Escritório Brasília <span class="tag tag-bsb">Simples Nacional — Anexo IV</span></h2>
+    <label>Faturamento mensal (R$)</label>
+    <input type="number" id="fatBSB" value="30000" min="0" step="1000">
+    <label>Receita bruta 12 meses — RBT12 (R$; ajuste se quiser)</label>
+    <input type="number" id="rbt12" value="360000" step="10000">
+    <p class="nota">Advocacia é tributada pelo <strong>Anexo IV</strong> (a alíquota efetiva
+    é calculada abaixo pela faixa do RBT12). Lembrete: no Anexo IV o INSS patronal (CPP)
+    fica <em>fora</em> do DAS e é pago à parte sobre a folha.</p>
+  </div>
+
+  <div class="card">
+    <h2>Premissas da reforma (editáveis)</h2>
+    <div class="linha2">
+      <div><label>CBS de referência (%)</label><input type="number" id="cbsRef" value="8.8" step="0.1"></div>
+      <div><label>IBS de referência (%)</label><input type="number" id="ibsRef" value="17.7" step="0.1"></div>
+    </div>
+    <div class="linha2">
+      <div><label>Redução p/ advocacia (%)</label><input type="number" id="red" value="30" step="1"></div>
+      <div><label>Alíquota advocacia (calc.)</label><input type="number" id="aliqAdv" disabled></div>
+    </div>
+    <p class="nota">Estimativa oficial da Fazenda: soma de referência ~26,5%
+    (estimativas de mercado chegam a ~28% — edite acima para testar).
+    Advocacia (profissão intelectual regulamentada) tem redução de 30%
+    nas alíquotas — art. 127 da LC 214/2025. IBS/CBS incidem "por fora".</p>
+  </div>
+</div>
+
+<h2 style="margin-top:26px">Ano da simulação</h2>
+<div class="anos" id="anos"></div>
+
+<div class="res">
+  <div class="card">
+    <h2>São Paulo <span class="tag tag-sp" id="tagAnoSP"></span></h2>
+    <div class="kpi">
+      <div><span class="v" id="spHoje"></span><span class="l">carga hoje /mês</span></div>
+      <div><span class="v" id="spDepois"></span><span class="l" id="spDepoisL">carga no ano /mês</span></div>
+      <div><span class="v" id="spDelta"></span><span class="l">diferença /mês</span></div>
+    </div>
+    <div class="overx"><table id="tabSP"></table></div>
+    <div class="destaque" id="repasseSP"></div>
+  </div>
+
+  <div class="card">
+    <h2>Brasília <span class="tag tag-bsb" id="tagAnoBSB"></span></h2>
+    <div class="kpi">
+      <div><span class="v" id="bsbHoje"></span><span class="l">carga hoje /mês (DAS)</span></div>
+      <div><span class="v" id="bsbAliq"></span><span class="l">alíquota efetiva Anexo IV</span></div>
+      <div><span class="v" id="bsbDepois"></span><span class="l">pós-reforma /mês (≈)</span></div>
+    </div>
+    <div class="overx"><table id="tabBSB"></table></div>
+    <div class="destaque" id="confereBSB"></div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <h2>Evolução da carga do escritório SP na transição (R$/mês)</h2>
+  <div class="overx"><table id="tabEvo"></table></div>
+  <p class="nota">2026 é ano-teste (CBS 0,9% + IBS 0,1% compensáveis com PIS/COFINS — carga
+  prática inalterada). 2027: entra a CBS e acabam PIS/COFINS. 2029–2032: ISS cai 10 p.p. ao
+  ano (90%&rarr;60%) e o IBS entra gradualmente (aqui aproximado em 10%&rarr;40% da alíquota).
+  2033: sistema novo completo, ISS extinto. IRPJ/CSLL continuam como hoje.</p>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <h2>Visão do cliente: quanto custa contratar cada escritório (regime completo, 2033)</h2>
+  <div class="overx"><table id="tabCliente"></table></div>
+  <p class="nota">É aqui que o regime com crédito vale a pena: cliente <strong>PJ no regime
+  regular</strong> recupera integralmente o IBS/CBS destacado pelo escritório de SP como
+  crédito. Para cliente pessoa física (ou PJ no Simples) não há crédito. Quem compra do
+  Simples aproveita apenas o crédito equivalente à parcela de IBS/CBS embutida no DAS
+  (bem menor).</p>
+</div>
+
+<details>
+  <summary>Premissas e observações importantes</summary>
+  <ul style="font-size:.9rem">
+    <li><strong>SP:</strong> no Lucro Presumido a entrada no IBS/CBS (regime regular, com
+    crédito) é <em>automática</em> a partir de 2027 — não é uma opção. A escolha real do
+    escritório é entre continuar no Presumido ou migrar para o Simples (se couber no teto
+    de R$ 4,8 mi/ano).</li>
+    <li><strong>Brasília:</strong> quem fica no Simples "clássico" recolhe tudo no DAS, sem
+    destacar IBS/CBS. Existe a opção do <em>Simples híbrido</em> (recolher IBS/CBS por fora,
+    dando crédito cheio ao cliente) — se a maioria dos clientes de Brasília for PJ do regime
+    regular, vale simular também.</li>
+    <li>IBS/CBS incidem "por fora". A simulação assume que o escritório <strong>mantém o
+    preço final ao cliente</strong> (imposto embutido: t/(1+t)). Se conseguir repassar o
+    imposto no preço, a carga própria cai e o cliente PJ ainda sai ganhando via crédito.</li>
+    <li>IRPJ e CSLL não mudam com a reforma (a CBS/IBS substituem PIS, COFINS, ISS e ICMS).</li>
+    <li>Créditos calculados supondo fornecedores na alíquota cheia de referência, com
+    imposto embutido no valor pago.</li>
+    <li>Alíquotas de referência ainda serão fixadas por resolução do Senado — os valores
+    aqui são estimativas. Esta página é uma ferramenta de planejamento, não substitui o
+    contador do escritório.</li>
+  </ul>
+</details>
+
+<p class="rodape">Valores em reais por mês. Alíquotas e cronograma conforme EC 132/2023 e
+LC 214/2025 (estimativas). Atualizado em agosto/2026.</p>
+</div>
+
+<script>
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+var fmtBRL = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+var fmtBRL2 = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",minimumFractionDigits:2,maximumFractionDigits:2});
+function pc(x){ return (x*100).toLocaleString("pt-BR",{maximumFractionDigits:2})+"%"; }
+
+var anoSel = 2033;
+var ANOS = [2026,2027,2028,2029,2030,2031,2032,2033];
+
+// fases da transicao: fracao vigente de cada tributo no ano
+function fase(ano){
+  if (ano <= 2026) return {cbs:0, ibs:0, iss:1, pisCof:1};
+  if (ano <= 2028) return {cbs:1, ibs:0, iss:1, pisCof:0};
+  if (ano <= 2032){
+    var n = ano - 2028;               // 1..4
+    return {cbs:1, ibs:0.1*n, iss:1-0.1*n, pisCof:0};
+  }
+  return {cbs:1, ibs:1, iss:0, pisCof:0};
+}
+
+// Anexo IV do Simples Nacional (advocacia)
+var ANEXO4 = [
+  [180000, 0.045, 0],
+  [360000, 0.09, 8100],
+  [720000, 0.102, 12420],
+  [1800000, 0.14, 39780],
+  [3600000, 0.22, 183780],
+  [4800000, 0.33, 828000]
+];
+function aliqSimples(rbt12){
+  if (rbt12 <= 0) return 0.045;
+  for (var i=0;i<ANEXO4.length;i++){
+    if (rbt12 <= ANEXO4[i][0]){
+      return Math.max(0, (rbt12*ANEXO4[i][1] - ANEXO4[i][2]) / rbt12);
+    }
+  }
+  return null; // estourou o teto
+}
+
+function lerPremissas(){
+  return {
+    fatSP: +$("fatSP").value || 0,
+    pisCof: (+$("pisCof").value || 0)/100,
+    irpj: (+$("irpj").value || 0)/100,
+    iss: (+$("iss").value || 0)/100,
+    custos: +$("custos").value || 0,
+    fatBSB: +$("fatBSB").value || 0,
+    rbt12: +$("rbt12").value || 0,
+    cbsRef: (+$("cbsRef").value || 0)/100,
+    ibsRef: (+$("ibsRef").value || 0)/100,
+    red: (+$("red").value || 0)/100
+  };
+}
+
+// carga de SP num dado ano do cronograma
+function cargaSP(p, ano){
+  var f = fase(ano);
+  var tFull = p.cbsRef*f.cbs + p.ibsRef*f.ibs;        // aliquota cheia vigente
+  var tAdv  = tFull * (1 - p.red);                    // com reducao de 30%
+  var debito = p.fatSP * tAdv/(1+tAdv);               // imposto embutido no preco atual
+  var credito = Math.min(debito, p.custos * tFull/(1+tFull));
+  var ivaLiq = Math.max(0, debito - credito);
+  var pisCof = p.fatSP * p.pisCof * f.pisCof;
+  var issV = p.fatSP * p.iss * f.iss;
+  var irpjV = p.fatSP * p.irpj;
+  return {ivaBruto:debito, credito:credito, iva:ivaLiq, pisCof:pisCof, iss:issV,
+          irpj:irpjV, total:ivaLiq+pisCof+issV+irpjV, tAdv:tAdv, tFull:tFull};
+}
+
+function linha(nome, val, forte){
+  return "<tr"+(forte?' class="total"':'')+"><td>"+nome+"</td><td>"+fmtBRL2.format(val)+"</td></tr>";
+}
+
+function render(){
+  var p = lerPremissas();
+  var tAdv33 = (p.cbsRef+p.ibsRef)*(1-p.red);
+  $("aliqAdv").value = (tAdv33*100).toLocaleString("pt-BR",{maximumFractionDigits:2})+"% por fora";
+
+  // ---------- SP ----------
+  var hojeSP = p.fatSP*(p.pisCof + p.irpj + p.iss);
+  var c = cargaSP(p, anoSel);
+  $("tagAnoSP").textContent = anoSel;
+  $("spHoje").textContent = fmtBRL.format(hojeSP);
+  $("spDepois").textContent = fmtBRL.format(c.total);
+  $("spDepoisL").textContent = "carga em "+anoSel+" /mês";
+  var dSP = c.total - hojeSP;
+  $("spDelta").textContent = (dSP>0?"+":"")+fmtBRL.format(dSP);
+  $("spDelta").className = "v "+(dSP>0?"delta-ruim":"delta-bom");
+
+  var h = "<tr><th>Tributo ("+anoSel+")</th><th>R$/mês</th></tr>";
+  if (c.ivaBruto>0){
+    h += linha("IBS/CBS advocacia ("+pc(c.tAdv)+" por fora, embutido)", c.ivaBruto);
+    h += linha("(−) créditos sobre custos", -c.credito);
+  }
+  if (c.pisCof>0) h += linha("PIS/COFINS", c.pisCof);
+  if (c.iss>0) h += linha("ISS ("+pc(p.iss)+" × "+pc(fase(anoSel).iss)+" vigente)", c.iss);
+  h += linha("IRPJ + CSLL (não mudam)", c.irpj);
+  h += linha("Total", c.total, true);
+  h += linha("Hoje (para comparar)", hojeSP, false);
+  $("tabSP").innerHTML = h;
+
+  var repassePc = tAdv33;
+  $("repasseSP").innerHTML = anoSel>=2027
+    ? "Se o escritório <strong>repassar o IBS/CBS no preço</strong> (destacar "+pc(c.tAdv)+
+      " por fora), a carga própria volta ao patamar de hoje e o cliente PJ no regime regular "+
+      "recupera tudo como crédito — o serviço não fica mais caro para ele."
+    : "2026 é ano-teste: o 0,9% de CBS + 0,1% de IBS são compensáveis com PIS/COFINS. "+
+      "Carga prática igual à de hoje.";
+
+  // ---------- BSB ----------
+  var aliq = aliqSimples(p.rbt12);
+  $("tagAnoBSB").textContent = anoSel;
+  if (aliq === null){
+    $("bsbHoje").textContent = "—";
+    $("bsbAliq").textContent = "acima do teto";
+    $("bsbDepois").textContent = "—";
+    $("tabBSB").innerHTML = "<tr><td>RBT12 acima de R$ 4,8 mi — fora do Simples.</td></tr>";
+    $("confereBSB").textContent = "";
+  } else {
+    var das = p.fatBSB * aliq;
+    $("bsbHoje").textContent = fmtBRL.format(das);
+    $("bsbAliq").textContent = pc(aliq);
+    $("bsbDepois").textContent = fmtBRL.format(das);
+    var faixa = 1; for (var i=0;i<ANEXO4.length;i++){ if (p.rbt12 > ANEXO4[i][0]) faixa = i+2; }
+    var hb = "<tr><th>Simples — Anexo IV</th><th>R$/mês</th></tr>";
+    hb += linha("DAS hoje (faixa "+faixa+", "+pc(aliq)+" efetiva)", das);
+    hb += linha("DAS pós-reforma (carga mantida ≈)", das);
+    hb += linha("Total", das, true);
+    $("tabBSB").innerHTML = hb;
+
+    // conferencia: e se BSB fosse para o regime regular?
+    var tAdvDentro = tAdv33/(1+tAdv33);
+    var regularBSB = p.fatBSB*tAdvDentro + p.fatBSB*p.irpj; // sem custos creditaveis relevantes
+    $("confereBSB").innerHTML = "Conferência: se Brasília saísse do Simples para o regime "+
+      "regular (2033), pagaria ~"+fmtBRL.format(regularBSB)+"/mês (IBS/CBS + IRPJ/CSLL) "+
+      "contra "+fmtBRL.format(das)+" no DAS — <strong>manter o Simples "+
+      (regularBSB>das ? "continua vantajoso" : "deixaria de ser vantajoso")+"</strong>. "+
+      "A reforma preserva o Simples; o DAS será recomposto com carga equivalente à atual.";
+  }
+
+  // ---------- evolucao ----------
+  var he = "<tr><th>Ano</th><th>IBS/CBS líq.</th><th>PIS/COFINS</th><th>ISS</th><th>IRPJ/CSLL</th><th>Total SP</th><th>vs. hoje</th></tr>";
+  for (var a=0;a<ANOS.length;a++){
+    var e = cargaSP(p, ANOS[a]);
+    var d = e.total - hojeSP;
+    he += "<tr"+(ANOS[a]===anoSel?' style="font-weight:700"':'')+"><td>"+ANOS[a]+
+      (ANOS[a]===2026?" (teste)":"")+"</td><td>"+fmtBRL.format(e.iva)+"</td><td>"+
+      fmtBRL.format(e.pisCof)+"</td><td>"+fmtBRL.format(e.iss)+"</td><td>"+
+      fmtBRL.format(e.irpj)+"</td><td>"+fmtBRL.format(e.total)+"</td><td class=\""+
+      (d>0?"delta-ruim":"delta-bom")+"\">"+(d>0?"+":"")+fmtBRL.format(d)+"</td></tr>";
+  }
+  $("tabEvo").innerHTML = he;
+
+  // ---------- visao do cliente ----------
+  var credCliSP = 1000 * tAdv33/(1+tAdv33);
+  var credCliBSB = aliq===null ? 0 : 1000 * Math.min(aliq*0.35, tAdv33/(1+tAdv33)); // parcela ISS/ICMS aprox. do DAS
+  var hc = "<tr><th>Cada R$ 1.000 faturados</th><th>Crédito p/ cliente PJ (regime regular)</th><th>Custo líquido p/ esse cliente</th><th>Cliente PF ou Simples</th></tr>";
+  hc += "<tr><td>SP — regime com crédito</td><td>"+fmtBRL2.format(credCliSP)+"</td><td>"+
+        fmtBRL2.format(1000-credCliSP)+"</td><td>"+fmtBRL2.format(1000)+"</td></tr>";
+  hc += "<tr><td>Brasília — Simples clássico</td><td>~"+fmtBRL2.format(credCliBSB)+
+        " (parcela do DAS)</td><td>~"+fmtBRL2.format(1000-credCliBSB)+"</td><td>"+
+        fmtBRL2.format(1000)+"</td></tr>";
+  $("tabCliente").innerHTML = hc;
+}
+
+// seletor de anos
+(function(){
+  var box = $("anos");
+  ANOS.forEach(function(a){
+    var b = document.createElement("button");
+    b.textContent = a===2033 ? "2033+" : a;
+    b.onclick = function(){
+      anoSel = a;
+      Array.prototype.forEach.call(box.children, function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      render();
+    };
+    if (a===anoSel) b.classList.add("on");
+    box.appendChild(b);
+  });
+})();
+
+// RBT12 acompanha o faturamento mensal ate o usuario mexer manualmente
+var rbtManual = false;
+$("rbt12").addEventListener("input", function(){ rbtManual = true; });
+$("fatBSB").addEventListener("input", function(){
+  if (!rbtManual) $("rbt12").value = Math.round((+$("fatBSB").value||0)*12);
+});
+
+["fatSP","pisCof","irpj","iss","custos","fatBSB","rbt12","cbsRef","ibsRef","red"]
+  .forEach(function(id){ $(id).addEventListener("input", render); });
+render();
+</script>
+</body>
+</html>
