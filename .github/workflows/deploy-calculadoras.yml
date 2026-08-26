@@ -1,0 +1,38 @@
+name: Deploy calculadoras
+
+on:
+  push:
+    branches:
+      - claude/tax-calculator-law-offices-yc7j8l
+    paths:
+      - "calculadoras/**"
+      - "scripts/**"
+      - ".github/workflows/deploy-calculadoras.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-calculadoras
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inspecionar site no PythonAnywhere
+        env:
+          PA_TOKEN: ${{ secrets.PA_TOKEN }}
+          PA_USER: rafaelcortopassi
+        run: python3 scripts/inspect_pa.py
+
+      - name: Publicar calculadoras
+        if: hashFiles('calculadoras/*.html') != ''
+        env:
+          PA_TOKEN: ${{ secrets.PA_TOKEN }}
+          PA_USER: rafaelcortopassi
+        run: python3 scripts/deploy_calculadoras.py
