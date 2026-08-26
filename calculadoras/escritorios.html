@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A reforma nos dois escritórios — Calculadoras patrimoniais</title>
-<meta name="description" content="Carga tributária de dois escritórios de advocacia na reforma tributária, ano a ano até 2033: São Paulo no regime com crédito do IBS/CBS e Brasília no Simples Nacional.">
+<meta name="description" content="Dois escritórios de advocacia no Simples Nacional diante da reforma tributária: Simples normal, Simples híbrido ou regime com crédito, comparados ano a ano até 2033.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="favicon.svg">
 <link rel="stylesheet" href="estilo.css">
@@ -29,14 +29,14 @@
     <div class="capa-corpo">
       <div class="rubrica">Demonstração tributária · escritórios de advocacia</div>
       <h1>A reforma nos dois escritórios</h1>
-      <p class="subtitulo">São Paulo, hoje no Lucro Presumido, entra no regime com crédito do IBS/CBS — com a redução de 30% das profissões regulamentadas. Brasília permanece no Simples Nacional, Anexo IV, sem destacar crédito. A carga de cada um, ano a ano, do teste de 2026 ao regime completo de 2033.</p>
+      <p class="subtitulo">Hoje os dois escritórios estão no Simples Nacional — CNPJs separados, cada um na sua faixa do Anexo IV. A partir de 2027 cada um escolhe o caminho: seguir no Simples normal, passar ao Simples híbrido (IBS/CBS por fora, com crédito ao cliente) ou, no caso de SP, sair para o regime com crédito. A carga de cada escolha, ano a ano, até 2033.</p>
       <div class="capa-grade" id="carimbo"></div>
     </div>
   </header>
 
   <section class="parecer" id="parecer">
     <div>
-      <div class="parecer-rotulo" id="p-rotulo">Impacto mensal em 2033, mantido o preço</div>
+      <div class="parecer-rotulo" id="p-rotulo">Impacto mensal do plano em 2033, mantidos os preços</div>
       <div class="cifra" id="p-cifra">—</div>
       <div class="parecer-texto" id="p-texto"></div>
     </div>
@@ -44,12 +44,12 @@
       <div>
         <div class="ind-rotulo">Carga de São Paulo</div>
         <div class="ind-valor" id="i-sp">—</div>
-        <div class="ind-nota">sobre o faturamento: hoje → regime completo</div>
+        <div class="ind-nota" id="i-sp-nota"></div>
       </div>
       <div>
-        <div class="ind-rotulo">Brasília no Simples</div>
+        <div class="ind-rotulo">Carga de Brasília</div>
         <div class="ind-valor" id="i-bsb">—</div>
-        <div class="ind-nota" id="i-bsb-nota">alíquota efetiva do DAS, Anexo IV</div>
+        <div class="ind-nota" id="i-bsb-nota"></div>
       </div>
       <div>
         <div class="ind-rotulo">Alíquota da advocacia</div>
@@ -59,7 +59,7 @@
       <div>
         <div class="ind-rotulo">Crédito do cliente PJ</div>
         <div class="ind-valor" id="i-cred">—</div>
-        <div class="ind-nota">o que um cliente no regime regular recupera de cada R$ 1.000 faturados por SP</div>
+        <div class="ind-nota">o que um cliente no regime regular recupera de cada R$ 1.000, no híbrido ou no regime com crédito</div>
       </div>
     </div>
   </section>
@@ -79,16 +79,16 @@
       <section class="nota-secao">
         <div class="nota-cabeca">
           <div class="nota-num">Quadro I</div>
-          <h3>São Paulo na transição</h3>
-          <p>A carga mensal do escritório de SP em cada ano do cronograma, contra o que ele pagaria se o sistema de hoje continuasse. 2026 é ano-teste; em 2027 entra a CBS e saem PIS/COFINS; de 2029 a 2032 o ISS míngua enquanto o IBS cresce; em 2033 o sistema novo fica sozinho.</p>
+          <h3>O plano na transição</h3>
+          <p>A carga mensal somada dos dois escritórios em cada ano do cronograma, com os caminhos escolhidos no painel, contra ficar tudo no Simples de hoje. 2026 é ano-teste; em 2027 entram a CBS e as opções de saída ou de híbrido; de 2029 a 2032 o ISS míngua enquanto o IBS cresce; em 2033 o sistema novo fica sozinho.</p>
         </div>
         <div class="quadro">
           <div class="chaves">
-            <div class="chave"><i class="bloco" style="background:var(--serie-a)"></i>Com a reforma, mantido o preço</div>
-            <div class="chave"><i class="bloco" style="background:var(--serie-b)"></i>Se o sistema de hoje continuasse</div>
+            <div class="chave"><i class="bloco" style="background:var(--serie-a)"></i>Com o plano, mantidos os preços</div>
+            <div class="chave"><i class="bloco" style="background:var(--serie-b)"></i>Tudo no Simples, como hoje</div>
           </div>
           <div class="tela" id="t-transicao">
-            <div class="rolagem"><svg id="g-transicao" viewBox="0 0 880 330" role="img" aria-label="Carga tributária mensal do escritório de São Paulo em cada ano da transição da reforma"></svg></div>
+            <div class="rolagem"><svg id="g-transicao" viewBox="0 0 880 330" role="img" aria-label="Carga tributária mensal dos dois escritórios em cada ano da transição da reforma"></svg></div>
             <div class="dica" id="d-transicao"></div>
           </div>
         </div>
@@ -97,8 +97,25 @@
       <section class="nota-secao">
         <div class="nota-cabeca">
           <div class="nota-num">Quadro II</div>
+          <h3>Todas as opções em 2033</h3>
+          <p>Cada barra é uma combinação de caminhos no regime completo, somando São Paulo e Brasília — cada CNPJ na sua própria faixa do Anexo IV enquanto estiver no Simples. A linha pontilhada é o cenário de hoje, com os dois no Simples; o contorno marca o plano configurado no painel. Preços mantidos: o IBS/CBS aparece embutido, sem repasse.</p>
+        </div>
+        <div class="quadro">
+          <div class="chaves">
+            <div class="chave"><i class="bloco" style="background:var(--serie-a)"></i>São Paulo</div>
+            <div class="chave"><i class="bloco" style="background:var(--serie-b)"></i>Brasília</div>
+          </div>
+          <div class="tela" id="t-opcoes">
+            <div class="rolagem"><svg id="g-opcoes" viewBox="0 0 880 430" role="img" aria-label="Carga mensal de todas as combinações de regime em 2033, comparadas com o cenário atual"></svg></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nota-secao">
+        <div class="nota-cabeca">
+          <div class="nota-num">Quadro III</div>
           <h3>As alíquotas de cada ano</h3>
-          <p>O cronograma da EC 132/2023 e da LC 214/2025, ano a ano: em 2026 o teste de 0,9% + 0,1% é compensável com PIS/COFINS; em 2027 e 2028 a CBS entra cheia menos 0,1 ponto e o IBS fica em 0,1%; de 2029 a 2032 o IBS sobe a 10/20/30/40% da referência enquanto o ISS cai para 90/80/70/60% do atual; em 2033 vale a referência plena e o ISS morre. A coluna da advocacia já aplica a redução de 30%.</p>
+          <p>O cronograma da EC 132/2023 e da LC 214/2025, ano a ano: em 2026 o teste de 0,9% + 0,1% é compensável com PIS/COFINS; em 2027 e 2028 a CBS entra cheia menos 0,1 ponto e o IBS fica em 0,1%; de 2029 a 2032 o IBS sobe a 10/20/30/40% da referência enquanto o ISS cai para 90/80/70/60% do atual; em 2033 vale a referência plena e o ISS morre. A coluna da advocacia já aplica a redução de 30%; as cargas seguem os caminhos escolhidos no painel.</p>
         </div>
         <div class="quadro">
           <div class="rolagem-quadro"><table id="q-aliquotas"></table></div>
@@ -107,9 +124,9 @@
 
       <section class="nota-secao">
         <div class="nota-cabeca">
-          <div class="nota-num">Quadro III</div>
+          <div class="nota-num">Quadro IV</div>
           <h3>Demonstração da carga mensal</h3>
-          <p>Tributo a tributo, os dois escritórios lado a lado: o sistema de hoje e o regime completo de 2033. IBS/CBS incidem por fora; aqui aparecem embutidos no preço atual, o cenário conservador em que o escritório absorve o imposto.</p>
+          <p>Os dois escritórios lado a lado: o Simples de hoje e o regime completo de 2033 com os caminhos escolhidos. No híbrido, o DAS encolhe para a fatia de IRPJ/CSLL e o IBS/CBS sai por fora; no regime com crédito entram IRPJ/CSLL do Presumido. IBS/CBS aparecem embutidos no preço atual — o cenário conservador em que o escritório absorve o imposto.</p>
         </div>
         <div class="quadro">
           <div class="rolagem-quadro"><table id="q-demo"></table></div>
@@ -118,9 +135,9 @@
 
       <section class="nota-secao">
         <div class="nota-cabeca">
-          <div class="nota-num">Quadro IV</div>
+          <div class="nota-num">Quadro V</div>
           <h3>O que cada nota custa para o cliente</h3>
-          <p>A razão de ser do regime com crédito. De cada R$ 1.000 faturados, quanto o cliente pessoa jurídica no regime regular recupera como crédito de IBS/CBS — e quanto a nota custa de verdade para ele. Para pessoa física ou cliente do Simples não há crédito nenhum.</p>
+          <p>A razão de ser do híbrido e do regime com crédito. De cada R$ 1.000 faturados, quanto o cliente pessoa jurídica no regime regular recupera como crédito de IBS/CBS — e quanto a nota custa de verdade para ele. Para pessoa física ou cliente do Simples não há crédito nenhum.</p>
         </div>
         <div class="quadro">
           <div class="rolagem-quadro"><table id="q-cliente"></table></div>
@@ -129,9 +146,9 @@
 
       <section class="nota-secao">
         <div class="nota-cabeca">
-          <div class="nota-num">Quadro V</div>
+          <div class="nota-num">Quadro VI</div>
           <h3>Deslocar faturamento para Brasília?</h3>
-          <p>Para os clientes que não exigem o crédito de IBS/CBS, faturar por Brasília — que segue no Simples — pode custar menos do que pelo regime regular de SP em 2033. Cada linha desloca uma fatia da receita de SP para BSB e refaz as duas contas, com o RBT12 de Brasília subindo junto. Atenção: o deslocamento precisa ser real — serviço prestado de fato pelo estabelecimento de Brasília, com estrutura lá — e não apenas a nota; confirme o desenho com o contador.</p>
+          <p>Para os clientes que não exigem o crédito de IBS/CBS, faturar por Brasília pode custar menos do que por SP em 2033. Cada linha desloca uma fatia da receita de SP para BSB e refaz as duas contas, com os RBT12 acompanhando — e a faixa de cada CNPJ mudando quando é o caso. Atenção: o deslocamento precisa ser real — serviço prestado de fato pelo estabelecimento de Brasília, com estrutura lá — e não apenas a nota; confirme o desenho com o contador.</p>
         </div>
         <div class="quadro">
           <p class="prosa" id="p-desloca"></p>
@@ -141,28 +158,28 @@
 
       <section class="nota-secao">
         <div class="nota-cabeca">
-          <div class="nota-num">Quadro VI</div>
+          <div class="nota-num">Quadro VII</div>
           <h3>Análise de sensibilidade</h3>
-          <p>As duas incertezas da conta de SP, cruzadas: a alíquota de referência que o Senado ainda vai fixar e quanto do faturamento vira custo com direito a crédito. Cada célula compara a carga de 2033 com a de hoje, mantido o preço. O contorno marca o cenário configurado ao lado.</p>
+          <p>As duas incertezas da conta, cruzadas: a alíquota de referência que o Senado ainda vai fixar e quanto do faturamento de SP vira custo com direito a crédito. Cada célula compara a carga do plano em 2033 com a de hoje, mantidos os preços. O contorno marca o cenário configurado ao lado.</p>
         </div>
         <div class="quadro">
           <div class="tela" id="t-calor">
-            <div class="rolagem"><svg id="g-calor" viewBox="0 0 880 400" role="img" aria-label="Sensibilidade da carga de São Paulo à alíquota de referência e aos custos creditáveis"></svg></div>
+            <div class="rolagem"><svg id="g-calor" viewBox="0 0 880 400" role="img" aria-label="Sensibilidade da carga do plano à alíquota de referência e aos custos creditáveis"></svg></div>
             <div class="dica" id="d-calor"></div>
           </div>
           <div class="faixa-legenda">
-            <span>A reforma pesa mais</span>
+            <span>O plano pesa mais</span>
             <div class="faixa" id="faixa-calor"></div>
-            <span>A reforma alivia</span>
+            <span>O plano alivia</span>
           </div>
         </div>
       </section>
 
       <section class="nota-secao">
         <div class="nota-cabeca">
-          <div class="nota-num">Quadro VII</div>
+          <div class="nota-num">Quadro VIII</div>
           <h3>Memorial ano a ano</h3>
-          <p>A conta aberta de São Paulo, para conferência.</p>
+          <p>A conta aberta, para conferência.</p>
         </div>
         <div class="quadro">
           <details class="abrir">
@@ -180,8 +197,8 @@
         <div class="quadro">
           <div class="explicativas">
             <section>
-              <h4 data-n="1">O que muda e o que fica</h4>
-              <p>CBS e IBS substituem PIS, COFINS, ISS e ICMS. <strong>IRPJ e CSLL não mudam</strong>: o escritório de SP continua no Lucro Presumido para o imposto de renda. Para quem está no Presumido, a entrada no regime com crédito é <strong>automática</strong> a partir de 2027 — a escolha real é entre continuar lá ou migrar para o Simples.</p>
+              <h4 data-n="1">Sair do Simples é uma escolha</h4>
+              <p>CBS e IBS substituem PIS, COFINS, ISS e ICMS; <strong>IRPJ e CSLL não mudam</strong>. Quem está no Simples continua nele se quiser — a saída para o regime com crédito é <strong>opção</strong>, comunicada à Receita com efeitos a partir de janeiro. A calculadora assume a mudança valendo em 2027, quando a CBS entra.</p>
             </section>
             <section>
               <h4 data-n="2">A redução de 30%</h4>
@@ -189,19 +206,19 @@
             </section>
             <section>
               <h4 data-n="3">Por fora, e a decisão de preço</h4>
-              <p>Se o escritório <strong>mantém o preço</strong> final, o imposto sai da margem: é o cenário destas contas. Se <strong>repassa</strong>, destacando o IBS/CBS além do preço, a carga própria volta ao patamar de hoje — e o cliente PJ no regime regular não sente, porque recupera tudo como crédito. Quanto mais PJ na carteira, mais viável o repasse.</p>
+              <p>Se o escritório <strong>mantém o preço</strong> final, o imposto sai da margem: é o cenário destas contas. Se <strong>repassa</strong>, destacando o IBS/CBS além do preço, a carga própria volta ao patamar do Simples — e o cliente PJ no regime regular não sente, porque recupera tudo como crédito. Quanto mais PJ na carteira, mais viável o repasse.</p>
             </section>
             <section>
-              <h4 data-n="4">Brasília no Anexo IV</h4>
-              <p>Advocacia no Simples cai no <strong>Anexo IV</strong>: entre R$ 20 e 40 mil por mês a alíquota efetiva fica entre 6,8% e 7,6% — e o INSS patronal fica <strong>fora do DAS</strong>, pago à parte sobre a folha. A reforma preserva o Simples e recompõe o DAS com carga equivalente; aqui ele aparece constante.</p>
+              <h4 data-n="4">O Simples híbrido</h4>
+              <p>Disponível a partir de 2027: o escritório continua no Simples, mas recolhe <strong>IBS/CBS por fora</strong>, com crédito integral ao cliente e direito aos créditos dos custos. O DAS encolhe para a fatia que não é consumo — aqui aproximada pela partilha do Anexo IV: <strong>38% de IRPJ/CSLL</strong>, 22% de PIS/COFINS e 40% de ISS, este saindo aos poucos com o cronograma.</p>
             </section>
             <section>
-              <h4 data-n="5">O Simples híbrido existe</h4>
-              <p>Quem fica no Simples pode optar por recolher <strong>IBS/CBS por fora</strong> do DAS, dando crédito integral ao cliente — o "Simples híbrido". Para Brasília, com a alíquota cheia da categoria bem acima da efetiva do Anexo IV, só tende a valer a pena se a carteira for dominada por clientes PJ que exijam o crédito.</p>
+              <h4 data-n="5">Anexo IV, por CNPJ</h4>
+              <p>Advocacia no Simples cai no <strong>Anexo IV</strong>, e cada CNPJ tem a sua faixa pelo próprio RBT12 — os dois escritórios não se somam. Lembrete dobrado: no Anexo IV o INSS patronal fica <strong>fora do DAS</strong>, pago à parte sobre a folha; e a sociedade uniprofissional que sair do Simples paga o ISS fixo só até 2032, porque o regime acaba com o ISS.</p>
             </section>
             <section>
               <h4 data-n="6">São estimativas</h4>
-              <p>A alíquota de referência ainda será fixada por <strong>resolução do Senado</strong> — 26,5% é a estimativa oficial e há projeções de mercado perto de 28%; troque no painel. Os créditos supõem fornecedores na alíquota-padrão. Ferramenta de planejamento: confira com o contador antes de qualquer mudança de regime.</p>
+              <p>A alíquota de referência ainda será fixada por <strong>resolução do Senado</strong> — 26,5% é a estimativa oficial e há projeções de mercado perto de 28%; troque no painel. Créditos supõem fornecedores na alíquota-padrão; a partilha do DAS no híbrido é aproximada. Ferramenta de planejamento: confirme com o contador antes de qualquer mudança de regime.</p>
             </section>
           </div>
         </div>
