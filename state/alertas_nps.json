@@ -1,12 +1,27 @@
 {
   "alertas": [
     {
+      "id": "372637DA-0B8C-422B-B98B-9ACF44B56C46",
+      "trad_ok": true,
+      "titulo": "Sulphur Banks Bridge Closed; Boardwalk is Open",
+      "titulo_pt": "Ponte dos Bancos de Enxofre Fechada; O calçadão está aberto",
+      "desc": "The Sulphur Banks Bridge is damaged and closed until further notice. The Haʻakulamanu area, boardwalk and Sulphur Banks Trail are open and accessible from the west side near Steam Vents.",
+      "desc_pt": "A ponte Sulphur Banks está danificada e fechada até novo aviso. A área de Haʻakulamanu, o calçadão e a trilha Sulphur Banks estão abertos e acessíveis pelo lado oeste, perto de Steam Vents.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-08-26",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
       "id": "BA9DFAFF-53AF-40DD-8291-E8B52EC2236D",
       "trad_ok": true,
       "titulo": "Kahuku Unit Closed Until Further Notice",
       "titulo_pt": "Unidade Kahuku fechada até novo aviso",
-      "desc": "The Kahuku Unit is closed and without power, phones, internet, or running water following Hurricane Lala which impacted the Kaʻū District the hardest. Staff will assess damage to roads, trails and other infrastructure.",
-      "desc_pt": "A Unidade Kahuku está fechada e sem energia, telefones, internet ou água corrente após o furacão Lala, que impactou mais duramente o distrito de Kaʻū. A equipe avaliará os danos às estradas, trilhas e outras infraestruturas.",
+      "desc": "The Kahuku Unit is closed following Hurricane Lala which impacted the Kaʻū District the hardest. Staff are assessing damage to roads, trails and other infrastructure.",
+      "desc_pt": "A Unidade Kahuku foi fechada após o furacão Lala, que impactou mais fortemente o distrito de Ka'ū. A equipe está avaliando os danos às estradas, trilhas e outras infraestruturas.",
       "cat": "closure",
       "url": "",
       "data": "2026-08-26",
@@ -61,5 +76,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-26T21:52:40+00:00"
+  "atualizado_em": "2026-08-26T21:57:58+00:00"
 }
