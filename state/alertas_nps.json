@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "BA9DFAFF-53AF-40DD-8291-E8B52EC2236D",
+      "trad_ok": true,
+      "titulo": "Kahuku Unit Closed Until Further Notice",
+      "titulo_pt": "Unidade Kahuku fechada até novo aviso",
+      "desc": "The Kahuku Unit is closed and without power, phones, internet, or running water following Hurricane Lala which impacted the Kaʻū District the hardest. Staff will assess damage to roads, trails and other infrastructure.",
+      "desc_pt": "A Unidade Kahuku está fechada e sem energia, telefones, internet ou água corrente após o furacão Lala, que impactou mais duramente o distrito de Kaʻū. A equipe avaliará os danos às estradas, trilhas e outras infraestruturas.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-08-26",
+      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
+      "local_en": "Kahuku Unit (entrance, Hwy 11)",
+      "lat": 19.069,
+      "lng": -155.6778
+    },
+    {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
       "titulo": "Most of Hawaiʻi Volcanoes National Park Now Open",
@@ -46,5 +61,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-26T21:47:21+00:00"
+  "atualizado_em": "2026-08-26T21:52:40+00:00"
 }
