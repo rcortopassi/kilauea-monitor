@@ -33,13 +33,13 @@
     {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
-      "titulo": "Most of Hawaiʻi Volcanoes National Park Now Open",
-      "titulo_pt": "A maior parte do Parque Nacional dos Vulcões do Havaí já está aberta",
-      "desc": "The remaining storm and safety closures that remain include Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail, the backcountry and the Kahuku Unit.",
-      "desc_pt": "Os restantes fechamentos de tempestade e de segurança que permanecem incluem a Estrada Mauna Loa além do portão em Kīpukapuaulu, a Trilha Kīpukapuaulu, o sertão e a Unidade Kahuku.",
+      "titulo": "Many Areas in Hawaiʻi Volcanoes National Park Now Open",
+      "titulo_pt": "Muitas áreas no Parque Nacional dos Vulcões do Havaí agora abertas",
+      "desc": "The remaining storm and safety closures that remain include Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail, Nāmakanipaio Campground and cabins, the backcountry and the Kahuku Unit.",
+      "desc_pt": "Os restantes fechamentos de tempestade e segurança que permanecem incluem a Estrada Mauna Loa além do portão em Kīpukapuaulu, Trilha Kīpukapuaulu, Acampamento Nāmakanipaio e cabanas, o sertão e a Unidade Kahuku.",
       "cat": "closure",
       "url": "",
-      "data": "2026-08-25",
+      "data": "2026-08-26",
       "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
       "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
       "lat": 19.4386,
@@ -76,5 +76,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-26T22:19:01+00:00"
+  "atualizado_em": "2026-08-27T01:01:19+00:00"
 }
