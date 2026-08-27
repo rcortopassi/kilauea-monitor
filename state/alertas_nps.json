@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
+      "trad_ok": true,
+      "titulo": "Many Areas in Hawaiʻi Volcanoes National Park Now Open",
+      "titulo_pt": "Muitas áreas no Parque Nacional dos Vulcões do Havaí agora abertas",
+      "desc": "The remaining storm and safety closures that remain include Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail, Nāmakanipaio Campground and cabins, and the Kahuku Unit.",
+      "desc_pt": "Os fechamentos de segurança e tempestades restantes incluem a Estrada Mauna Loa além do portão em Kīpukapuaulu, a Trilha Kīpukapuaulu, o Acampamento Nāmakanipaio e cabines e a Unidade Kahuku.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-08-27",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
+    },
+    {
       "id": "372637DA-0B8C-422B-B98B-9ACF44B56C46",
       "trad_ok": true,
       "titulo": "Sulphur Banks Bridge Closed; Boardwalk is Open",
@@ -29,21 +44,6 @@
       "local_en": "Kahuku Unit (entrance, Hwy 11)",
       "lat": 19.069,
       "lng": -155.6778
-    },
-    {
-      "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
-      "trad_ok": true,
-      "titulo": "Many Areas in Hawaiʻi Volcanoes National Park Now Open",
-      "titulo_pt": "Muitas áreas no Parque Nacional dos Vulcões do Havaí agora abertas",
-      "desc": "The remaining storm and safety closures that remain include Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail, Nāmakanipaio Campground and cabins, the backcountry and the Kahuku Unit.",
-      "desc_pt": "Os restantes fechamentos de tempestade e segurança que permanecem incluem a Estrada Mauna Loa além do portão em Kīpukapuaulu, Trilha Kīpukapuaulu, Acampamento Nāmakanipaio e cabanas, o sertão e a Unidade Kahuku.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-08-26",
-      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "lat": 19.4386,
-      "lng": -155.3034
     },
     {
       "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
@@ -76,5 +76,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-27T11:55:11+00:00"
+  "atualizado_em": "2026-08-27T21:00:46+00:00"
 }
