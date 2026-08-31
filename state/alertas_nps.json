@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "BA9DFAFF-53AF-40DD-8291-E8B52EC2236D",
+      "trad_ok": true,
+      "titulo": "Kahuku Unit Will Partially Reopen Thurs., Sept. 3",
+      "titulo_pt": "A unidade Kahuku reabrirá parcialmente na quinta-feira, 3 de setembro",
+      "desc": "The Visitor Contact Station and several trails in the Kahuku Unit will reopen on Thursday, September 3. Other areas will remain closed following Hurricane Lala which impacted the Kaʻū District the hardest. Staff are continuing to address damage to roads, trails and other infrastructure.",
+      "desc_pt": "A Estação de Contato com Visitantes e várias trilhas na Unidade Kahuku serão reabertas na quinta-feira, 3 de setembro. Outras áreas permanecerão fechadas após o furacão Lala, que impactou mais duramente o distrito de Kaʻū. A equipe continua a tratar dos danos causados ​​às estradas, trilhas e outras infraestruturas.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-08-31",
+      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
+      "local_en": "Kahuku Unit (entrance, Hwy 11)",
+      "lat": 19.069,
+      "lng": -155.6778
+    },
+    {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
       "titulo": "Many Areas in Hawaiʻi Volcanoes National Park Now Open",
@@ -29,21 +44,6 @@
       "local_en": "",
       "lat": null,
       "lng": null
-    },
-    {
-      "id": "BA9DFAFF-53AF-40DD-8291-E8B52EC2236D",
-      "trad_ok": true,
-      "titulo": "Kahuku Unit Closed Until Further Notice",
-      "titulo_pt": "Unidade Kahuku fechada até novo aviso",
-      "desc": "The Kahuku Unit is closed following Hurricane Lala which impacted the Kaʻū District the hardest. Staff are assessing damage to roads, trails and other infrastructure.",
-      "desc_pt": "A Unidade Kahuku foi fechada após o furacão Lala, que impactou mais fortemente o distrito de Ka'ū. A equipe está avaliando os danos às estradas, trilhas e outras infraestruturas.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-08-26",
-      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
-      "local_en": "Kahuku Unit (entrance, Hwy 11)",
-      "lat": 19.069,
-      "lng": -155.6778
     },
     {
       "id": "37CFEFAB-CC85-4ED3-8850-D1EE86A7F0DF",
@@ -76,5 +76,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-08-31T21:36:06+00:00"
+  "atualizado_em": "2026-08-31T21:41:28+00:00"
 }
