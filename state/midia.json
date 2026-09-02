@@ -1,9 +1,16 @@
 {
   "lives": [
     {
-      "id": "Nvjf1vZZrkk",
-      "titulo": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam C)",
+      "id": "6IaMqotNF_s",
+      "titulo": "🔴 Live Now: 24/7 Kilauea Volcano Livestream in Hawaii (Cam B)",
       "canal": "afarTV",
+      "live": true,
+      "embed": true
+    },
+    {
+      "id": "f9-oSpYpubg",
+      "titulo": "[V2cam] Kīlauea volcano, Hawaii (east Halemaʻumaʻu crater)",
+      "canal": "USGS",
       "live": true,
       "embed": true
     }
