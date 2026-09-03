@@ -1,34 +1,34 @@
 {
   "alertas": [
     {
-      "id": "BA9DFAFF-53AF-40DD-8291-E8B52EC2236D",
-      "trad_ok": true,
-      "titulo": "Kahuku Unit Will Partially Reopen Thurs., Sept. 3",
-      "titulo_pt": "A unidade Kahuku reabrirá parcialmente na quinta-feira, 3 de setembro",
-      "desc": "The Visitor Contact Station and most trails in the Kahuku Unit will reopen on Thursday, September 3. Park staff cleared numerous fallen trees from Kahuku Road and trails but the road beyond the Lower Palm Trailhead remains deeply rutted by the heavy rains. A 4WD is recommended to access areas above the Lower Palm Trailhead. Upper Kahuku Road remains closed beyond the boot decontamination station.",
-      "desc_pt": "A Estação de Contato com Visitantes e a maioria das trilhas na Unidade Kahuku serão reabertas na quinta-feira, 3 de setembro. A equipe do parque removeu inúmeras árvores caídas da estrada e trilhas de Kahuku, mas a estrada além do Lower Palm Trailhead permanece profundamente esburacada pelas fortes chuvas. Recomenda-se um veículo com tração nas quatro rodas para acessar áreas acima do Lower Palm Trailhead. A Upper Kahuku Road permanece fechada além da estação de descontaminação de botas.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-02",
-      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
-      "local_en": "Kahuku Unit (entrance, Hwy 11)",
-      "lat": 19.069,
-      "lng": -155.6778
-    },
-    {
       "id": "2F66F7F7-6F8F-461B-AA58-75CA85198CC8",
       "trad_ok": true,
       "titulo": "Most of Hawaiʻi Volcanoes National Park Now Open",
       "titulo_pt": "A maior parte do Parque Nacional dos Vulcões do Havaí já está aberta",
-      "desc": "The remaining storm and safety closures that remain include Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail, and Nāmakanipaio Campground and cabins. The Kahuku Unit will reopen 9/3/2026.",
-      "desc_pt": "Os fechamentos de segurança e tempestades restantes incluem a estrada Mauna Loa além do portão em Kīpukapuaulu, a trilha Kīpukapuaulu e o acampamento e cabanas Nāmakanipaio. A Unidade Kahuku reabrirá em 03/09/2026.",
+      "desc": "The remaining storm and safety closures that remain include Mauna Loa Road beyond the gate at Kīpukapuaulu, Kīpukapuaulu Trail, and Nāmakanipaio Campground and cabins.",
+      "desc_pt": "Os fechamentos de segurança e tempestades restantes incluem a estrada Mauna Loa além do portão em Kīpukapuaulu, a trilha Kīpukapuaulu e o acampamento e cabanas Nāmakanipaio.",
       "cat": "closure",
       "url": "",
-      "data": "2026-09-02",
+      "data": "2026-09-03",
       "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
       "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
       "lat": 19.4386,
       "lng": -155.3034
+    },
+    {
+      "id": "9EA3FC4B-73DA-4CD9-BB0D-6A1F3DFF7407",
+      "trad_ok": true,
+      "titulo": "Upper Kahuku Road Closed Beyond Boot Decontamination Station",
+      "titulo_pt": "Estrada Upper Kahuku fechada além da estação de descontaminação de botas",
+      "desc": "Upper Kahuku Road remains closed beyond the boot decontamination station due to storm damage. The Visitor Contact Station and most trails in the Kahuku Unit are now open following Hurricane Lala. Kahuku Road above the Lower Palm Trailhead is deeply rutted by the recent heavy rains. A 4WD is recommended to access areas above the Lower Palm Trailhead.",
+      "desc_pt": "A Upper Kahuku Road permanece fechada além da estação de descontaminação de botas devido aos danos causados ​​​​pela tempestade. A Estação de Contato com Visitantes e a maioria das trilhas na Unidade Kahuku estão agora abertas após o Furacão Lala. A estrada Kahuku, acima de Lower Palm Trailhead, está profundamente devastada pelas fortes chuvas recentes. Recomenda-se um veículo com tração nas quatro rodas para acessar áreas acima do Lower Palm Trailhead.",
+      "cat": "info",
+      "url": "",
+      "data": "2026-09-03",
+      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
+      "local_en": "Kahuku Unit (entrance, Hwy 11)",
+      "lat": 19.069,
+      "lng": -155.6778
     },
     {
       "id": "372637DA-0B8C-422B-B98B-9ACF44B56C46",
@@ -76,5 +76,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-09-03T18:25:02+00:00"
+  "atualizado_em": "2026-09-03T20:07:01+00:00"
 }
