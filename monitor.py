@@ -934,35 +934,119 @@ def parse_sent(sent_unixtime):
     return datetime.fromtimestamp(int(sent_unixtime), tz=timezone.utc)
 
 
+def fase_atual(sinopse, resumo_html, cor):
+    """Em que FASE o vulcao esta. O codigo de cor nao basta: ORANGE cobre tanto
+    a fonte de lava quanto os transbordos precursores, que podem antecede-la em
+    HORAS ou em DIAS (no episodio 55 o precursor comecou em 07/09 e a fonte so
+    era prevista para 09-10/09). Como o alerta existe para o usuario largar tudo
+    e dirigir ate o parque, essa distincao e a coisa mais importante do monitor.
+
+    Le APENAS A SINOPSE. O corpo do aviso e uma cronologia e cita episodios
+    ANTIGOS comecando ("episode 54 began..."), o que ja produziu um "va agora"
+    falso em 09/09/2026. A sinopse e a unica linha que descreve o AGORA.
+
+    Devolve "fonte", "precursor", "pausa" ou "?" (nao classificado)."""
+    s = " ".join((sinopse or "").split()).lower()
+    if not s:
+        return "?"
+    # 1) pausa declarada vem primeiro: e a afirmacao mais explicita do HVO
+    if re.search(r"\b(is not erupting|eruption is paused|is paused)\b", s):
+        return "pausa"
+    # 2) precursor: o HVO nomeia a atividade precursora antes da fonte
+    if "precursor" in s:
+        return "precursor"
+    # 3) fonte acontecendo agora
+    if re.search(r"episode\s+\d+[^.]{0,90}?\b(began|continues|is underway|resumed|"
+                 r"restarted)\b", s) and not re.search(r"\b(ended|is over)\b", s):
+        return "fonte"
+    if re.search(r"fountain\w*\s+(began|started|is occurring|continues)", s):
+        return "fonte"
+    if re.search(r"\b(is erupting|eruption continues)\b", s) and "overflow" not in s:
+        return "fonte"
+    # 4) so transbordo, sem a palavra precursor
+    if "overflow" in s:
+        return "precursor"
+    if RANK.get(cor, 0) >= RANK["ORANGE"]:
+        return "?"
+    return "pausa"
+
+
+FASE_PT = {"fonte": "FONTES DE LAVA ATIVAS", "precursor": "ATIVIDADE PRECURSORA",
+           "pausa": "Em pausa", "?": ""}
+FASE_EN = {"fonte": "LAVA FOUNTAINS ACTIVE", "precursor": "PRECURSORY ACTIVITY",
+           "pausa": "Paused", "?": ""}
+
+
 def decide_push(prev, atual, sinopse):
-    """Regras de notificacao. Retorna None ou (titulo, corpo, prioridade, tags)."""
+    """Regras de notificacao. Retorna None ou (titulo, corpo, prioridade, tags).
+
+    Avisa TODA mudanca de fase, mas cada mensagem diz, nesta ordem, o que esta
+    acontecendo e o que fazer. So a fonte de lava merece prioridade urgente:
+    e o unico momento em que vale largar tudo e dirigir ate o parque.
+    Titulo do ntfy tem que ser ASCII; o corpo pode ter acento."""
+    pf, af = prev.get("fase", ""), atual.get("fase", "")
     pc, ac = prev.get("color_code", ""), atual["color_code"]
-    if pc == ac:
+    if pf == af and pc == ac:
         return None
     quando = parse_sent(atual["sent_unixtime"])
-    hora = fmt_hora(quando) if quando else ""
-    corpo_base = sinopse or f"Kilauea mudou de {pc or '?'} para {ac}."
-    if RANK.get(ac, -1) >= RANK["ORANGE"] and RANK.get(pc, 0) < RANK.get(ac, -1):
-        return (
-            "KILAUEA EM ERUPCAO - VA AGORA",
-            f"Alerta subiu para {ac}/{atual['alert_level']} as {hora}.\n\n"
-            f"{corpo_base}\n\nWebcams: {LINK_WEBCAMS}",
-            "urgent",
-            "volcano,rotating_light",
-        )
-    if RANK.get(pc, 0) >= RANK["ORANGE"] > RANK.get(ac, 0):
-        return (
-            "Kilauea: episodio encerrado",
-            f"Alerta desceu para {ac}/{atual['alert_level']} as {hora}.\n\n{corpo_base}",
-            "default",
-            "volcano",
-        )
-    return (
-        f"Kilauea: {pc or '?'} -> {ac}",
-        f"Nivel agora e {ac}/{atual['alert_level']} as {hora}.\n\n{corpo_base}",
-        "low",
-        "volcano",
-    )
+    hora = fmt_hora(quando) if quando else "agora"
+    nivel = f"{ac}/{atual['alert_level']}"
+
+    def monta(titulo, acontecendo, fazer, prio, tags):
+        corpo = (f"O QUE ESTA ACONTECENDO: {acontecendo}\n\n"
+                 f"O QUE FAZER: {fazer}\n\n"
+                 f"Aviso do USGS de {hora} ({nivel}).\n\n"
+                 f"{sinopse}\n\n{LINK_SITE}")
+        return (titulo, corpo, prio, tags)
+
+    if af == "fonte" and pf != "fonte":
+        return monta(
+            "VA AGORA - fonte de lava ativa no Kilauea",
+            "a FONTE DE LAVA do episodio comecou. E o espetaculo em si, visivel "
+            "dos mirantes do parque.",
+            "sair agora. De Hilo sao ~45 min ate a entrada; de Kona, ~2h15. "
+            "Os episodios costumam durar poucas horas.",
+            "urgent", "volcano,rotating_light")
+
+    if af == "precursor" and pf not in ("precursor", "fonte"):
+        return monta(
+            "Prepare-se - lava transbordando (ainda NAO e a fonte)",
+            "atividade PRECURSORA: lava transbordando da boca norte. Costuma "
+            "anteceder a fonte de lava, mas o intervalo ja variou de 4 horas a "
+            "mais de 2 dias.",
+            "ainda NAO e hora de sair. Deixe o carro pronto. O alerta urgente, "
+            "com alarme, so sai quando a fonte comecar.",
+            "default", "volcano,warning")
+
+    if pf == "fonte" and af != "fonte":
+        return monta(
+            "Fim do episodio - a fonte de lava parou",
+            "a fonte de lava cessou e o vulcao voltou a fase de pausa.",
+            "nao vale mais a viagem por causa da fonte. O parque segue aberto.",
+            "default", "volcano")
+
+    if pf == "precursor" and af == "pausa":
+        return monta(
+            "Kilauea: a atividade precursora cessou",
+            "o transbordo de lava parou sem virar fonte. Acontece: nem todo "
+            "precursor evolui para episodio.",
+            "nada. Continuo vigiando e aviso se recomecar.",
+            "low", "volcano")
+
+    if (RANK.get(ac, -1) >= RANK["ORANGE"] and RANK.get(pc, 0) < RANK.get(ac, -1)
+            and af == "?"):
+        return monta(
+            "Kilauea: alerta subiu - confira antes de sair",
+            f"o USGS subiu para {nivel}, mas o texto nao deixou claro se a fonte "
+            "de lava ja comecou.",
+            "abrir o site ou uma camera ao vivo antes de pegar a estrada.",
+            "urgent", "volcano,question")
+
+    return monta(
+        f"Kilauea: mudanca de status ({pc or '?'} para {ac})",
+        f"o nivel de alerta mudou para {nivel}. Fase: {af or 'indefinida'}.",
+        "nada por enquanto. Aviso se virar fonte de lava.",
+        "low", "volcano")
 
 
 # ---------------------------------------------------------------- pagina
@@ -1079,7 +1163,9 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
                       f'{html_mod.escape(fotos.get("titulo") or "USGS")}</a></p>')
 
     # --- painel-resumo (acima do texto do aviso)
-    em_erupcao = RANK.get(cor, 0) >= RANK["ORANGE"]
+    fase = atual.get("fase") or "?"
+    # so "fonte" conta como erupcao para efeito de "vale a pena ir agora"
+    em_erupcao = fase == "fonte" or (fase == "?" and RANK.get(cor, 0) >= RANK["ORANGE"])
     dias = max(0, (agora_utc - INICIO_ERUPCAO).days)
     meses = dias // 30
     if em_erupcao:
@@ -1087,6 +1173,15 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         f1_en = '<span class="dot dot-live"></span>Yes, lava fountains active right now'
         visita_pt = "As fontes são visíveis dos mirantes e atraem multidões. "
         visita_en = "The fountains are visible from the overlooks and draw crowds. "
+    elif fase == "precursor":
+        f1_pt = ('<span class="dot dot-prec"></span>Ainda não. Há lava transbordando '
+                 '(atividade precursora), que costuma anteceder a fonte em horas ou dias. '
+                 'O alerta de "vá agora" só sai quando a fonte começar.')
+        f1_en = ('<span class="dot dot-prec"></span>Not yet. Lava is overflowing '
+                 '(precursory activity), which usually precedes the fountain by hours or '
+                 'days. The "go now" alert only fires when the fountain starts.')
+        visita_pt = "Já há lava visível, mas sem as fontes altas. "
+        visita_en = "There is visible lava already, but no high fountains. "
     elif cor == "YELLOW":
         f1_pt = '<span class="dot dot-pause"></span>Em pausa, sem lava visível no momento'
         f1_en = '<span class="dot dot-pause"></span>Paused, no lava visible right now'
@@ -1276,7 +1371,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         "pt": {
             "title": "Live Kilauea",
             "text": {
-                "status": NIVEL_PT.get(cor, cor or "?"),
+                "status": (FASE_PT.get(fase) or NIVEL_PT.get(cor, cor or "?")),
                 "linha_codigo": f"Código de aviação {cor}, nível {nivel}",
                 "linha_aviso": f"Aviso do USGS de {fmt_hora(quando, 'pt') if quando else '-'}",
                 "linha_atualizacao": f"Página atualizada em {fmt_hora(agora_utc, 'pt')}",
@@ -1334,7 +1429,7 @@ def gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
         "en": {
             "title": "Live Kilauea",
             "text": {
-                "status": NIVEL_EN.get(cor, cor or "?"),
+                "status": (FASE_EN.get(fase) or NIVEL_EN.get(cor, cor or "?")),
                 "linha_codigo": f"Aviation color code {cor}, alert level {nivel}",
                 "linha_aviso": f"USGS notice from {fmt_hora(quando, 'en') if quando else '-'}",
                 "linha_atualizacao": f"Page updated {fmt_hora(agora_utc, 'en')}",
@@ -1747,6 +1842,7 @@ html:not([data-theme="light"]) .ic-lua {{ display: none; }}
 .dot {{ display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; }}
 .dot-live {{ background: #ff4a2e; box-shadow: 0 0 0 3px rgba(255,74,46,.25); }}
 .dot-pause {{ background: #e0a400; box-shadow: 0 0 0 3px rgba(224,164,0,.22); }}
+.dot-prec {{ background: #ff8f3c; box-shadow: 0 0 0 3px rgba(255,143,60,.28); }}
 .dot-off {{ background: #37b45c; box-shadow: 0 0 0 3px rgba(55,180,92,.22); }}
 .card {{ background: var(--card); border: 1px solid var(--borda); border-radius: 14px;
          padding: 18px 20px; margin: 14px 0; }}
@@ -1987,6 +2083,9 @@ def main():
             midia = {}
 
     sinopse, resumo_html = detalhe_notice(atual["notice_identifier"])
+    # FASE (fonte / precursor / pausa) e o que decide se o alerta e "va agora"
+    atual["fase"] = fase_atual(sinopse, resumo_html, atual["color_code"])
+    print(f"fase: {atual['fase']}")
 
     # ultimo episodio: procura no aviso INTEIRO (sinopse + resumo) e persiste,
     # porque avisos mais velhos deixam de citar as datas

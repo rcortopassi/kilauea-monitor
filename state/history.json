@@ -28,5 +28,17 @@
     "de": "YELLOW",
     "para": "ORANGE",
     "notice": "DOI-USGS-HVO-2026-09-07T20:09:10+00:00"
+  },
+  {
+    "quando_unix": 1788992283,
+    "de": "ORANGE",
+    "para": "ORANGE",
+    "notice": "DOI-USGS-HVO-2026-09-09T16:27:18+00:00"
+  },
+  {
+    "quando_unix": 1788992665,
+    "de": "ORANGE",
+    "para": "ORANGE",
+    "notice": "DOI-USGS-HVO-2026-09-09T16:27:18+00:00"
   }
 ]

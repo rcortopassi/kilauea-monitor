@@ -3,5 +3,6 @@
   "alert_level": "WATCH",
   "notice_identifier": "DOI-USGS-HVO-2026-09-09T16:27:18+00:00",
   "sent_utc": "2026-09-09 17:49:20",
-  "sent_unixtime": 1788976160
+  "sent_unixtime": 1788976160,
+  "fase": "precursor"
 }
