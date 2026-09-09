@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "8A75DF70-5B3C-4878-8E33-C3EFBBA3204D",
+      "trad_ok": true,
+      "titulo": "Kīpukapuaulu Trail Closed Due to Hazardous Trees and Hanging Limbs",
+      "titulo_pt": "Trilha Kīpukapuaulu fechada devido a árvores perigosas e galhos pendurados",
+      "desc": "Kīpukapuaulu Trail remains closed due to numerous hazardous trees and hanging limbs resulting from several recent storms. Managers are developing a plan and will reopen the trail when it is safe.",
+      "desc_pt": "A trilha Kīpukapuaulu permanece fechada devido a inúmeras árvores perigosas e galhos pendurados resultantes de várias tempestades recentes. Os gerentes estão desenvolvendo um plano e reabrirão a trilha quando for seguro.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-09-09",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
+    },
+    {
       "id": "9EA3FC4B-73DA-4CD9-BB0D-6A1F3DFF7407",
       "trad_ok": true,
       "titulo": "Upper Kahuku Road Closed Beyond Boot Decontamination Station",
@@ -61,5 +76,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-09-09T20:57:39+00:00"
+  "atualizado_em": "2026-09-09T21:49:57+00:00"
 }
