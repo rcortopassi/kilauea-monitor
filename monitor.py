@@ -538,8 +538,17 @@ def extrai_ultimo_ep(texto, ano_padrao):
     # Ja apareceram "episode 52 on July 28-29, 2026" e "Episode 53 of the ongoing
     # Halemaumau eruption began at 3:45 pm HST August 12 and ended at 1:23 am HST
     # on August 13, 2026" (aqui o verbo NAO vem colado ao numero).
+    # Frases que NAO descrevem episodio ocorrido: previsao, condicional e a
+    # atividade PRECURSORA (transbordos que antecedem a fonte de lava). Sem
+    # este filtro, "Episode 55 precursory overflows started ... September 7"
+    # virava "episodio 55 comecou em 07/09" com o episodio ainda por acontecer
+    # (aconteceu em 09/09/2026, e a propria pagina se contradizia).
+    NAO_OCORRIDO = ("precursory", "forecast", "likely", "could", "expected",
+                    "window", "anticipat", "may begin", "is possible")
     achados = {}
     for frase in re.findall(r"[^.]*?[Ee]pisode\s+\d+[^.]*\.", t):
+        if any(x in frase.lower() for x in NAO_OCORRIDO):
+            continue
         m_ep = re.search(r"[Ee]pisode\s+(\d+)", frase)
         if not m_ep:
             continue
