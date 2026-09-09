@@ -2,9 +2,11 @@ name: Kilauea monitor
 
 on:
   schedule:
-    # Pedimos de 5 em 5 min, mas o agendador do GitHub e "melhor esforco" e na
-    # pratica dispara ~1x por hora. Por isso cada execucao roda um LACO interno
-    # de 5 em 5 minutos durante ~1 hora (ver o step "Vigiar o vulcao").
+    # Pedimos de 5 em 5 min, mas o agendador do GitHub e "melhor esforco".
+    # Em 07/2026 disparava ~1x/hora; em 09/2026 caiu para 1 a cada 2-4,5 h.
+    # Como cada execucao roda um LACO interno, o laco precisa durar MAIS que o
+    # maior intervalo observado, senao sobra janela cega (foi o que atrasou em
+    # 71 min a deteccao do episodio 55). Ver o step "Vigiar o vulcao".
     - cron: "*/5 * * * *"
   workflow_dispatch: {}
 
@@ -20,11 +22,11 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
-      - name: Vigiar o vulcao (laco de 5 em 5 min por ~1 hora)
+      - name: Vigiar o vulcao (laco de 5 em 5 min por ~5,5 horas)
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -34,9 +36,9 @@ jobs:
         run: |
           git config user.name "kilauea-bot"
           git config user.email "actions@users.noreply.github.com"
-          for i in $(seq 1 12); do
-            echo "::group::verificacao $i de 12 ($(date -u +%H:%M:%S) UTC)"
-            # o job dura ~1h com o codigo do checkout inicial; sem este pull ele
+          for i in $(seq 1 66); do
+            echo "::group::verificacao $i de 66 ($(date -u +%H:%M:%S) UTC)"
+            # o job dura horas com o codigo do checkout inicial; sem este pull ele
             # continuaria publicando a versao velha por cima de qualquer commit novo
             git pull -q --rebase 2>/dev/null || { git rebase --abort 2>/dev/null; true; }
             # "|| true": falha de rede numa iteracao nao pode abortar a hora toda
@@ -49,7 +51,7 @@ jobs:
               git pull -q --rebase && git push -q || echo "AVISO: push do estado falhou"
             fi
             echo "::endgroup::"
-            if [ "$i" -lt 12 ]; then sleep 300; fi
+            if [ "$i" -lt 66 ]; then sleep 300; fi
           done
 
       # O GitHub desliga crons de repositorios sem atividade ha 60 dias.
