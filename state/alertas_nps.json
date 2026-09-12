@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "E184228C-9A0B-4463-9848-44AF5D566030",
+      "trad_ok": true,
+      "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
+      "titulo_pt": "Trabalho no acostamento da estrada Hilina Pali agendado para 14/09/26 a 19/11/26",
+      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead will be closed to motorized vehicles on September 14, 2026 from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The entire road will be open to all use outside of those hours including weekends and holidays. The work is expected to be complete by November 19, 2026.",
+      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, estará fechada para veículos motorizados em 14 de setembro de 2026, das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados. A obra está prevista para ser concluída até 19 de novembro de 2026.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-09-11",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
       "id": "8A75DF70-5B3C-4878-8E33-C3EFBBA3204D",
       "trad_ok": true,
       "titulo": "Kīpukapuaulu Trail Closed Due to Hazardous Trees and Hanging Limbs",
@@ -76,5 +91,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-09-12T00:26:40+00:00"
+  "atualizado_em": "2026-09-12T01:30:23+00:00"
 }
