@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
+      "trad_ok": true,
+      "titulo": "Mauna Loa Road Closed Past Second Cattle Guard for Tree Removal",
+      "titulo_pt": "Estrada Mauna Loa fechada após segunda guarda de gado para remoção de árvores",
+      "desc": "Mauna Loa Road will be closed to all use from the second cattle guard (about two miles past Kīpukapuaulu) to Mauna Loa Lookout for tree removal starting September 23 through October 29, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
+      "desc_pt": "A Estrada Mauna Loa será fechada para todo uso desde a segunda guarda de gado (cerca de três quilômetros depois de Kīpukapuaulu) até o Mirante Mauna Loa para remoção de árvores de 23 de setembro a 29 de outubro de 2026. O trabalho na árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-09-21",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
+    },
+    {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
       "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
@@ -91,5 +106,5 @@
       "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-09-22T01:12:21+00:00"
+  "atualizado_em": "2026-09-22T01:18:32+00:00"
 }
