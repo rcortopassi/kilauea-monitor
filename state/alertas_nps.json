@@ -1,19 +1,19 @@
 {
   "alertas": [
     {
-      "id": "4AF3C2F6-CAD0-427C-94E8-49C0FAF9FDC7",
+      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
       "trad_ok": true,
-      "titulo": "Temporary Park Wide Closures Ahead of Tropical Storm Nolo",
-      "titulo_pt": "Fechamentos temporários de todo o parque antes da tempestade tropical Nolo",
-      "desc": "Backcountry trails and campgrounds begin closing today, with all backcountry areas closed by 5 PM on Thursday, September 24, 2026. All remaining park areas, including Nāmakanipaio tent camping, will close by 5 PM Thursday to all recreational activities; Kahuku Unit will close at 4 PM. Lodging guests and staff will shelter in place by 5 PM on Thursday.",
-      "desc_pt": "Trilhas e acampamentos no interior começam a fechar hoje, com todas as áreas no interior fechadas até as 17h de quinta-feira, 24 de setembro de 2026. Todas as áreas restantes do parque, incluindo o acampamento Nāmakanipaio, fecharão às 17h de quinta-feira para todas as atividades recreativas; A Unidade Kahuku fechará às 16h. Os hóspedes e funcionários do hotel ficarão abrigados no local até as 17h de quinta-feira.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-23",
-      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
-      "local_en": "Kahuku Unit (entrance, Hwy 11)",
-      "lat": 19.069,
-      "lng": -155.6778
+      "titulo": "Kīlauea eruption",
+      "titulo_pt": "Erupção Kilauea",
+      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
+      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
+      "cat": "info",
+      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
+      "data": "2026-09-24",
+      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
+      "local_en": "Halemaʻumaʻu (erupting crater)",
+      "lat": 19.4067,
+      "lng": -155.28
     },
     {
       "id": "523CCC87-B90A-4643-9114-645976206127",
@@ -134,22 +134,7 @@
       "local_en": "Kīlauea summit, downwind area",
       "lat": 19.404,
       "lng": -155.292
-    },
-    {
-      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
-      "trad_ok": true,
-      "titulo": "Kīlauea eruption",
-      "titulo_pt": "Erupção Kilauea",
-      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
-      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
-      "cat": "danger",
-      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
-      "data": "2026-04-08",
-      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
-      "local_en": "Halemaʻumaʻu (erupting crater)",
-      "lat": 19.4067,
-      "lng": -155.28
     }
   ],
-  "atualizado_em": "2026-09-24T21:54:35+00:00"
+  "atualizado_em": "2026-09-24T21:59:54+00:00"
 }
