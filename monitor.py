@@ -106,7 +106,7 @@ LINK_YOUTUBE = "https://www.youtube.com/@usgs/live"
 LINK_PARQUE = "https://www.nps.gov/havo/planyourvisit/conditions.htm"
 LINK_PARKING = "https://www.nps.gov/havo/planyourvisit/parking.htm"
 LINK_VIEWING = "https://www.nps.gov/havo/planyourvisit/eruption-viewing.htm"
-LINK_SITE = "https://rafaelcortopassi.pythonanywhere.com/kilauea/"
+LINK_SITE = "https://rafaelcortopassi.pythonanywhere.com/honeymoon/#hawaii"
 
 # Avisos ativos do parque nacional (API oficial do NPS; DEMO_KEY funciona,
 # mas aceita chave propria via env NPS_KEY se um dia limitar)
@@ -2033,11 +2033,42 @@ figcaption {{ margin-top: 5px; }}
 """
 
 
-def upload_pa(conteudo, nome="index.html"):
+def resumo_honeymoon(atual, frases, lives, fotos, sinopse_pt, agora_utc):
+    """O que a aba Hawai'i do Honeymoon desenha. Contrato pequeno e estavel:
+    a pagina de la busca este arquivo de mesma origem a cada carregamento, entao
+    o vulcao fica fresco mesmo entre as rodadas de 2 h do Honeymoon.
+
+    Mudar campo aqui exige mudar `pintaKilauea()` no _pagina.py do Honeymoon."""
+    fase = atual.get("fase") or "?"
+    ult = (frases.get("ult") or {})
+    f = (fotos or {}).get("itens") or []
+    return {
+        "cor": atual.get("color_code", ""),
+        "nivel": atual.get("alert_level", ""),
+        "fase": fase,
+        "titulo": FASE_PT.get(fase) or NIVEL_PT.get(atual.get("color_code", ""), ""),
+        "titulo_en": FASE_EN.get(fase) or NIVEL_EN.get(atual.get("color_code", ""), ""),
+        "sinopse": sinopse_pt or "",
+        "episodio": {"n": ult.get("ep"), "inicio": ult.get("inicio", ""),
+                     "fim": ult.get("fim", "")},
+        "previsao": frases.get("prev_pt") or "",
+        "cameras": [{"n": LIVES_ROTULO.get(s["id"], ("", ""))[0]
+                          or f"Câmera ao vivo, {s.get('canal') or 'YouTube'}",
+                     "url": f"https://www.youtube.com/watch?v={s['id']}"}
+                    for s in (lives or [])],
+        "foto": ({"src": f[0]["src"], "cap": f[0].get("cap_pt") or f[0].get("cap_en", ""),
+                  "ep": (fotos or {}).get("ep") or 0,
+                  "url": (fotos or {}).get("url", "")} if f else None),
+        "links": {"usgs": LINK_UPDATES, "webcams": LINK_WEBCAMS, "parque": LINK_PARQUE},
+        "atualizado": agora_utc.isoformat(timespec="seconds"),
+    }
+
+
+def upload_pa(conteudo, nome="index.html", pasta="kilauea"):
     if not PA_TOKEN:
         print("aviso: PA_TOKEN nao definido; upload pulado")
         return
-    dest = f"/home/{PA_USER}/kilauea/{nome}"
+    dest = f"/home/{PA_USER}/{pasta}/{nome}"
     url = f"{PA_API}/api/v0/user/{PA_USER}/files/path{dest}"
     data = conteudo.encode("utf-8")
     boundary = "----pa" + uuid.uuid4().hex
@@ -2097,7 +2128,15 @@ def main():
         if info_ep["ep"] > antigo.get("ep", 0):
             midia["ultimo_ep"] = info_ep
         elif info_ep["ep"] == antigo.get("ep"):
-            midia["ultimo_ep"] = {**antigo, **info_ep}
+            # data ja conhecida MANDA sobre a reextraida: os avisos seguintes
+            # citam o mesmo episodio de passagem e o regex pega a data errada
+            # da frase (o ep 54 ficou com inicio 17/09 e fim 25/08 assim).
+            midia["ultimo_ep"] = {**info_ep, **antigo}
+        eu = midia.get("ultimo_ep") or {}
+        if eu.get("inicio") and eu.get("fim") and eu["fim"] < eu["inicio"]:
+            print(f"aviso: episodio {eu['ep']} com fim antes do inicio "
+                  f"({eu['inicio']} a {eu['fim']}); descartando as duas datas")
+            midia["ultimo_ep"] = {"ep": eu["ep"]}
     print(f"ultimo episodio: {midia.get('ultimo_ep') or 'desconhecido'}")
 
     primeira_vez = not prev
@@ -2217,10 +2256,14 @@ def main():
     frases = {"ep_en": ep_en, "ep_pt": ep_pt,
               "prev_en": prev_en, "prev_pt": prev_pt,
               "ult": midia.get("ultimo_ep") or {}}
-    pagina = gera_pagina(atual, sinopse, resumo_html, historico, agora_utc,
-                         aviso_pt, lives, lives_link, fotos, frases, galeria, alertas,
-                         mir_fotos, alertas_em)
-    upload_pa(pagina)
+    # O site proprio do Kilauea foi absorvido pela aba Hawai'i do Honeymoon
+    # (26/09/2026, pedido do usuario). O monitor segue igual para o que importa,
+    # que e o alerta; da pagina, publica so o resumo que o Honeymoon desenha.
+    sin_pt = traduz_txt(sinopse, trad_cache, orcamento) or sinopse
+    _grava_trad(trad_cache)
+    resumo = resumo_honeymoon(atual, frases, lives, fotos, sin_pt, agora_utc)
+    upload_pa(json.dumps(resumo, ensure_ascii=False, indent=1),
+              "kilauea.json", pasta="honeymoon")
     print("ok")
     return 0
 
