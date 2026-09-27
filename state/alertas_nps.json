@@ -16,51 +16,6 @@
       "lng": -155.28
     },
     {
-      "id": "4AF3C2F6-CAD0-427C-94E8-49C0FAF9FDC7",
-      "trad_ok": true,
-      "titulo": "Temporary Park Wide Closures Ahead of Tropical Storm Nolo",
-      "titulo_pt": "Fechamentos temporários de todo o parque antes da tempestade tropical Nolo",
-      "desc": "Backcountry trails and campgrounds begin closing today, with all backcountry areas closed by 5 PM on Thursday, September 24, 2026. All remaining park areas, including Nāmakanipaio tent camping, will close by 5 PM Thursday to all recreational activities; Kahuku Unit will close at 4 PM. Lodging guests and staff will shelter in place by 5 PM on Thursday.",
-      "desc_pt": "Trilhas e acampamentos no interior começam a fechar hoje, com todas as áreas no interior fechadas até as 17h de quinta-feira, 24 de setembro de 2026. Todas as áreas restantes do parque, incluindo o acampamento Nāmakanipaio, fecharão às 17h de quinta-feira para todas as atividades recreativas; A Unidade Kahuku fechará às 16h. Os hóspedes e funcionários do hotel ficarão abrigados no local até as 17h de quinta-feira.",
-      "cat": "danger",
-      "url": "",
-      "data": "2026-09-24",
-      "local_pt": "Unidade Kahuku (entrada, Hwy 11)",
-      "local_en": "Kahuku Unit (entrance, Hwy 11)",
-      "lat": 19.069,
-      "lng": -155.6778
-    },
-    {
-      "id": "523CCC87-B90A-4643-9114-645976206127",
-      "trad_ok": true,
-      "titulo": "Crater Rim Drive West Closed from Kilauea Military Camp to Uēkahuna",
-      "titulo_pt": "Crater Rim Drive West fechada do acampamento militar de Kilauea para Uēkahuna",
-      "desc": "Crater Rim Drive West is closed between Kilauea Military Camp and the Uēkahuna parking area due to a downed utility pole. This section of road will be closed to all vehicle use until further notice. Crater Rim Trail and overlooks toward Uēkahuna remain open to hikers.",
-      "desc_pt": "A Crater Rim Drive West está fechada entre o acampamento militar de Kilauea e a área de estacionamento de Uēkahuna devido à queda de um poste. Este trecho da estrada estará fechado para todos os veículos até novo aviso. A trilha Crater Rim e os mirantes em direção a Uēkahuna permanecem abertos aos caminhantes.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-22",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
-      "id": "087F24F9-9479-445F-87B0-80252CC25036",
-      "trad_ok": true,
-      "titulo": "Overflow Parking at Kīlauea Military Camp Ballfield is Temporarily Closed",
-      "titulo_pt": "O estacionamento transbordado no Kīlauea Military Camp Ballfield está temporariamente fechado",
-      "desc": "Overflow parking at the Kīlauea Military Camp ballfield is temporarily closed until further notice due to a downed utility pole. Parking at the visitor center may be limited. Additional parking is available elsewhere within the Kīlauea Military Camp area. Please park where space is available, and follow posted signs and ranger directions.",
-      "desc_pt": "O estacionamento lotado no campo de futebol do acampamento militar Kīlauea está temporariamente fechado até novo aviso devido à queda de um poste. O estacionamento no centro de visitantes pode ser limitado. Estacionamento adicional está disponível em outros lugares na área do acampamento militar de Kilauea. Por favor, estacione onde houver espaço disponível e siga as placas e instruções dos guardas florestais.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-22",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
       "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
       "trad_ok": true,
       "titulo": "Mauna Loa Road Closed Past Second Cattle Guard for Tree Removal",
@@ -151,5 +106,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-09-27T20:55:33+00:00"
+  "atualizado_em": "2026-09-27T23:01:20+00:00"
 }
