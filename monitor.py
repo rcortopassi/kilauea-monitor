@@ -2052,10 +2052,14 @@ def resumo_honeymoon(atual, frases, lives, fotos, sinopse_pt, agora_utc):
         "episodio": {"n": ult.get("ep"), "inicio": ult.get("inicio", ""),
                      "fim": ult.get("fim", "")},
         "previsao": frases.get("prev_pt") or "",
-        "cameras": [{"n": LIVES_ROTULO.get(s["id"], ("", ""))[0]
-                          or f"Câmera ao vivo, {s.get('canal') or 'YouTube'}",
-                     "url": f"https://www.youtube.com/watch?v={s['id']}"}
-                    for s in (lives or [])],
+        # As tres cameras OFICIAIS do USGS, sempre, em vez do que a deteccao
+        # ao vivo achar. Rodando no GitHub o YouTube nao responde a checagem de
+        # "esta ao vivo?", a busca de reserva entrava e trocava as oficiais por
+        # um canal qualquer (em 28/09/2026 sobrou so um "Two Pineapples").
+        # Sao transmissoes 24/7 permanentes: link fixo e mais confiavel que
+        # deteccao que so funciona de fora do CI.
+        "cameras": [{"n": rot[0], "url": f"https://www.youtube.com/watch?v={vid}"}
+                    for vid, rot in LIVES_ROTULO.items()],
         "foto": ({"src": f[0]["src"], "cap": f[0].get("cap_pt") or f[0].get("cap_en", ""),
                   "ep": (fotos or {}).get("ep") or 0,
                   "url": (fotos or {}).get("url", "")} if f else None),
@@ -2160,7 +2164,9 @@ def main():
             })
             historico = historico[-50:]
 
-    lives, lives_link = lives_atuais(midia)
+    # deteccao ao vivo aposentada: as cameras do resumo sao fixas (ver
+    # resumo_honeymoon). Evita 3 buscas no YouTube a cada 5 minutos.
+    lives, lives_link = (midia.get('lives') or []), (midia.get('lives_link') or [])
     slug_antes = ((midia.get("fotos") or {}).get("slug") or "")
     ep_foto_antes = ((midia.get("fotos") or {}).get("ep") or 0)
     fotos = fotos_episodio(midia)
