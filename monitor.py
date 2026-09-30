@@ -577,13 +577,26 @@ def extrai_ultimo_ep(texto, ano_padrao):
     return ocorridos[max(ocorridos)]
 
 
-def frases_chave(sinopse):
-    """Extrai do aviso do HVO a frase do ultimo/atual episodio e a de previsao."""
+def frases_chave(sinopse, resumo_html=""):
+    """Extrai do aviso do HVO a frase do ultimo/atual episodio e a de previsao.
+
+    A previsao da janela do proximo episodio quase sempre esta no CORPO, na
+    secao Analysis ("A forecast window of ... is likely for the onset of
+    episode N fountaining"), e so as vezes sobe para a sinopse. Por isso a
+    busca da previsao cai no corpo quando a sinopse nao traz nada. Ler o corpo
+    aqui e seguro: a frase e sobre o futuro, ao contrario da classificacao de
+    fase, que so pode olhar a sinopse (o corpo narra episodios antigos)."""
     # "2:36 a.m." viraria fim de frase; normaliza para "2:36 am" antes de extrair
     s = re.sub(r"\b([apAP])\.[mM]\.", r"\1m", sinopse or "")
     ep = (re.search(r"([^.]*[Ee]pisode\s+\d+\s+(?:began|ended|started)[^.]*\.)", s)
           or re.search(r"([^.]*(?:end|start|beginning) of [Ee]pisode\s+\d+[^.]*\.)", s))
-    prev = re.search(r"([^.]*(?:another episode|next\s+(?:\w+\s+){0,2}episode|forecast|precursory|likely between)[^.]*\.)", s)
+    PREV = (r"([^.]*(?:forecast window|another episode|next\s+(?:\w+\s+){0,2}episode"
+            r"|is likely for the onset|likely between|expected between)[^.]*\.)")
+    prev = re.search(PREV, s, re.I)
+    if not prev and resumo_html:
+        corpo = re.sub(r"\b([apAP])\.[mM]\.", r"\1m",
+                       re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", resumo_html)))
+        prev = re.search(PREV, corpo, re.I)
     return (ep.group(1).strip() if ep else "",
             prev.group(1).strip() if prev else "")
 
@@ -2250,7 +2263,7 @@ def main():
     orcamento = [25]
     aviso_pt = traduz_aviso(atual["notice_identifier"], resumo_html, sinopse,
                             trad_cache, orcamento)
-    ep_en, prev_en = frases_chave(sinopse)
+    ep_en, prev_en = frases_chave(sinopse, resumo_html)
     # as duas frases do painel eram traduzidas TODA rodada (576 chamadas/dia a
     # toa); agora passam pelo mesmo cache por texto
     ep_pt = traduz_txt(ep_en, trad_cache, orcamento) or ep_en
