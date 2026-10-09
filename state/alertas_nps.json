@@ -1,6 +1,51 @@
 {
   "alertas": [
     {
+      "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
+      "trad_ok": true,
+      "titulo": "Mauna Loa Road Closed Past Second Cattle Guard for Tree Removal",
+      "titulo_pt": "Estrada Mauna Loa fechada após segunda guarda de gado para remoção de árvores",
+      "desc": "Mauna Loa Road will be closed to all use from the second cattle guard (about two miles past Kīpukapuaulu) to Mauna Loa Lookout for tree removal starting September 23 through October 29, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
+      "desc_pt": "A Estrada Mauna Loa será fechada para todo uso desde a segunda guarda de gado (cerca de três quilômetros depois de Kīpukapuaulu) até o Mirante Mauna Loa para remoção de árvores de 23 de setembro a 29 de outubro de 2026. O trabalho na árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
+      "cat": "info",
+      "url": "",
+      "data": "2026-10-08",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
+    },
+    {
+      "id": "E184228C-9A0B-4463-9848-44AF5D566030",
+      "trad_ok": true,
+      "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
+      "titulo_pt": "Trabalho no acostamento da estrada Hilina Pali agendado para 14/09/26 a 19/11/26",
+      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead will be closed to motorized vehicles on September 14, 2026 from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The entire road will be open to all use outside of those hours including weekends and holidays. The work is expected to be complete by November 19, 2026.",
+      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, estará fechada para veículos motorizados em 14 de setembro de 2026, das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados. A obra está prevista para ser concluída até 19 de novembro de 2026.",
+      "cat": "info",
+      "url": "",
+      "data": "2026-10-08",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
+      "id": "8A75DF70-5B3C-4878-8E33-C3EFBBA3204D",
+      "trad_ok": true,
+      "titulo": "Kīpukapuaulu Trail Closed Due to Hazardous Trees and Hanging Limbs",
+      "titulo_pt": "Trilha Kīpukapuaulu fechada devido a árvores perigosas e galhos pendurados",
+      "desc": "Kīpukapuaulu Trail remains closed due to numerous hazardous trees and hanging limbs resulting from several recent storms. Managers are developing a plan and will reopen the trail when it is safe.",
+      "desc_pt": "A trilha Kīpukapuaulu permanece fechada devido a inúmeras árvores perigosas e galhos pendurados resultantes de várias tempestades recentes. Os gerentes estão desenvolvendo um plano e reabrirão a trilha quando for seguro.",
+      "cat": "caution",
+      "url": "",
+      "data": "2026-10-08",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
+    },
+    {
       "id": "E6380F1D-EB3A-44EC-B206-6A65019B38D5",
       "trad_ok": true,
       "titulo": "Halemaʻumaʻu Trail and Part of Byron Ledge Trail Closed Due to Safety Risks",
@@ -61,51 +106,6 @@
       "lng": -155.28
     },
     {
-      "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
-      "trad_ok": true,
-      "titulo": "Mauna Loa Road Closed Past Second Cattle Guard for Tree Removal",
-      "titulo_pt": "Estrada Mauna Loa fechada após segunda guarda de gado para remoção de árvores",
-      "desc": "Mauna Loa Road will be closed to all use from the second cattle guard (about two miles past Kīpukapuaulu) to Mauna Loa Lookout for tree removal starting September 23 through October 29, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
-      "desc_pt": "A Estrada Mauna Loa será fechada para todo uso desde a segunda guarda de gado (cerca de três quilômetros depois de Kīpukapuaulu) até o Mirante Mauna Loa para remoção de árvores de 23 de setembro a 29 de outubro de 2026. O trabalho na árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-21",
-      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "lat": 19.4386,
-      "lng": -155.3034
-    },
-    {
-      "id": "E184228C-9A0B-4463-9848-44AF5D566030",
-      "trad_ok": true,
-      "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
-      "titulo_pt": "Trabalho no acostamento da estrada Hilina Pali agendado para 14/09/26 a 19/11/26",
-      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead will be closed to motorized vehicles on September 14, 2026 from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The entire road will be open to all use outside of those hours including weekends and holidays. The work is expected to be complete by November 19, 2026.",
-      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, estará fechada para veículos motorizados em 14 de setembro de 2026, das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados. A obra está prevista para ser concluída até 19 de novembro de 2026.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-11",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
-      "id": "8A75DF70-5B3C-4878-8E33-C3EFBBA3204D",
-      "trad_ok": true,
-      "titulo": "Kīpukapuaulu Trail Closed Due to Hazardous Trees and Hanging Limbs",
-      "titulo_pt": "Trilha Kīpukapuaulu fechada devido a árvores perigosas e galhos pendurados",
-      "desc": "Kīpukapuaulu Trail remains closed due to numerous hazardous trees and hanging limbs resulting from several recent storms. Managers are developing a plan and will reopen the trail when it is safe.",
-      "desc_pt": "A trilha Kīpukapuaulu permanece fechada devido a inúmeras árvores perigosas e galhos pendurados resultantes de várias tempestades recentes. Os gerentes estão desenvolvendo um plano e reabrirão a trilha quando for seguro.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-09-09",
-      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "lat": 19.4386,
-      "lng": -155.3034
-    },
-    {
       "id": "9EA3FC4B-73DA-4CD9-BB0D-6A1F3DFF7407",
       "trad_ok": true,
       "titulo": "Upper Kahuku Road Closed Beyond Boot Decontamination Station",
@@ -136,5 +136,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-08T16:39:35+00:00"
+  "atualizado_em": "2026-10-09T00:04:21+00:00"
 }
