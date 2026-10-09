@@ -1,6 +1,36 @@
 {
   "alertas": [
     {
+      "id": "E6380F1D-EB3A-44EC-B206-6A65019B38D5",
+      "trad_ok": true,
+      "titulo": "Halemaʻumaʻu Trail and Part of Byron Ledge Trail Closed Due to Safety Risks",
+      "titulo_pt": "Trilha Halema'uma'u e parte da trilha Byron Ledge fechadas devido a riscos de segurança",
+      "desc": "Halemaʻumaʻu Trail and part of Byron Ledge Trail are temporarily closed due to continued inflation and increased seismicity at the summit of Kīlauea volcano. The closure is a total of 1.3 miles. The increased seismicity could trigger additional rock falls and presents a serious safety risk. Both trails descend from the caldera rim to the floor and have been the site of dangerous rock falls in the past.",
+      "desc_pt": "A trilha Halema'uma'u e parte da trilha Byron Ledge estão temporariamente fechadas devido à inflação contínua e ao aumento da sismicidade no cume do vulcão Kīlauea. O fechamento é de um total de 1,3 milhas. O aumento da sismicidade pode provocar quedas adicionais de rochas e representa um sério risco de segurança. Ambas as trilhas descem da borda da caldeira até o chão e já foram locais de perigosas quedas de rochas no passado.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-10-09",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
+      "id": "C8F694F3-2542-4433-A7E7-B2EFC3BDA48A",
+      "trad_ok": true,
+      "titulo": "Keanakākoʻi Side of Kīlauea Volcano Closed Due to Volcanic Unrest",
+      "titulo_pt": "Lado Keanakāko'i do vulcão Kīlauea fechado devido à agitação vulcânica",
+      "desc": "Due to increased earthquakes below the summit of Kīlauea and volcanic unrest, the Keanakākoʻi area is temporarily closed for safety. This includes old Crater Rim Drive, the overlooks near Keanakākoʻi crater and Crater Rim Trail to Keanakākoʻi crater. Devastation parking lot remains open.",
+      "desc_pt": "Devido ao aumento dos terremotos abaixo do cume do Kilauea e à agitação vulcânica, a área de Keanakāko'i está temporariamente fechada por segurança. Isso inclui a antiga Crater Rim Drive, os mirantes perto da cratera Keanakāko'i e a trilha Crater Rim até a cratera Keanakāko'i. O estacionamento da Devastação permanece aberto.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-10-09",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
       "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
       "trad_ok": true,
       "titulo": "Mauna Loa Road Closed Past Second Cattle Guard for Tree Removal",
@@ -46,21 +76,6 @@
       "lng": -155.3034
     },
     {
-      "id": "E6380F1D-EB3A-44EC-B206-6A65019B38D5",
-      "trad_ok": true,
-      "titulo": "Halemaʻumaʻu Trail and Part of Byron Ledge Trail Closed Due to Safety Risks",
-      "titulo_pt": "Trilha Halema'uma'u e parte da trilha Byron Ledge fechadas devido a riscos de segurança",
-      "desc": "Halemaʻumaʻu Trail and part of Byron Ledge Trail are temporarily closed due to continued inflation and increased seismicity at the summit of Kīlauea volcano. The closure is a total of 1.3 miles. The increased seismicity could trigger additional rock falls and presents a serious safety risk. Both trails descend from the caldera rim to the floor and have been the site of dangerous rock falls in the past.",
-      "desc_pt": "A trilha Halema'uma'u e parte da trilha Byron Ledge estão temporariamente fechadas devido à inflação contínua e ao aumento da sismicidade no cume do vulcão Kīlauea. O fechamento é de um total de 1,3 milhas. O aumento da sismicidade pode provocar quedas adicionais de rochas e representa um sério risco de segurança. Ambas as trilhas descem da borda da caldeira até o chão e já foram locais de perigosas quedas de rochas no passado.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-10-07",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
       "id": "372637DA-0B8C-422B-B98B-9ACF44B56C46",
       "trad_ok": true,
       "titulo": "Sulphur Banks Bridge Closed; Boardwalk is Open",
@@ -68,21 +83,6 @@
       "desc": "The Sulphur Banks Bridge is damaged and closed until further notice. The Haʻakulamanu area, boardwalk and Sulphur Banks Trail are open and accessible from the west side near Steam Vents.",
       "desc_pt": "A ponte Sulphur Banks está danificada e fechada até novo aviso. A área de Haʻakulamanu, o calçadão e a trilha Sulphur Banks estão abertos e acessíveis pelo lado oeste, perto de Steam Vents.",
       "cat": "info",
-      "url": "",
-      "data": "2026-10-01",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
-      "id": "C8F694F3-2542-4433-A7E7-B2EFC3BDA48A",
-      "trad_ok": true,
-      "titulo": "Keanakākoʻi Side of Kīlauea Volcano Closed Due to Volcanic Unrest",
-      "titulo_pt": "Lado Keanakāko'i do vulcão Kīlauea fechado devido à agitação vulcânica",
-      "desc": "Due to increased earthquakes below the summit of Kīlauea and volcanic unrest, the Keanakākoʻi area is temporarily closed for safety. This includes old Crater Rim Drive, the overlooks near Keanakākoʻi crater and Crater Rim Trail to Keanakākoʻi crater. Devastation parking lot remains open.",
-      "desc_pt": "Devido ao aumento dos terremotos abaixo do cume do Kilauea e à agitação vulcânica, a área de Keanakāko'i está temporariamente fechada por segurança. Isso inclui a antiga Crater Rim Drive, os mirantes perto da cratera Keanakāko'i e a trilha Crater Rim até a cratera Keanakāko'i. O estacionamento da Devastação permanece aberto.",
-      "cat": "closure",
       "url": "",
       "data": "2026-10-01",
       "local_pt": "",
@@ -136,5 +136,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-09T08:09:01+00:00"
+  "atualizado_em": "2026-10-09T14:28:28+00:00"
 }
