@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
+      "trad_ok": true,
+      "titulo": "Kīlauea eruption",
+      "titulo_pt": "Erupção Kilauea",
+      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
+      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
+      "cat": "info",
+      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
+      "data": "2026-10-16",
+      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
+      "local_en": "Halemaʻumaʻu (erupting crater)",
+      "lat": 19.4067,
+      "lng": -155.28
+    },
+    {
       "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
       "trad_ok": true,
       "titulo": "Mauna Loa Road Closed Past First Cattle Guard for Tree Removal",
@@ -91,21 +106,6 @@
       "lng": null
     },
     {
-      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
-      "trad_ok": true,
-      "titulo": "Kīlauea eruption",
-      "titulo_pt": "Erupção Kilauea",
-      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
-      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
-      "cat": "info",
-      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
-      "data": "2026-09-24",
-      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
-      "local_en": "Halemaʻumaʻu (erupting crater)",
-      "lat": 19.4067,
-      "lng": -155.28
-    },
-    {
       "id": "9EA3FC4B-73DA-4CD9-BB0D-6A1F3DFF7407",
       "trad_ok": true,
       "titulo": "Upper Kahuku Road Closed Beyond Boot Decontamination Station",
@@ -136,5 +136,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-16T19:48:00+00:00"
+  "atualizado_em": "2026-10-16T22:01:47+00:00"
 }
