@@ -46,21 +46,6 @@
       "lng": null
     },
     {
-      "id": "C8F694F3-2542-4433-A7E7-B2EFC3BDA48A",
-      "trad_ok": true,
-      "titulo": "Keanakākoʻi Side of Kīlauea Volcano Closed Due to Volcanic Unrest",
-      "titulo_pt": "Lado Keanakāko'i do vulcão Kīlauea fechado devido à agitação vulcânica",
-      "desc": "Due to increased earthquakes below the summit of Kīlauea and volcanic unrest, the Keanakākoʻi area is temporarily closed for safety. This includes old Crater Rim Drive, the overlooks near Keanakākoʻi crater and Crater Rim Trail to Keanakākoʻi crater. Devastation parking lot remains open.",
-      "desc_pt": "Devido ao aumento dos terremotos abaixo do cume do Kilauea e à agitação vulcânica, a área de Keanakāko'i está temporariamente fechada por segurança. Isso inclui a antiga Crater Rim Drive, os mirantes perto da cratera Keanakāko'i e a trilha Crater Rim até a cratera Keanakāko'i. O estacionamento da Devastação permanece aberto.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-10-09",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
       "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
@@ -136,5 +121,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-17T17:20:49+00:00"
+  "atualizado_em": "2026-10-17T17:25:52+00:00"
 }
