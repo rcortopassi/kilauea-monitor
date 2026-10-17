@@ -31,21 +31,6 @@
       "lng": null
     },
     {
-      "id": "E6380F1D-EB3A-44EC-B206-6A65019B38D5",
-      "trad_ok": true,
-      "titulo": "Halemaʻumaʻu Trail and Part of Byron Ledge Trail Closed Due to Safety Risks",
-      "titulo_pt": "Trilha Halema'uma'u e parte da trilha Byron Ledge fechadas devido a riscos de segurança",
-      "desc": "Halemaʻumaʻu Trail and part of Byron Ledge Trail are temporarily closed due to continued inflation and increased seismicity at the summit of Kīlauea volcano. The closure is a total of 1.3 miles. The increased seismicity could trigger additional rock falls and presents a serious safety risk. Both trails descend from the caldera rim to the floor and have been the site of dangerous rock falls in the past.",
-      "desc_pt": "A trilha Halema'uma'u e parte da trilha Byron Ledge estão temporariamente fechadas devido à inflação contínua e ao aumento da sismicidade no cume do vulcão Kīlauea. O fechamento é de um total de 1,3 milhas. O aumento da sismicidade pode provocar quedas adicionais de rochas e representa um sério risco de segurança. Ambas as trilhas descem da borda da caldeira até o chão e já foram locais de perigosas quedas de rochas no passado.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-10-09",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
       "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
@@ -121,5 +106,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-17T20:59:16+00:00"
+  "atualizado_em": "2026-10-17T21:04:29+00:00"
 }
