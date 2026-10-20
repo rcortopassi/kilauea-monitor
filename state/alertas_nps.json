@@ -1,6 +1,21 @@
 {
   "alertas": [
     {
+      "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
+      "trad_ok": true,
+      "titulo": "Mauna Loa Road Closed Past First Cattle Guard for Tree Removal",
+      "titulo_pt": "Estrada Mauna Loa fechada após a primeira guarda de gado para remoção de árvores",
+      "desc": "Mauna Loa Road will be closed to all use from the first cattle guard to Mauna Loa Lookout for tree removal through October 29, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
+      "desc_pt": "A Estrada Mauna Loa será fechada para todo uso desde a primeira guarda de gado até o Mirante Mauna Loa para remoção de árvores até 29 de outubro de 2026. O trabalho na árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
+      "cat": "closure",
+      "url": "",
+      "data": "2026-10-20",
+      "local_pt": "",
+      "local_en": "",
+      "lat": null,
+      "lng": null
+    },
+    {
       "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
       "trad_ok": true,
       "titulo": "Kīlauea eruption",
@@ -14,21 +29,6 @@
       "local_en": "Halemaʻumaʻu (erupting crater)",
       "lat": 19.4067,
       "lng": -155.28
-    },
-    {
-      "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
-      "trad_ok": true,
-      "titulo": "Mauna Loa Road Closed Past First Cattle Guard for Tree Removal",
-      "titulo_pt": "Estrada Mauna Loa fechada após a primeira guarda de gado para remoção de árvores",
-      "desc": "Mauna Loa Road will be closed to all use from the first cattle guard to Mauna Loa Lookout for tree removal starting September 23 through October 29, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
-      "desc_pt": "A Estrada Mauna Loa será fechada para todo uso desde a primeira guarda de gado até o Mirante Mauna Loa para remoção de árvores de 23 de setembro a 29 de outubro de 2026. O trabalho de arborização preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
-      "cat": "info",
-      "url": "",
-      "data": "2026-10-15",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
     },
     {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
@@ -106,5 +106,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-20T18:05:55+00:00"
+  "atualizado_em": "2026-10-20T20:44:08+00:00"
 }
