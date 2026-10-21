@@ -3,17 +3,17 @@
     {
       "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
       "trad_ok": true,
-      "titulo": "Mauna Loa Road Closed Past First Cattle Guard for Tree Removal",
-      "titulo_pt": "Estrada Mauna Loa fechada após a primeira guarda de gado para remoção de árvores",
-      "desc": "Mauna Loa Road will be closed to all use from the first cattle guard to Mauna Loa Lookout for tree removal through October 29, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
-      "desc_pt": "A Estrada Mauna Loa será fechada para todo uso desde a primeira guarda de gado até o Mirante Mauna Loa para remoção de árvores até 29 de outubro de 2026. O trabalho na árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
+      "titulo": "Mauna Loa Road Closed Past Kīpukapuaulu for Tree Removal",
+      "titulo_pt": "Estrada Mauna Loa fechada após Kīpukapuaulu para remoção de árvores",
+      "desc": "Mauna Loa Road will be closed to the public from the gate past Kīpukapuaulu to Mauna Loa Lookout for tree removal through October 28, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
+      "desc_pt": "A estrada Mauna Loa será fechada ao público desde o portão que passa por Kīpukapuaulu até o mirante Mauna Loa para remoção de árvores até 28 de outubro de 2026. O trabalho de árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
       "cat": "closure",
       "url": "",
-      "data": "2026-10-20",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
+      "data": "2026-10-21",
+      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
+      "lat": 19.4386,
+      "lng": -155.3034
     },
     {
       "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
@@ -106,5 +106,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-21T18:27:22+00:00"
+  "atualizado_em": "2026-10-21T20:55:36+00:00"
 }
