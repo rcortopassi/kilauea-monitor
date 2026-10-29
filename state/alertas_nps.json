@@ -1,51 +1,6 @@
 {
   "alertas": [
     {
-      "id": "340492BE-C4A3-44C8-B323-7A7522747C3E",
-      "trad_ok": true,
-      "titulo": "Mauna Loa Summit and Puʻuʻulaʻula Closed for Severe Weather",
-      "titulo_pt": "Mauna Loa Summit e Puʻuʻulaʻula estão fechadas devido ao mau tempo",
-      "desc": "Mauna Loa Summit, Puʻuulaula (Red Hill) and the cabins are temporarily closed due to severe weather through October 28.",
-      "desc_pt": "Mauna Loa Summit, Puʻuulaula (Red Hill) e as cabines estão temporariamente fechadas devido ao mau tempo até 28 de outubro.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-10-27",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
-      "id": "611B580A-2CFD-4331-B712-E8E46FC6683D",
-      "trad_ok": true,
-      "titulo": "Mauna Loa Road Closed Past Kīpukapuaulu for Tree Removal",
-      "titulo_pt": "Estrada Mauna Loa fechada após Kīpukapuaulu para remoção de árvores",
-      "desc": "Mauna Loa Road will be closed to the public from the gate past Kīpukapuaulu to Mauna Loa Lookout for tree removal through October 28, 2026. The tree work will prepare the area for the Mauna Loa Road Rehabilitation Project. Vehicles, bicyclists and pedestrians will not be allowed during the closure.",
-      "desc_pt": "A estrada Mauna Loa será fechada ao público desde o portão que passa por Kīpukapuaulu até o mirante Mauna Loa para remoção de árvores até 28 de outubro de 2026. O trabalho de árvore preparará a área para o Projeto de Reabilitação da Estrada Mauna Loa. Veículos, ciclistas e pedestres não serão permitidos durante o fechamento.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-10-21",
-      "local_pt": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "local_en": "Kīpukapuaulu (Bird Park), Mauna Loa Road",
-      "lat": 19.4386,
-      "lng": -155.3034
-    },
-    {
-      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
-      "trad_ok": true,
-      "titulo": "Kīlauea eruption",
-      "titulo_pt": "Erupção Kilauea",
-      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
-      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
-      "cat": "info",
-      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
-      "data": "2026-10-16",
-      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
-      "local_en": "Halemaʻumaʻu (erupting crater)",
-      "lat": 19.4067,
-      "lng": -155.28
-    },
-    {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
       "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
@@ -54,11 +9,26 @@
       "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, estará fechada para veículos motorizados em 14 de setembro de 2026, das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados. A obra está prevista para ser concluída até 19 de novembro de 2026.",
       "cat": "info",
       "url": "",
-      "data": "2026-10-08",
+      "data": "2026-10-29",
       "local_pt": "",
       "local_en": "",
       "lat": null,
       "lng": null
+    },
+    {
+      "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
+      "trad_ok": true,
+      "titulo": "Kīlauea eruption",
+      "titulo_pt": "Erupção Kilauea",
+      "desc": "Volcanic eruptions can be hazardous. Stay out of closed areas and monitor air quality. Eruptions can last a few hours and are often separated by pauses lasting several weeks.",
+      "desc_pt": "As erupções vulcânicas podem ser perigosas. Fique fora de áreas fechadas e monitore a qualidade do ar. As erupções podem durar algumas horas e geralmente são separadas por pausas que duram várias semanas.",
+      "cat": "danger",
+      "url": "https://www.nps.gov/havo/planyourvisit/lava2.htm",
+      "data": "2026-10-29",
+      "local_pt": "Halemaʻumaʻu (cratera em erupção)",
+      "local_en": "Halemaʻumaʻu (erupting crater)",
+      "lat": 19.4067,
+      "lng": -155.28
     },
     {
       "id": "8A75DF70-5B3C-4878-8E33-C3EFBBA3204D",
@@ -121,5 +91,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-10-29T19:30:50+00:00"
+  "atualizado_em": "2026-10-29T23:00:42+00:00"
 }
