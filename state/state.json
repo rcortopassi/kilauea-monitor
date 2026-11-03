@@ -1,8 +1,8 @@
 {
-  "color_code": "YELLOW",
-  "alert_level": "ADVISORY",
-  "notice_identifier": "DOI-USGS-HVO-2026-11-02T18:33:15+00:00",
-  "sent_utc": "2026-11-02 19:18:49",
-  "sent_unixtime": 1793647129,
-  "fase": "pausa"
+  "color_code": "ORANGE",
+  "alert_level": "WATCH",
+  "notice_identifier": "DOI-USGS-HVO-2026-11-02T22:41:59+00:00",
+  "sent_utc": "2026-11-03 00:06:36",
+  "sent_unixtime": 1793664396,
+  "fase": "precursor"
 }
