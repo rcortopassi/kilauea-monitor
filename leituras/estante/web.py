@@ -274,15 +274,20 @@ class App:
                 pl["horario"] = analise["horario"].strftime("%H:%M") if analise["horario"] else None
                 mudou = True
         blocos = {int(k): v for k, v in (pl.get("blocos") or {}).items()}
-        if (mudou or not blocos or not set(blocos) <= ids_ativos
-                or sum(blocos.values()) != pl["minutos"]) and reg.get("feito") is None:
-            blocos = plano.dividir(ativos, pl["minutos"], est.minutos_por_livro(hoje))
+        partes = {int(k): v for k, v in (pl.get("partes") or {}).items()}
+        feitas = {b["id"]: b["feitas"] for b in ativos}
+        desatualizado = any(min(v) < feitas.get(k, 0) for k, v in partes.items() if v)
+        if (mudou or not blocos or not set(blocos) <= ids_ativos or desatualizado
+                or pl.get("base_min") != pl["minutos"] or pl.get("v") != 2) and reg.get("feito") is None:
+            blocos, partes = plano.planejar(ativos, pl["minutos"], est.minutos_por_livro(hoje), est.ritmo)
+            pl["base_min"], pl["v"] = pl["minutos"], 2
             mudou = True
         pl["blocos"] = {str(k): v for k, v in blocos.items()}
+        pl["partes"] = {str(k): v for k, v in partes.items()}
         reg["plano"] = pl
         if mudou:
             est.salvar()
-        return pl, blocos
+        return pl, blocos, partes
 
     def previsao_base(self, est, hoje):
         media, n, real = est.media_minutos(hoje)
@@ -329,7 +334,7 @@ class App:
         dias = [hoje + timedelta(days=i) for i in range(8)]
         analise, erro_ag, ag_config = self.analisar(est, dias, agora)
         a_hoje = analise[hoje]
-        pl, blocos = self.plano_de_hoje(est, hoje, a_hoje)
+        pl, blocos, partes_hoje = self.plano_de_hoje(est, hoje, a_hoje)
         reg = est.dia(hoje) or {}
         prev, media, n_hist, real = self.previsao_base(est, hoje)
 
@@ -358,14 +363,40 @@ class App:
             fim = prev.get(b["id"], {}).get("fim")
             feito_m = (reg.get("sessoes") or {}).get(str(b["id"]))
             val_min = feito_m if feito_m is not None else m
+            if b["partes"]:
+                idxs = partes_hoje.get(b["id"], [])
+                tam = plano.tamanhos(b)
+                hoje_txt = "".join(
+                    f'<li><b>{esc(b["partes"][i]["t"])}</b> <span>≈ {plano.minutos_parte(b, i, est.ritmo(b["tipo"]))} min'
+                    f' · {round(tam[i])} p.</span></li>' for i in idxs if i < len(b["partes"]))
+                prox_txt = (f'<ul class="partes">{hoje_txt}</ul>' if hoje_txt else "")
+                n = len(b["partes"])
+                progresso = f'{b["feitas"]} de {n} partes lidas'
+                padrao = (max(idxs) + 1) if idxs else b["feitas"]
+                if reg.get("feito") is True:
+                    padrao = b["feitas"]
+                opcoes = [f'<option value="{b["feitas"]}"{" selected" if padrao == b["feitas"] else ""}>'
+                          f'não avancei{" (parei antes de " + esc(b["partes"][b["feitas"]]["t"]) + ")" if b["feitas"] < n else ""}</option>']
+                for i in range(b["feitas"], n):
+                    opcoes.append(f'<option value="{i + 1}"{" selected" if padrao == i + 1 else ""}>até o fim de {esc(b["partes"][i]["t"])}</option>')
+                campo_avanco = f'<label>terminei<select name="u_{b["id"]}">{"".join(opcoes)}</select></label>'
+            else:
+                prox_txt = ""
+                progresso = f'p. {b["pagina"]} de {b["paginas"]}'
+                campo_avanco = (f'<label>parei na página<input type="number" name="p_{b["id"]}" placeholder="{b["pagina"]}" '
+                                f'min="0" max="{b["paginas"] * 2}"></label>')
+            sem_sumario = ("" if b["partes"] else
+                           f'<div class="dica">Sem sumário: lendo em blocos de 15 min. '
+                           f'<a href="{req.url("/livros", f="lendo")}#l{b["id"]}">Colar o sumário</a> para ler por capítulos.</div>')
             linhas.append(f"""<div class="livro{' fora' if not m else ''}">
 <div class="lv-top"><div><div class="lv-tit">{esc(b['titulo'])}</div>
 <div class="lv-aut">{esc(b['autor'])}{' · ' if b['autor'] else ''}{TIPO_NOME[b['tipo']]}{' · CESG' if b['cesg'] else ''}</div></div>
 <div class="lv-min">{f'{m}<small> min</small>' if m else '<small>hoje não</small>'}</div></div>
 <div class="barra"><span style="width:{pct}%"></span></div>
-<div class="lv-info">p. {b['pagina']} de {b['paginas']} · {pct}% · termina ≈ {fdata(fim)} ({fprazo(hoje, fim)})</div>
+<div class="lv-info">{progresso} · {pct}% · termina ≈ {fdata(fim)} ({fprazo(hoje, fim)})</div>
+{prox_txt}{sem_sumario}
 <div class="lv-form"><label>min lidos<input type="number" name="m_{b['id']}" value="{val_min}" min="0" max="600" step="5"></label>
-<label>parei na página<input type="number" name="p_{b['id']}" placeholder="{b['pagina']}" min="0" max="{b['paginas'] * 2}"></label></div>
+{campo_avanco}</div>
 </div>""")
         if not linhas:
             linhas.append(f'<p>Nenhum livro em andamento. <a href="{req.url("/livros", f="fila")}">Escolha o próximo</a>.</p>')
@@ -413,7 +444,7 @@ class App:
 <section class="card"><h2>Leitura de hoje</h2>{estado_dia}
 <form method="post" action="{req.url('/registrar')}">{''.join(linhas)}
 <div class="acoes">{botoes}</div></form>
-<p class="dica">Preencha a página onde parou para o site aprender seu ritmo e acertar as previsões. Ao chegar na última página, o livro é marcado como lido e o próximo da fila começa sozinho.</p>
+<p class="dica">O plano nunca para no meio de um canto ou capítulo: a primeira leitura do dia entra inteira, mesmo que passe um pouco do tempo. Informe até onde leu e os minutos, para o site aprender seu ritmo. Ao terminar a última parte, o livro é marcado como lido e o próximo da fila começa sozinho.</p>
 </section>
 <section class="card"><h2>Cadência</h2>{self.mapa(req, est, hoje)}</section>
 <section class="card"><h2>Próximos dias</h2><ul class="prox">{proximos}</ul>{bloco_agenda}</section>
@@ -467,7 +498,10 @@ class App:
             if a["horario"] is not None:
                 a2 = agenda.analisar_dia(hoje, a["compromissos"], cfg, agora)
                 pl["horario"] = a2["horario"].strftime("%H:%M") if a2["horario"] else pl.get("horario")
-            pl["blocos"] = {str(k): v for k, v in plano.dividir(est.lendo(), pl["minutos"], est.minutos_por_livro(hoje)).items()}
+            bl, pt = plano.planejar(est.lendo(), pl["minutos"], est.minutos_por_livro(hoje), est.ritmo)
+            pl["blocos"] = {str(k): v for k, v in bl.items()}
+            pl["partes"] = {str(k): v for k, v in pt.items()}
+            pl["base_min"], pl["v"] = pl["minutos"], 2
         est.salvar()
         return redirecionar(req.url("/"))
 
@@ -489,8 +523,19 @@ class App:
                 except ValueError:
                     m = 0
                 m = max(0, min(600, m))
+                un = req.form.get(f"u_{b['id']}", "").strip()
+                if b["partes"] and un.isdigit():
+                    nf = max(0, min(int(un), len(b["partes"])))
+                    if nf > b["feitas"]:
+                        est.calibrar(b["tipo"], plano.pagina_apos(b, nf) - plano.pagina_apos(b, b["feitas"]), m)
+                    est._u(b["id"])["feitas"] = nf
+                    if nf >= len(b["partes"]):
+                        novos = est.concluir(b["id"], hoje)
+                        msgs.append(f"🎉 “{b['titulo']}” concluído!")
+                        for nb in novos or []:
+                            msgs.append(f"Começando “{nb['titulo']}”.")
                 pg = req.form.get(f"p_{b['id']}", "").strip()
-                if pg.isdigit():
+                if pg.isdigit() and not b["partes"]:
                     nova = int(pg)
                     if nova > b["pagina"]:
                         est.calibrar(b["tipo"], nova - b["pagina"], m)
@@ -588,14 +633,32 @@ class App:
             acoes.append('<button name="acao" value="fila" class="link">voltar para a fila</button>')
         peso = "".join(f'<option value="{v}"{" selected" if b["peso"] == v else ""}>{n}</option>'
                        for v, n in ((1, "normal"), (2, "alta"), (3, "máxima")))
-        return f"""<details class="item {b['status']}"><summary>
+        n = len(b["partes"])
+        if n:
+            opc = "".join(f'<option value="{i}"{" selected" if b["feitas"] == i else ""}>'
+                          f'{"nenhuma ainda" if i == 0 else "até o fim de " + esc(b["partes"][i - 1]["t"])}</option>'
+                          for i in range(n + 1))
+            campo_pos = f'<label class="largo">já li<select name="feitas">{opc}</select></label>'
+        else:
+            campo_pos = f'<label>página atual<input type="number" name="pagina" value="{b["pagina"]}" min="0" max="5000"></label>'
+        if b["sumario_proprio"]:
+            texto_sum = "\n".join(f'{p["t"]} ... {p["pg"]}' if isinstance(p.get("pg"), int) else p["t"] for p in b["partes"])
+        else:
+            texto_sum = ""
+        origem = ("sumário colado por você" if b["sumario_proprio"] else
+                  f"divisão padrão ({n} partes)" if n else "sem sumário: o plano usa blocos de 15 min")
+        bloco_sum = f"""<label class="inteiro">Sumário <small>({origem})</small>
+<textarea name="sumario" rows="{6 if texto_sum else 3}" placeholder="Cole o sumário: uma parte por linha, com a página inicial no fim. Ex.:&#10;Capítulo 1 — O começo ..... 13&#10;Capítulo 2 — O meio ...... 41&#10;(apague tudo para voltar à divisão padrão)">{esc(texto_sum)}</textarea></label>
+<input type="hidden" name="sumario_antes" value="{esc(texto_sum)}">"""
+        return f"""<details class="item {b['status']}" id="l{b['id']}"><summary>
 <span class="num">{num}</span><span class="tt"><b>{esc(b['titulo'])}</b><small>{esc(b['autor'])}</small></span>
 <span class="tag t{b['tipo']}">{b['tipo']}</span><span class="st">{st}<small>{quando}</small></span></summary>
 <form method="post" action="{req.url('/livro')}" class="edit">
 <input type="hidden" name="id" value="{b['id']}"><input type="hidden" name="volta" value="{esc(voltar)}">
 <label>páginas<input type="number" name="paginas" value="{b['paginas']}" min="1" max="5000"></label>
-<label>página atual<input type="number" name="pagina" value="{b['pagina']}" min="0" max="5000"></label>
+{campo_pos}
 <label>prioridade<select name="peso">{peso}</select></label>
+{bloco_sum}
 <button name="acao" value="salvar" class="prim">Salvar</button>{''.join(acoes)}
 </form></details>"""
 
@@ -621,7 +684,17 @@ class App:
                     u["paginas"] = n
                 else:
                     u.pop("paginas", None)
-            if req.form.get("pagina", "").isdigit():
+            if req.form.get("sumario", "").strip() != req.form.get("sumario_antes", "").strip():
+                novas = plano.ler_sumario(req.form.get("sumario", ""))
+                if novas:
+                    u["partes"] = novas
+                else:
+                    u.pop("partes", None)
+                u["feitas"] = 0
+                b = est.info(bid)
+            elif req.form.get("feitas", "").isdigit() and b["partes"]:
+                u["feitas"] = max(0, min(int(req.form["feitas"]), len(b["partes"])))
+            if req.form.get("pagina", "").isdigit() and not est.info(bid)["partes"]:
                 u["pagina"] = int(req.form["pagina"])
             if req.form.get("peso", "") in ("1", "2", "3"):
                 u["peso"] = int(req.form["peso"])
@@ -791,6 +864,7 @@ Se não houver um intervalo livre grande o bastante, o tempo diminui.</p>
         analise, _, _ = self.analisar(est, dias, None)
         historico = est.minutos_por_livro(hoje)
         ativos = est.lendo()
+        feitas = {b["id"]: b["feitas"] for b in ativos}
         nomes = {b["id"]: b["titulo"] for b in est.todos()}
         stamp = agora.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         out = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//biblioteca//leituras//PT",
@@ -806,26 +880,38 @@ Se não houver um intervalo livre grande o bastante, o tempo diminui.</p>
                 pl = reg["plano"]
                 minutos = pl.get("minutos", analise[d]["minutos"])
                 blocos = {int(k): v for k, v in (pl.get("blocos") or {}).items()}
+                partes = {int(k): v for k, v in (pl.get("partes") or {}).items()}
                 hora = pl.get("horario")
                 inicio = (datetime.combine(d, datetime.strptime(hora, "%H:%M").time()).replace(tzinfo=TZ)
                           if hora else analise[d]["horario"])
+                minutos = sum(blocos.values()) or minutos
             else:
                 minutos = analise[d]["minutos"]
-                blocos = plano.dividir(ativos, minutos, historico)
+                ativos_d = [dict(b, feitas=feitas[b["id"]]) for b in ativos]
+                blocos, partes = plano.planejar(ativos_d, minutos, historico, est.ritmo)
+                minutos = sum(blocos.values()) or minutos
                 inicio = analise[d]["horario"]
             for k, v in blocos.items():
                 historico[k] = historico.get(k, 0) + v
+            for k, v in partes.items():
+                if v:
+                    feitas[k] = max(feitas.get(k, 0), max(v) + 1)
+            por_id = {b["id"]: b for b in ativos}
             if inicio is None:
                 h, m = (est.d["config"].get("horario_preferido", "21:00") + ":00").split(":")[:2]
                 inicio = datetime(d.year, d.month, d.day, int(h), int(m), tzinfo=TZ)
             fim = inicio + timedelta(minutes=minutos)
-            partes = [f"{v}' {nomes.get(k, '?')}" for k, v in sorted(blocos.items(), key=lambda kv: -kv[1])]
+            linhas_desc = []
+            for k, v in sorted(blocos.items(), key=lambda kv: -kv[1]):
+                nomes_p = [por_id[k]["partes"][i]["t"] for i in partes.get(k, [])
+                           if k in por_id and i < len(por_id[k]["partes"])]
+                linhas_desc.append(f"{v}' {nomes.get(k, '?')}" + (f" ({', '.join(nomes_p)})" if nomes_p else ""))
             status = " ✅" if reg.get("feito") else ""
             out += ["BEGIN:VEVENT", f"UID:{d.isoformat()}@biblioteca-leituras", f"DTSTAMP:{stamp}",
                     f"DTSTART;TZID=America/Sao_Paulo:{inicio.strftime('%Y%m%dT%H%M%S')}",
                     f"DTEND;TZID=America/Sao_Paulo:{fim.strftime('%Y%m%dT%H%M%S')}",
                     f"SUMMARY:{txt(f'📖 Leitura {minutos} min{status}')}",
-                    f"DESCRIPTION:{txt(chr(10).join(partes) + chr(10) + chr(10) + req.absoluto('/'))}",
+                    f"DESCRIPTION:{txt(chr(10).join(linhas_desc) + chr(10) + chr(10) + req.absoluto('/'))}",
                     "TRANSP:TRANSPARENT", "END:VEVENT"]
         out.append("END:VCALENDAR")
         return "\r\n".join(out) + "\r\n"
@@ -903,7 +989,7 @@ button{font:inherit;cursor:pointer}
 .item.lido .tt b{color:var(--sub)}.item.lendo{background:color-mix(in srgb,var(--ac2) 9%,transparent)}
 .tag{font-size:11px;border-radius:5px;padding:1px 5px;flex:none;border:1px solid var(--li);color:var(--sub)}
 .edit{padding:4px 12px 14px 56px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
-.edit label{width:110px;margin:0}.filtro select{max-width:280px}
+.edit label{width:110px;margin:0}.edit label.largo{width:auto;min-width:200px}.edit label.inteiro{width:100%}.edit label.check{width:100%;display:flex;gap:8px;align-items:center}.edit label.check input{width:auto;display:inline;margin:0}textarea{display:block;width:100%;margin-top:3px;padding:9px 10px;border:1px solid var(--li);border-radius:9px;background:var(--bg);color:var(--tx);font:14px/1.4 ui-monospace,monospace}.partes{list-style:none;padding:0;margin:8px 0 0}.partes li{padding:3px 0}.partes li span{color:var(--sub);font-size:13px}.filtro select{max-width:280px}
 table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:8px 4px;border-bottom:1px solid var(--li);vertical-align:top}
 th{color:var(--sub);font-weight:500;text-align:left}.n{text-align:right;white-space:nowrap}td small{display:block;color:var(--sub)}
 @media (max-width:520px){.edit{padding-left:12px}.item .st{max-width:38%}.grande{font-size:38px}}

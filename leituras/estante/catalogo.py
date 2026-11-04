@@ -18,6 +18,18 @@ FASES = {
     9: "Leituras paralelas (diárias)",
 }
 
+# Divisao em partes (cantos, capitulos) que o plano diario respeita: o site
+# nunca manda parar no meio de uma parte. Cada parte: (titulo, peso), onde o
+# peso e o tamanho relativo. O usuario pode trocar por um sumario com paginas.
+ROMANOS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII",
+           "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV"]
+# Odisseia: numero de versos de cada canto no grego (o tamanho na traducao e proporcional)
+_VERSOS_ODISSEIA = [444, 434, 497, 847, 493, 331, 347, 586, 566, 574, 640, 453,
+                    440, 533, 557, 481, 606, 428, 604, 394, 434, 501, 372, 548]
+PARTES = {
+    0: [(f"Canto {r}", v) for r, v in zip(ROMANOS, _VERSOS_ODISSEIA)],
+}
+
 # livros que ja estao sendo lidos quando o site e criado (ordem -> peso)
 LENDO_INICIAL = {0: 2, 56: 1, 166: 1}
 

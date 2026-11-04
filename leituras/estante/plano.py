@@ -84,6 +84,15 @@ class Estado:
         b["peso"] = int(u.get("peso", 1) or 1)
         b["inicio"] = u.get("inicio")
         b["fim"] = u.get("fim")
+        if u.get("partes"):
+            b["partes"] = [dict(p) for p in u["partes"]]
+            b["sumario_proprio"] = True
+        else:
+            b["partes"] = [{"t": t, "w": w} for t, w in catalogo.PARTES.get(bid, [])]
+            b["sumario_proprio"] = False
+        b["feitas"] = max(0, min(int(u.get("feitas", 0) or 0), len(b["partes"])))
+        if b["partes"]:
+            b["pagina"] = round(pagina_apos(b, b["feitas"]))
         return b
 
     def todos(self):
@@ -193,30 +202,124 @@ class Estado:
 
 
 # ----------------------------------------------------------------------------
-# Plano do dia: divide os minutos em blocos de 15 entre os livros em andamento
+# Partes (cantos, capitulos)
 
-def dividir(ativos, minutos, historico):
-    """Distribui blocos de 15 min pelos livros, compensando quem ficou para tras.
+def tamanhos(b):
+    """Paginas de cada parte do livro (lista vazia se o livro nao tem sumario)."""
+    partes = b.get("partes") or []
+    if not partes:
+        return []
+    pgs = [p.get("pg") for p in partes]
+    if all(isinstance(x, int) for x in pgs):
+        out = [max(1, pgs[i + 1] - pgs[i]) for i in range(len(pgs) - 1)]
+        out.append(max(1, b["paginas"] - pgs[-1] + 1))
+        return out
+    W = sum(float(p.get("w", 1) or 1) for p in partes)
+    return [b["paginas"] * float(p.get("w", 1) or 1) / W for p in partes]
 
-    Cada livro tem um peso (prioridade). Bloco a bloco, vai para o livro com o
-    maior "deficit" = parte justa (pelo peso) - minutos ja recebidos.
+
+def pagina_apos(b, n):
+    """Pagina em que o leitor esta depois de terminar as n primeiras partes."""
+    partes = b.get("partes") or []
+    if not partes:
+        return b.get("pagina", 0)
+    if n >= len(partes):
+        return b["paginas"]
+    pg0 = partes[0].get("pg")
+    if isinstance(pg0, int) and all(isinstance(p.get("pg"), int) for p in partes):
+        return partes[n]["pg"] - 1
+    return sum(tamanhos(b)[:n])
+
+
+def minutos_parte(b, idx, ritmo):
+    """Minutos estimados para ler a parte idx (arredondado de 5 em 5, minimo 5)."""
+    t = tamanhos(b)[idx] / max(0.05, ritmo)
+    return max(5, int(5 * round(t / 5)))
+
+
+def ler_sumario(texto):
+    """Converte um sumario colado (uma parte por linha) em lista de partes.
+
+    'Canto I ........ 13' -> {"t": "Canto I", "pg": 13}. Se nenhuma linha tiver
+    numero de pagina no fim, as partes ficam com tamanho igual.
+    """
+    import re
+    partes = []
+    for ln in texto.splitlines():
+        ln = ln.strip()
+        if not ln:
+            continue
+        m = re.match(r"^(.*?)(?:\s*(?:\.{2,}|…+|·|\||\t|_{2,})\s*|\s{2,}|\s+[-–—]\s+|,?\s+p\.\s*)(\d{1,4})\s*$", ln)
+        if m and m.group(1).strip():
+            partes.append({"t": m.group(1).strip(" .·…-—|\t")[:120], "pg": int(m.group(2))})
+        else:
+            partes.append({"t": ln[:120], "pg": None})
+    if partes and all(isinstance(p["pg"], int) for p in partes):
+        partes.sort(key=lambda p: p["pg"])
+    elif partes:
+        partes = [{"t": p["t"], "w": 1} for p in partes]
+    return partes
+
+
+# ----------------------------------------------------------------------------
+# Plano do dia
+
+def planejar(ativos, minutos, historico, ritmo):
+    """Escolhe o que ler hoje respeitando partes inteiras.
+
+    Livros com sumario recebem partes inteiras (cantos, capitulos): nunca se
+    para no meio. Livros sem sumario recebem blocos de 15 min. A cada passo, a
+    proxima leitura vai para o livro mais "atrasado" (parte justa pelo peso
+    menos minutos ja recebidos nos ultimos dias), desde que caiba no tempo do
+    dia (com folga de 15%). A primeira leitura do dia entra mesmo que passe do
+    tempo, para nunca sobrar um dia sem nada.
+
+    Retorna (blocos {id: minutos}, partes {id: [indices]}).
     """
     if not ativos:
-        return {}
-    blocos = max(1, minutos // 15)
+        return {}, {}
     W = sum(b["peso"] for b in ativos)
-    rec = {b["id"]: historico.get(b["id"], 0) for b in ativos}
-    plano = {b["id"]: 0 for b in ativos}
-    for _ in range(blocos):
-        total = sum(rec.values()) + 15
-        melhor = max(ativos, key=lambda b: (b["peso"] / W * total - rec[b["id"]], b["peso"], -b["id"]))
-        rec[melhor["id"]] += 15
-        plano[melhor["id"]] += 15
-    resto = minutos - blocos * 15
-    if resto > 0:
-        primeiro = max(plano, key=lambda k: plano[k])
-        plano[primeiro] += resto
-    return {k: v for k, v in plano.items() if v > 0}
+    rec = {b["id"]: float(historico.get(b["id"], 0)) for b in ativos}
+    prox = {b["id"]: b.get("feitas", 0) for b in ativos}
+    blocos, partes = {}, {}
+    total = 0
+    limite = minutos * 1.15 + 2
+
+    def proxima(b):
+        if b.get("partes"):
+            i = prox[b["id"]]
+            if i >= len(b["partes"]):
+                return None
+            return minutos_parte(b, i, ritmo(b["tipo"]))
+        return 15
+
+    for _ in range(60):
+        soma = sum(rec.values())
+        ordem = sorted(ativos, key=lambda b: (-(b["peso"] / W * (soma + 15) - rec[b["id"]]), -b["peso"], b["id"]))
+        escolha = None
+        for b in ordem:
+            dur = proxima(b)
+            if dur is not None and (total == 0 or total + dur <= limite):
+                escolha = (b, dur)
+                break
+        if not escolha:
+            break
+        b, dur = escolha
+        bid = b["id"]
+        blocos[bid] = blocos.get(bid, 0) + dur
+        rec[bid] += dur
+        total += dur
+        if b.get("partes"):
+            partes.setdefault(bid, []).append(prox[bid])
+            prox[bid] += 1
+        if total >= minutos:
+            break
+    return blocos, partes
+
+
+def dividir(ativos, minutos, historico, ritmo=None):
+    """Compatibilidade: so os minutos por livro."""
+    return planejar(ativos, minutos, historico, ritmo or (lambda t: 0.75 if t == "L" else 0.5))[0]
 
 
 # ----------------------------------------------------------------------------
