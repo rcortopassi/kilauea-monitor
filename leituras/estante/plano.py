@@ -38,6 +38,8 @@ class Estado:
         self.cat = catalogo.carregar()
         self.por_id = {b["id"]: b for b in self.cat}
         self.d = self._ler()
+        if self.d.pop("_migrou", False):
+            self.salvar()
 
     def _ler(self):
         try:
@@ -45,12 +47,44 @@ class Estado:
                 d = json.load(f)
         except FileNotFoundError:
             d = self._novo()
+            d["migracoes"] = ["lendo_52_nao_56"]
         cfg = dict(CONFIG_PADRAO)
         cfg.update(d.get("config", {}))
         d["config"] = cfg
         d.setdefault("livros", {})
         d.setdefault("dias", {})
+        self._migrar(d)
         return d
+
+    @staticmethod
+    def _migrar(d):
+        """Correcoes pontuais nos dados ja gravados (cada uma roda uma vez so)."""
+        feitas = d.setdefault("migracoes", [])
+        if "lendo_52_nao_56" not in feitas:
+            # o livro em andamento era "No Principio Deus Criou" (52), nao
+            # "Deus Uno e Trino" (56): troca o status e move os minutos lidos
+            lv = d["livros"]
+            u56 = lv.get("56", {})
+            if u56.get("status") == "lendo" and lv.get("52", {}).get("status") != "lido":
+                u52 = lv.setdefault("52", {})
+                u52["status"] = "lendo"
+                u52["inicio"] = u56.get("inicio") or u52.get("inicio")
+                u52["peso"] = u56.get("peso", 1)
+                if u56.get("partes") and not u52.get("partes"):
+                    u52["partes"], u52["feitas"] = u56.pop("partes"), u56.pop("feitas", 0)
+                lv["56"] = {"status": "fila"}
+                for reg in d["dias"].values():
+                    for chave in ("sessoes",):
+                        ses = reg.get(chave) or {}
+                        if "56" in ses:
+                            ses["52"] = ses.get("52", 0) + ses.pop("56")
+                    pl = reg.get("plano") or {}
+                    for chave in ("blocos", "partes"):
+                        if "56" in (pl.get(chave) or {}):
+                            pl.pop(chave, None)
+                            pl.pop("base_min", None)
+            feitas.append("lendo_52_nao_56")
+            d["_migrou"] = True
 
     def _novo(self):
         hoje = hoje_local().isoformat()

@@ -89,7 +89,7 @@ PARTES_PG = {
 }
 
 # livros que ja estao sendo lidos quando o site e criado (ordem -> peso)
-LENDO_INICIAL = {0: 2, 56: 1, 166: 1}
+LENDO_INICIAL = {0: 2, 52: 1, 166: 1}
 
 _DADOS = """
 0|L|3|0|576|Odisseia|Homero
