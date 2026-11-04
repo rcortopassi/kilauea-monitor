@@ -88,7 +88,10 @@ class Estado:
             b["partes"] = [dict(p) for p in u["partes"]]
             b["sumario_proprio"] = True
         else:
-            b["partes"] = [{"t": t, "w": w} for t, w in catalogo.PARTES.get(bid, [])]
+            if bid in catalogo.PARTES_PG:
+                b["partes"] = [{"t": t, "pg": pg} for t, pg in catalogo.PARTES_PG[bid]]
+            else:
+                b["partes"] = [{"t": t, "w": w} for t, w in catalogo.PARTES.get(bid, [])]
             b["sumario_proprio"] = False
         b["feitas"] = max(0, min(int(u.get("feitas", 0) or 0), len(b["partes"])))
         if b["partes"]:

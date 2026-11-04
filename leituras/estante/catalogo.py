@@ -30,6 +30,64 @@ PARTES = {
     0: [(f"Canto {r}", v) for r, v in zip(ROMANOS, _VERSOS_ODISSEIA)],
 }
 
+# Sumarios com a pagina inicial de cada parte, transcritos das edicoes do
+# usuario (o numero de paginas do livro, acima, e a ultima pagina de leitura,
+# sem bibliografia e indices).
+PARTES_PG = {
+    # No Principio Deus Criou (DIEL) - indice nas pp. 153-157
+    52: [
+        ("Introdução e Cap. I — No princípio Deus criou os céus e a terra", 7),
+        ("Cap. II — A leitura cristã da Criação", 21),
+        ("Cap. III — O amor de Deus, razão primeira e última da Criação", 31),
+        ("Cap. IV — A Criação e o conhecimento científico do mundo", 47),
+        ("Cap. V — A Providência de Deus", 65),
+        ("Cap. VI — O problema do mal na Criação", 83),
+        ("Cap. VII — Os anjos, seres espirituais e criaturas criadas por Deus", 97),
+        ("Cap. VIII — O homem, uno em corpo e alma, criado à imagem do Criador", 113),
+        ("Cap. IX — Natural e sobrenatural", 129),
+        ("Cap. X — O pecado original", 137),
+    ],
+    # O Jardim das Aflicoes (Vide, 3a ed.): por secoes (§), porque os capitulos
+    # sao muito longos (o cap. 9 tem 104 paginas)
+    166: [
+        ("Notas do editor e do autor; Prefácio", 11),
+        ("§1 Introdução — O que Epicuro veio fazer aqui, ou: Biografia deste livro", 25),
+        ("§2 As conferências no MASP", 40),
+        ("§3 Pessanha e o pensamento ocidental", 48),
+        ("§4 Uma profissão-de-fé epicurista. A matéria segundo Epicuro", 55),
+        ("§5 Um piedoso subterfúgio", 61),
+        ("§6–7 A imaginação dos deuses; Epicuro crítico de Demócrito", 65),
+        ("§8 O remédio de todos os males", 73),
+        ("§9 A abolição da consciência", 76),
+        ("§10 A fumaça e o fogo", 91),
+        ("§11 O convite ao sono", 94),
+        ("§12 A servidão voluntária", 100),
+        ("§13 Dos cães de Pavlov ao lava-rápido cerebral", 105),
+        ("§14 Porcarias epicúreas", 119),
+        ("§15 A fuga para o jardim", 129),
+        ("§16 Epicuro e Marx", 137),
+        ("§17 Comentários à 11ª “Tese sobre Feuerbach”", 141),
+        ("§18 A tradição materialista", 153),
+        ("§19 A divinização do espaço (I): Pobres bantos", 169),
+        ("§20 A divinização do espaço (II): O infinito de Nicolau de Cusa", 176),
+        ("§21 A divinização do tempo (I): A força dos meios", 201),
+        ("§22 A divinização do tempo (II): Beaux draps", 223),
+        ("§23 Revisão do itinerário percorrido", 235),
+        ("§24 O véu do templo", 239),
+        ("§25 Leviatã e Beemot", 250),
+        ("§26 De Hegel a Comte", 261),
+        ("§27 Translatio imperii. Breve história da idéia imperial", 266),
+        ("§28 O Império contra-ataca", 297),
+        ("§29 Aristocracia e sacerdócio no Império americano (I)", 303),
+        ("§30 Aristocracia e sacerdócio no Império americano (II)", 324),
+        ("§31 De Wilhelm Meister a Raskolnikov", 333),
+        ("§32 As novas Tábuas da Lei, ou: O Estado bedel", 345),
+        ("§33 Retorno ao MASP e ingresso no Jardim das Aflições", 365),
+        ("Post-scriptum — Lápide: de te fabula narratur", 405),
+        ("Posfácio: O que mudou no mundo duas décadas depois?", 411),
+    ],
+}
+
 # livros que ja estao sendo lidos quando o site e criado (ordem -> peso)
 LENDO_INICIAL = {0: 2, 56: 1, 166: 1}
 
@@ -86,7 +144,7 @@ _DADOS = """
 49|L|1|0|230|Tempo de Arraes|Antonio Callado
 50|P|1|1|350|Fundamentos de Antropologia|R. Stork
 51|L|1|0|200|A Velha Classe|Márcio Moreira Alves
-52|P|1|1|200|No Princípio Deus Criou|P. Meneses
+52|P|1|1|150|No Princípio Deus Criou|P. Meneses
 53|L|1|0|650|Os Cem Melhores Contos Brasileiros do Século|—
 54|P|1|1|300|El Misterio de la Creación|J. Morales
 55|L|1|0|200|Uma Cultura Ameaçada|Gilberto Freyre
@@ -200,7 +258,7 @@ _DADOS = """
 163|L|6|0|500|Emma|Jane Austen
 164|P|6|0|300|Como Ser um Conservador|Roger Scruton
 165|L|6|0|300|Frankenstein|Mary Shelley
-166|P|6|0|450|O Jardim das Aflições|Olavo de Carvalho
+166|P|6|0|426|O Jardim das Aflições|Olavo de Carvalho
 167|L|6|0|400|Selected Tales|Edgar Allan Poe
 168|P|6|0|450|O Imbecil Coletivo|Olavo de Carvalho
 169|L|6|0|300|O Pai Goriot|Balzac
