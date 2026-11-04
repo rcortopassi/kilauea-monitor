@@ -3,13 +3,13 @@
     {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
-      "titulo": "Hilina Pali Road Shoulder Work Scheduled 9/14/26 to 11/19/26",
-      "titulo_pt": "Trabalho no acostamento da estrada Hilina Pali agendado para 14/09/26 a 19/11/26",
-      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead will be closed to motorized vehicles on September 14, 2026 from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The entire road will be open to all use outside of those hours including weekends and holidays. The work is expected to be complete by November 19, 2026.",
-      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, estará fechada para veículos motorizados em 14 de setembro de 2026, das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados. A obra está prevista para ser concluída até 19 de novembro de 2026.",
-      "cat": "info",
+      "titulo": "Hilina Pali Road Shoulder Work Extended to 11/27/26",
+      "titulo_pt": "Obra de acostamento da estrada Hilina Pali estendida até 27/11/26",
+      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead is closed to motorized vehicles from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The work should be complete by 11/27/26. The entire road will be open to all use outside of those hours including weekends and holidays.",
+      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, está fechada para veículos motorizados das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. A obra deverá ser concluída até 27/11/26. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados.",
+      "cat": "closure",
       "url": "",
-      "data": "2026-10-29",
+      "data": "2026-11-04",
       "local_pt": "",
       "local_en": "",
       "lat": null,
@@ -91,5 +91,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-11-04T18:00:44+00:00"
+  "atualizado_em": "2026-11-04T22:40:55+00:00"
 }
