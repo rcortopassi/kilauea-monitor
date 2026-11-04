@@ -1,0 +1,31 @@
+name: Biblioteca (site de leituras) - deploy
+
+# Publica /biblioteca/ no PythonAnywhere sempre que o codigo do site muda.
+on:
+  push:
+    branches: [main, ccr-49e18b0f-h1tg11]
+    paths:
+      - "leituras/**"
+      - ".github/workflows/biblioteca-deploy.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblioteca-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checar sintaxe
+        run: python3 -m py_compile leituras/deploy.py leituras/estante/*.py
+      - name: Publicar no PythonAnywhere
+        env:
+          PA_TOKEN: ${{ secrets.PA_TOKEN }}
+          PA_USER: rafaelcortopassi
+        run: python3 leituras/deploy.py
