@@ -3,6 +3,7 @@
 App WSGI puro (somente stdlib), montado dentro do web app ja existente no
 PythonAnywhere por `montar(application, "/biblioteca")`.
 """
+import base64
 import hashlib
 import hmac
 import html
@@ -178,6 +179,11 @@ class App:
         est = plano.Estado(self.pasta)
         p = req.path.rstrip("/") or "/"
 
+        if p == "/favicon.svg":
+            return Resp(FAVICON_SVG, tipo="image/svg+xml", headers=[("Cache-Control", "public, max-age=604800")])
+        if p == "/apple-touch-icon.png":
+            return Resp(base64.b64decode(ICONE_180_PNG), tipo="image/png",
+                        headers=[("Cache-Control", "public, max-age=604800")])
         if p == "/agenda.ics":
             if not hmac.compare_digest(req.query.get("k", ""), est.d["feed_token"]):
                 return Resp("chave inválida", "403 Forbidden", "text/plain; charset=utf-8")
@@ -291,7 +297,9 @@ class App:
         return f"""<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(titulo)} · Biblioteca</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<link rel="icon" type="image/svg+xml" href="{req.url('/favicon.svg')}">
+<link rel="apple-touch-icon" href="{req.url('/apple-touch-icon.png')}">
+<meta name="theme-color" content="#1f3a5f">
 <style>{CSS}</style></head><body>
 <header><a class="marca" href="{req.url('/')}">📚 Biblioteca</a>{'<nav>' + nav + '</nav>' if aba else ''}</header>
 <main>{aviso}{corpo}</main></body></html>"""
@@ -822,6 +830,10 @@ Se não houver um intervalo livre grande o bastante, o tempo diminui.</p>
         out.append("END:VCALENDAR")
         return "\r\n".join(out) + "\r\n"
 
+
+# icone: livro aberto creme com marcador dourado sobre azul-marinho
+FAVICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f3a5f"/><path d="M32 19C26 15 18 14 10 15v32c8-1 16 0 22 4z" fill="#f6ecd6"/><path d="M32 19c6-4 14-5 22-4v32c-8-1-16 0-22 4z" fill="#e6d3ad"/><path d="M41 15.6V30l3.5-3 3.5 3V15.2" fill="#e3a83b"/></svg>'
+ICONE_180_PNG = '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'
 
 CAB = '<tr><th></th><th class="n">lidos</th><th class="n">páginas</th><th class="n">término</th></tr>'
 
