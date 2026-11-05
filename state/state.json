@@ -1,8 +1,8 @@
 {
   "color_code": "ORANGE",
   "alert_level": "WATCH",
-  "notice_identifier": "DOI-USGS-HVO-2026-11-05T18:36:49+00:00",
-  "sent_utc": "2026-11-05 19:22:47",
-  "sent_unixtime": 1793906567,
-  "fase": "?"
+  "notice_identifier": "DOI-USGS-HVO-2026-11-05T21:45:43+00:00",
+  "sent_utc": "2026-11-05 22:29:12",
+  "sent_unixtime": 1793917752,
+  "fase": "fonte"
 }
