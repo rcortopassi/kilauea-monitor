@@ -10,14 +10,39 @@
   ],
   "lives_link": [],
   "fotos": {
-    "slug": "galeria-ep-56",
+    "slug": "/observatories/hvo/news/photo-video-chronology-episode-56-lava-fountaining-summit-kilauea",
+    "titulo": "Photo & Video Chronology — Episode 56 of lava fountaining at the summit of Kīlauea",
     "ep": 56,
-    "data": "2026-11-05",
-    "titulo": "Kilauea summit episode 56",
-    "url": "https://www.usgs.gov/volcanoes/kilauea/multimedia",
+    "data": "",
+    "url": "https://www.usgs.gov/observatories/hvo/news/photo-video-chronology-episode-56-lava-fountaining-summit-kilauea",
     "itens": [
       {
-        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/full_width/public/media/images/multimediaFile-4782.jpg?itok=jWmrG-b9",
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4779.jpg?itok=s_asF_ds",
+        "cap_en": "Color photograph of volcanic vent complex degassing",
+        "cap_pt": "Fotografia colorida da desgaseificação do complexo de ventilação vulcânica"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4778_0.jpg?itok=Og9Q0opy",
+        "cap_en": "Color photograph of two incandescent volcanic vents",
+        "cap_pt": "Fotografia colorida de duas aberturas vulcânicas incandescentes"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4780.jpg?itok=QDuyOkXs",
+        "cap_en": "Color photograph of scientist collecting sample",
+        "cap_pt": "Fotografia colorida de cientista coletando amostra"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4781.jpg?itok=q8i2vbGT",
+        "cap_en": "Color photograph of a hand holding a geologic sample",
+        "cap_pt": "Fotografia colorida de uma mão segurando uma amostra geológica"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4783.jpg?itok=rt5sFVWx",
+        "cap_en": "Color photograph of scientist monitoring volcanic eruption",
+        "cap_pt": "Fotografia colorida de cientista monitorando erupção vulcânica"
+      },
+      {
+        "src": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/styles/half_width/public/media/images/multimediaFile-4782.jpg?itok=pdUC3fTC",
         "cap_en": "Color photograph of eruption plume with people silhouetted",
         "cap_pt": "Fotografia colorida de pluma de erupção com silhueta de pessoas"
       }
