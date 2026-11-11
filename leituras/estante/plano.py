@@ -47,7 +47,7 @@ class Estado:
                 d = json.load(f)
         except FileNotFoundError:
             d = self._novo()
-            d["migracoes"] = ["lendo_52_nao_56"]
+            d["migracoes"] = ["lendo_52_nao_56", "progresso_2026_11_11"]
         cfg = dict(CONFIG_PADRAO)
         cfg.update(d.get("config", {}))
         d["config"] = cfg
@@ -84,6 +84,24 @@ class Estado:
                             pl.pop(chave, None)
                             pl.pop("base_min", None)
             feitas.append("lendo_52_nao_56")
+            d["_migrou"] = True
+        if "progresso_2026_11_11" not in feitas:
+            # posicao informada pelo usuario: Odisseia ate o fim do Canto II;
+            # Jardim das Aflicoes ate o fim do §14 (notas/prefacio + §1..§14)
+            lv = d["livros"]
+            for bid, n in (("0", 2), ("166", 14)):
+                u = lv.setdefault(bid, {})
+                if bid == "166" and u.get("partes"):
+                    continue  # sumario proprio: indices diferentes, nao mexe
+                if u.get("status") != "lido":
+                    u["status"] = "lendo"
+                    u["feitas"] = n
+            # refaz o plano de hoje (se ainda nao registrado) com a nova posicao
+            for reg in d["dias"].values():
+                if reg.get("feito") is None and reg.get("plano"):
+                    for k in ("blocos", "partes", "base_min"):
+                        reg["plano"].pop(k, None)
+            feitas.append("progresso_2026_11_11")
             d["_migrou"] = True
 
     def _novo(self):
