@@ -3,13 +3,13 @@
     {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
-      "titulo": "Hilina Pali Road Shoulder Work Extended to 11/27/26",
-      "titulo_pt": "Obra de acostamento da estrada Hilina Pali estendida até 27/11/26",
-      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead is closed to motorized vehicles from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The work should be complete by 11/27/26. The entire road will be open to all use outside of those hours including weekends and holidays.",
-      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, está fechada para veículos motorizados das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. A obra deverá ser concluída até 27/11/26. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados.",
+      "titulo": "Hilina Pali Road at Maunaiki is Closed to All Use Due to Equipment Failure",
+      "titulo_pt": "A estrada Hilina Pali em Maunaiki está fechada para todo uso devido a falha no equipamento",
+      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead is temporarily closed to all use due to large machinery breaking down. Large piles of rock material being used for the shoulder repair work is blocking the road. Park staff are working diligently to resolve the situation.",
+      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, está temporariamente fechada para todo uso devido à quebra de grandes máquinas. Grandes pilhas de material rochoso usado para reparos nos acostamentos estão bloqueando a estrada. A equipe do parque está trabalhando diligentemente para resolver a situação.",
       "cat": "closure",
       "url": "",
-      "data": "2026-11-04",
+      "data": "2026-11-12",
       "local_pt": "",
       "local_en": "",
       "lat": null,
@@ -91,5 +91,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-11-12T19:11:00+00:00"
+  "atualizado_em": "2026-11-12T19:16:10+00:00"
 }
