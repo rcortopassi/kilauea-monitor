@@ -3,10 +3,10 @@
     {
       "id": "E184228C-9A0B-4463-9848-44AF5D566030",
       "trad_ok": true,
-      "titulo": "Hilina Pali Road at Maunaiki is Closed to All Use Due to Equipment Failure",
-      "titulo_pt": "A estrada Hilina Pali em Maunaiki está fechada para todo uso devido a falha no equipamento",
-      "desc": "Hilina Pali Road beyond the Maunaiki Trailhead is temporarily closed to all use due to large machinery breaking down. Large piles of rock material being used for the shoulder repair work is blocking the road. Park staff are working diligently to resolve the situation.",
-      "desc_pt": "A estrada Hilina Pali, além do início da trilha Maunaiki, está temporariamente fechada para todo uso devido à quebra de grandes máquinas. Grandes pilhas de material rochoso usado para reparos nos acostamentos estão bloqueando a estrada. A equipe do parque está trabalhando diligentemente para resolver a situação.",
+      "titulo": "Hilina Pali Road Partial Closure Beyond Maunaiki Trailhead",
+      "titulo_pt": "Fechamento parcial da estrada Hilina Pali além do início da trilha Maunaiki",
+      "desc": "Hilina Pali Road from the Maunaiki Trailhead to the lookout is closed to all use motorized vehicles from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The work should be complete by 11/30/26. The entire road will be open to all use outside of those hours including weekends and holidays.",
+      "desc_pt": "A estrada Hilina Pali, do início da trilha Maunaiki até o mirante, está fechada para todos os veículos motorizados das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. A obra deverá ser concluída até 30/11/26. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados.",
       "cat": "closure",
       "url": "",
       "data": "2026-11-12",
@@ -91,5 +91,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-11-13T00:43:23+00:00"
+  "atualizado_em": "2026-11-13T04:08:25+00:00"
 }
