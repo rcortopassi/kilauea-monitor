@@ -154,5 +154,11 @@
     "de": "ORANGE",
     "para": "ORANGE",
     "notice": "DOI-USGS-HVO-2026-11-23T07:34:47+00:00"
+  },
+  {
+    "quando_unix": 1795450104,
+    "de": "ORANGE",
+    "para": "YELLOW",
+    "notice": "DOI-USGS-HVO-2026-11-23T12:00:58+00:00"
   }
 ]
