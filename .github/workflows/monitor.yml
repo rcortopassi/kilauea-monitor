@@ -8,10 +8,16 @@ on:
     # maior intervalo observado, senao sobra janela cega (foi o que atrasou em
     # 71 min a deteccao do episodio 55). Ver o step "Vigiar o vulcao".
     - cron: "*/5 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      voltas:
+        description: "Voltas do laco de 5 min (padrao 66, ~5,5 h). 1 serve para testar o encadeamento."
+        required: false
+        default: "66"
 
 permissions:
   contents: write
+  actions: write   # para o job encadear o proximo (ver ultimo step)
 
 # Uma execucao nova substitui a anterior: evita fila de jobs de 1 hora
 # empilhados e garante que o laco em andamento seja sempre o mais recente.
@@ -36,8 +42,9 @@ jobs:
         run: |
           git config user.name "kilauea-bot"
           git config user.email "actions@users.noreply.github.com"
-          for i in $(seq 1 66); do
-            echo "::group::verificacao $i de 66 ($(date -u +%H:%M:%S) UTC)"
+          N="${{ inputs.voltas || '66' }}"
+          for i in $(seq 1 $N); do
+            echo "::group::verificacao $i de $N ($(date -u +%H:%M:%S) UTC)"
             # o job dura horas com o codigo do checkout inicial; sem este pull ele
             # continuaria publicando a versao velha por cima de qualquer commit novo
             git pull -q --rebase 2>/dev/null || { git rebase --abort 2>/dev/null; true; }
@@ -51,7 +58,7 @@ jobs:
               git pull -q --rebase && git push -q || echo "AVISO: push do estado falhou"
             fi
             echo "::endgroup::"
-            if [ "$i" -lt 66 ]; then sleep 300; fi
+            if [ "$i" -lt "$N" ]; then sleep 300; fi
           done
 
       # O GitHub desliga crons de repositorios sem atividade ha 60 dias.
@@ -66,3 +73,18 @@ jobs:
             git commit --allow-empty -m "keepalive"
             git push
           fi
+
+      # ENCADEAMENTO. O agendador do GitHub chegou a ficar 8 h sem disparar
+      # (22-23/11/2026) e o episodio 57 comecou nesse buraco, sem alerta. Um job
+      # tem teto de 6 h, entao nenhum laco unico cobre isso. Solucao: ao terminar
+      # o laco, o job dispara o proximo. workflow_dispatch e uma das excecoes em
+      # que o GITHUB_TOKEN pode iniciar outra execucao. O cron fica so como rede
+      # de seguranca, caso a corrente quebre.
+      # "!cancelled()": se este job foi cancelado por uma execucao mais nova, NAO
+      # encadeia (a nova ja esta vigiando); senao cada cancelamento geraria outro
+      # disparo e a corrente viraria um laco de cancela-dispara.
+      - name: Encadear a proxima execucao
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run monitor.yml --ref main -R ${{ github.repository }} -f voltas=66
