@@ -1,21 +1,6 @@
 {
   "alertas": [
     {
-      "id": "E184228C-9A0B-4463-9848-44AF5D566030",
-      "trad_ok": true,
-      "titulo": "Hilina Pali Road Partial Closure Beyond Maunaiki Trailhead",
-      "titulo_pt": "Fechamento parcial da estrada Hilina Pali além do início da trilha Maunaiki",
-      "desc": "Hilina Pali Road from the Maunaiki Trailhead to the lookout is closed to all use motorized vehicles from 6 a.m. to 4:30 p.m. Monday through Thursday for shoulder work. Hikers, bicyclists and backcountry permit holders will be given access but should expect delays while heavy machinery works on the road. The work should be complete by 11/30/26. The entire road will be open to all use outside of those hours including weekends and holidays.",
-      "desc_pt": "A estrada Hilina Pali, do início da trilha Maunaiki até o mirante, está fechada para todos os veículos motorizados das 6h às 16h30. De segunda a quinta-feira para trabalho nos ombros. Caminhantes, ciclistas e titulares de licenças de áreas remotas terão acesso, mas deverão esperar atrasos enquanto máquinas pesadas trabalham na estrada. A obra deverá ser concluída até 30/11/26. Toda a estrada estará aberta a todos os usos fora desse horário, incluindo finais de semana e feriados.",
-      "cat": "closure",
-      "url": "",
-      "data": "2026-11-12",
-      "local_pt": "",
-      "local_en": "",
-      "lat": null,
-      "lng": null
-    },
-    {
       "id": "031E225F-49AB-4264-9DD6-4402E620DC1B",
       "trad_ok": true,
       "titulo": "Kīlauea eruption",
@@ -91,5 +76,5 @@
       "lng": -155.292
     }
   ],
-  "atualizado_em": "2026-11-25T21:27:55+00:00"
+  "atualizado_em": "2026-11-26T00:02:57+00:00"
 }
